@@ -450,8 +450,7 @@
       /* How to use */
       .how-to-use {
         position: relative;
-        width: 360px;
-        max-width: 100%;
+        width: 100%;
         padding: 32px 16px;
         background: #1d2131;
         display: flex;
@@ -487,26 +486,33 @@
         gap: 8px;
       }
 
+      .step {
+        position: relative;
+        width: 100%;
+      }
       .step-num {
-        width: 28px;
-        flex-shrink: 0;
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
         text-align: center;
         font-weight: 500;
-        font-size: 40px;
-        line-height: 1.4;
+        font-size: 36px;
+        line-height: 1;
         letter-spacing: -0.8px;
         background: linear-gradient(180deg, rgba(188, 229, 255, 0.55) 0%, rgba(188, 229, 255, 0) 100%);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
+        pointer-events: none;
+        z-index: 2;
       }
-
       .step-card {
         position: relative;
-        flex: 1;
+        width: 100%;
         background: #2a2e3d;
         border-radius: 16px;
-        padding: 16px;
+        padding: 16px 16px 16px 48px;
         display: flex;
         flex-direction: column;
         gap: 2px;
@@ -1393,5 +1399,9 @@
         window.location.href = "details.html";
       });
     </script>
+  
+    <!-- Vercel Web Analytics + Speed Insights (auto-served by Vercel on deploy) -->
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
   </body>
 </html>

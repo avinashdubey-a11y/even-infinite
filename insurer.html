@@ -116,7 +116,7 @@
       .content {
         position: relative;
         z-index: 1;
-        padding: 24px 16px 160px;
+        padding: 24px 16px 32px;
         display: flex;
         flex-direction: column;
         gap: 24px;
@@ -461,13 +461,10 @@
       }
 
       .bottom-bar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: auto;
+        position: relative;
+        width: 100%;
         background: #040622;
-        z-index: 50;
+        margin-top: 24px;
       }
       .bottom-bar-inner {
         padding: 16px;
@@ -736,13 +733,6 @@
             ),
             #0a0c18;
           padding: 24px 0;
-        .bottom-bar {
-          left: 50%;
-          right: auto;
-          width: 360px;
-          transform: translateX(-50%);
-        }
-      
         }
         .page {
           width: 360px;
@@ -1523,5 +1513,9 @@
         window.location.href = "index.html";
       });
     </script>
+  
+    <!-- Vercel Web Analytics + Speed Insights (auto-served by Vercel on deploy) -->
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
   </body>
 </html>
