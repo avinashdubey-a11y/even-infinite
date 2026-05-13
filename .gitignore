@@ -1,0 +1,17 @@
+# Internal working files used by the local preview / scaffolding
+.claude/
+
+# Figma design screenshots used during build — keep them off GitHub
+screenshots/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor scratch
+.vscode/
+.idea/
+*.swp
+
+# Local-only logs / temp
+*.log

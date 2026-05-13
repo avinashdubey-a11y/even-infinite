@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Your details — Even Infinite</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #0a0c18;
+        color: #fff;
+        font-family: "Centra No2", "Inter", -apple-system, BlinkMacSystemFont,
+          "Helvetica Neue", Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+      }
+
+      button,
+      input {
+        font-family: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* Phone frame */
+      .page {
+        position: relative;
+        width: 360px;
+        max-width: 100%;
+        min-height: 100vh;
+        background-image: linear-gradient(180deg, #111547 0%, #02041b 100%);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Decorative top glow blob */
+      .head-blob {
+        position: absolute;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 458px;
+        height: 460px;
+        pointer-events: none;
+        background:
+          radial-gradient(
+            ellipse 55% 40% at 50% 30%,
+            rgba(0, 85, 255, 0.55) 0%,
+            rgba(0, 85, 255, 0) 65%
+          ),
+          radial-gradient(
+            ellipse 35% 25% at 30% 45%,
+            rgba(92, 130, 255, 0.32) 0%,
+            rgba(92, 130, 255, 0) 70%
+          ),
+          radial-gradient(
+            ellipse 30% 22% at 70% 50%,
+            rgba(92, 130, 255, 0.28) 0%,
+            rgba(92, 130, 255, 0) 70%
+          );
+        filter: blur(2px);
+        z-index: 0;
+      }
+
+      /* Status bar */
+      .status-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px 0;
+        z-index: 10;
+      }
+
+      .status-time {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 22px;
+        color: #fff;
+        letter-spacing: -0.2px;
+      }
+
+      .status-levels {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Page content */
+      .content {
+        position: relative;
+        z-index: 1;
+        padding: 64px 16px 120px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        flex: 1;
+      }
+
+      /* Top stack: back, progress, title block */
+      .top-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        width: 100%;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        padding: 6px 0;
+        cursor: pointer;
+      }
+
+      /* Progress (2 bars) */
+      .progress {
+        display: flex;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .progress-bar {
+        flex: 1;
+        height: 4px;
+        border-radius: 20px;
+        background: rgba(188, 213, 255, 0.16);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-bar.active {
+        background: rgba(188, 213, 255, 0.56);
+      }
+
+      .progress-bar.active::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 85, 255, 0.32);
+        border-radius: inherit;
+      }
+
+      /* Title block */
+      .title-block {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .title-block h1 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 26px;
+        color: #fff;
+      }
+
+      .title-block p {
+        margin: 0;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 1.4;
+        color: rgba(255, 255, 255, 0.56);
+      }
+
+      /* Form */
+      .form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field-label {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 1.4;
+        color: #fff;
+      }
+
+      .field-input {
+        height: 48px;
+        background: #212341;
+        border-radius: 12px;
+        border: 0;
+        padding: 8px 16px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.4;
+        outline: none;
+        width: 100%;
+      }
+
+      .field-input::placeholder {
+        color: #999;
+        font-weight: 400;
+      }
+
+      .field-input:focus {
+        outline: 1px solid rgba(0, 85, 255, 0.5);
+      }
+
+      .city-field {
+        gap: 12px;
+      }
+
+      .locate-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #5c82ff;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 1.4;
+        cursor: pointer;
+      }
+
+      /* Sticky bottom bar */
+      .bottom-bar {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        margin-top: auto;
+        width: 100%;
+        background: #040622;
+        z-index: 5;
+      }
+
+      .bottom-bar-inner {
+        padding: 16px;
+      }
+
+      .home-indicator-spacer {
+        padding: 16px 16px 8px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .home-indicator {
+        width: 132.48px;
+        height: 5px;
+        background: #000;
+        border-radius: 5px;
+        opacity: 0;
+      }
+
+      .continue-btn {
+        width: 100%;
+        background: #0055ff;
+        border-radius: 32px;
+        padding: 11px 20px;
+        border: 0;
+        color: #fff;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1.6;
+        cursor: pointer;
+        opacity: 0.3;
+        transition: opacity 0.18s ease;
+      }
+
+      .continue-btn.enabled {
+        opacity: 1;
+        cursor: pointer;
+      }
+
+      /* ============== Not-available modal ============== */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 4, 27, 0.55);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 24px;
+      }
+
+      .modal-overlay.shown {
+        display: flex;
+      }
+
+      .modal-sheet {
+        position: relative;
+        width: 100%;
+        max-width: 296px;
+        background: #fff;
+        color: #111;
+        border-radius: 20px;
+        padding: 24px 20px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        animation: modalIn 0.18s ease-out both;
+      }
+
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .modal-illustration {
+        width: 96px;
+        height: 96px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-illustration svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .modal-title {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.3;
+        color: #111;
+        text-align: center;
+      }
+
+      .modal-body {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.45;
+        color: #555;
+        text-align: center;
+      }
+
+      .modal-body strong {
+        color: #111;
+        font-weight: 700;
+      }
+
+      .modal-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .modal-btn-primary {
+        width: 100%;
+        background: #0055ff;
+        color: #fff;
+        border: 0;
+        border-radius: 24px;
+        padding: 11px 16px;
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 1.5;
+        cursor: pointer;
+      }
+
+      .modal-btn-link {
+        background: none;
+        border: 0;
+        padding: 10px;
+        color: #0055ff;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.5;
+        cursor: pointer;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 32px;
+        transform: translate(-50%, 20px);
+        background: rgba(20, 22, 38, 0.95);
+        color: #fff;
+        font-size: 13px;
+        padding: 10px 16px;
+        border-radius: 24px;
+        border: 1px solid rgba(157, 188, 255, 0.2);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.25s ease,
+          transform 0.25s ease;
+        z-index: 2000;
+      }
+
+      .toast.shown {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      @media (min-width: 768px) {
+        body {
+          background:
+            radial-gradient(
+              ellipse at top,
+              rgba(0, 85, 255, 0.08) 0%,
+              transparent 50%
+            ),
+            #0a0c18;
+          padding: 24px 0;
+        }
+        .page {
+          box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+          border-radius: 32px;
+          min-height: calc(100vh - 48px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="head-blob" aria-hidden="true"></div>
+
+      <!-- Status bar -->
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">9:41</span>
+        <div class="status-levels">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+            <rect x="0" y="8" width="3" height="4" rx="0.8" fill="white" />
+            <rect x="5" y="5" width="3" height="7" rx="0.8" fill="white" />
+            <rect x="10" y="2" width="3" height="10" rx="0.8" fill="white" />
+            <rect x="15" y="0" width="3" height="12" rx="0.8" fill="white" />
+          </svg>
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+            <path
+              d="M8.5 11.2c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1Zm-3.4-2.6 1.1 1.1A3.3 3.3 0 0 1 8.5 8.7c.86 0 1.66.34 2.3.99l1.1-1.1A4.85 4.85 0 0 0 8.5 7.2c-1.35 0-2.55.52-3.4 1.4Zm-2.2-2.2 1.1 1.1A6.4 6.4 0 0 1 8.5 5.7c1.7 0 3.32.69 4.5 1.8l1.1-1.1A7.97 7.97 0 0 0 8.5 4.2c-2.16 0-4.12.82-5.6 2.2ZM.5 4.3l1.1 1.1A9.45 9.45 0 0 1 8.5 2.7c2.6 0 5.04 1 6.9 2.7l1.1-1.1A10.97 10.97 0 0 0 8.5 1.2C5.36 1.2 2.5 2.42.5 4.3Z"
+              fill="white"
+            />
+          </svg>
+          <svg width="27" height="12" viewBox="0 0 27 12" fill="none">
+            <rect
+              x="0.5"
+              y="0.5"
+              width="22"
+              height="11"
+              rx="2.5"
+              stroke="white"
+              stroke-opacity="0.4"
+            />
+            <rect x="2" y="2" width="19" height="8" rx="1.5" fill="white" />
+            <rect
+              x="23.5"
+              y="4"
+              width="2"
+              height="4"
+              rx="1"
+              fill="white"
+              fill-opacity="0.5"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Page content -->
+      <section class="content">
+        <div class="top-stack">
+          <a class="back-btn" href="index.html" aria-label="Back">
+            <svg width="9" height="16" viewBox="0 0 9 16" fill="none">
+              <path
+                d="M8 1 1 8l7 7"
+                stroke="#fff"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+
+          <div class="progress" aria-hidden="true">
+            <span class="progress-bar active"></span>
+            <span class="progress-bar"></span>
+          </div>
+
+          <div class="title-block">
+            <h1>Your details</h1>
+            <p>
+              Your data stays private. We only use your details to verify your
+              eligibility.
+            </p>
+          </div>
+        </div>
+
+        <form class="form" onsubmit="event.preventDefault();">
+          <div class="field">
+            <label class="field-label" for="name">
+              Name (as on your Insurance)
+            </label>
+            <input
+              id="name"
+              class="field-input"
+              type="text"
+              placeholder="Enter here"
+              autocomplete="name"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="mobile">Mobile number</label>
+            <input
+              id="mobile"
+              class="field-input"
+              type="tel"
+              placeholder="Enter here"
+              inputmode="numeric"
+              autocomplete="tel"
+            />
+          </div>
+
+          <div class="field city-field">
+            <label class="field-label" for="city">City</label>
+            <input
+              id="city"
+              class="field-input"
+              type="text"
+              value="Bengaluru"
+            />
+
+            <a class="locate-link" href="#">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"
+                  stroke="#5C82FF"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle
+                  cx="12"
+                  cy="9"
+                  r="2.5"
+                  stroke="#5C82FF"
+                  stroke-width="1.5"
+                />
+              </svg>
+              Use current location
+            </a>
+          </div>
+        </form>
+      </section>
+
+      <!-- Bottom sticky bar -->
+      <div class="bottom-bar">
+        <div class="bottom-bar-inner">
+          <button id="continueBtn" class="continue-btn" type="button" disabled>
+            Continue
+          </button>
+        </div>
+        <div class="home-indicator-spacer">
+          <span class="home-indicator" aria-hidden="true"></span>
+        </div>
+      </div>
+    </main>
+
+    <!-- Not-available modal -->
+    <div
+      id="notAvailableModal"
+      class="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="notAvailTitle"
+    >
+      <div class="modal-sheet">
+        <div class="modal-illustration" aria-hidden="true">
+          <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik05My44Mjc0IDU1LjEwMDVMNzcuMzMyMyA1NS4xMDA1SDYyLjY0NzlDNjIuMDExOCA1NS4xMDA1IDYxLjQ5NjEgNTQuNTg0OCA2MS40OTYxIDUzLjk0ODdDNjEuNDk2MSA1My4zMTI2IDYyLjAxMTggNTIuNzk2OSA2Mi42NDc5IDUyLjc5NjlINjMuNjY3MUM2NC42MDQ1IDUyLjc5NjkgNjUuMzY0NSA1Mi4wMzcgNjUuMzY0NSA1MS4wOTk1QzY1LjM2NDUgNTAuMTYyMSA2Ni4xMjQ0IDQ5LjQwMjIgNjcuMDYxOCA0OS40MDIySDY3LjQ3NTJDNjguMzc5MiA0OS40MDIyIDY5LjExMiA0OC42Njk0IDY5LjExMiA0Ny43NjU0QzY5LjExMiA0Ni44NjE1IDY5Ljg0NDggNDYuMTI4NyA3MC43NDg3IDQ2LjEyODdINzEuMDUyNEM3Mi4wNzA1IDQ2LjEyODcgNzIuOTE1NSA0NS4zNDE3IDcyLjk4NzggNDQuMzI2Mkw3My4wNjk5IDQzLjE3NDRDNzMuMDkwNyA0Mi44ODI1IDczLjE0ODUgNDIuNTkzIDczLjI5NjIgNDIuMzQwM0M3My42ODg0IDQxLjY2OTQgNzQuNzMzMiA0MC4zNzExIDc2Ljk2OTYgNDAuMzA5NUM3OS45OTE4IDQwLjIyNjIgODEuMTMwMSA0MS4yMzk5IDgxLjgwNTEgNDIuNDkyQzgxLjkwNTcgNDIuNjc4NyA4MS45ODE4IDQyLjg5MDYgODIuMDM4MyA0My4xMTYxQzgyLjQyMTggNDQuNjQ3IDgzLjQ5OTUgNDYuMTI4NyA4NS4wNzc4IDQ2LjEyODdIODUuOTcwOUM4Ni44NzQ5IDQ2LjEyODcgODcuNjA3NiA0Ni44NjE1IDg3LjYwNzYgNDcuNzY1NFY0Ny44MDI3Qzg3LjYwNzYgNDguNjg2MSA4OC4zMjM4IDQ5LjQwMjIgODkuMjA3MSA0OS40MDIyQzkwLjA2ODQgNDkuNDAyMiA5MC43NzUgNTAuMDg0MSA5MC44MDU2IDUwLjk0NDhMOTAuODExMSA1MS4wOTk1QzkwLjg0NDkgNTIuMDQ2NiA5MS42MjI1IDUyLjc5NjkgOTIuNTcwMiA1Mi43OTY5SDkzLjA0NzZIOTMuODI3NUM5NC40NjM2IDUyLjc5NjkgOTQuOTc5MiA1My4zMTI2IDk0Ljk3OTIgNTMuOTQ4N0M5NC45NzkyIDU0LjU4NDggOTQuNDYzNiA1NS4xMDA1IDkzLjgyNzQgNTUuMTAwNVoiIGZpbGw9IiNGOEU4RUUiIHN0cm9rZT0iIzM2MzQzNCIvPgo8cGF0aCBkPSJNODguMzkzNSA1My40MjI0SDc3LjQ0MjdINjguNDA4OEM2OC4wMjc3IDUzLjQyMjQgNjcuNzE4OCA1My4xMTM0IDY3LjcxODggNTIuNzMyNEM2Ny43MTg4IDUyLjM1MTMgNjguMDI3NyA1Mi4wNDI0IDY4LjQwODggNTIuMDQyNEg2OS4wNzcyQzY5LjYzODggNTIuMDQyNCA3MC4wOTQxIDUxLjU4NzEgNzAuMDk0MSA1MS4wMjU1QzcwLjA5NDEgNTAuNDYzOSA3MC41NDkzIDUwLjAwODcgNzEuMTEwOSA1MC4wMDg3SDcxLjQxNDZDNzEuOTU2MiA1MC4wMDg3IDcyLjM5NTIgNDkuNTY5NyA3Mi4zOTUyIDQ5LjAyODFDNzIuMzk1MiA0OC40ODY2IDcyLjgzNDIgNDguMDQ3NiA3My4zNzU3IDQ4LjA0NzZINzMuNTg3NkM3NC4yMTI1IDQ4LjA0NzYgNzQuNzMxNSA0Ny41NjUyIDc0Ljc3NyA0Ni45NDE5TDc0LjgyNSA0Ni4yODM0Qzc0LjgzODEgNDYuMTA0OCA3NC44NzQzIDQ1LjkyNzggNzQuOTY2NiA0NS43NzQ0Qzc1LjIwOTEgNDUuMzcxNCA3NS44NTEgNDQuNTk4MyA3Ny4yMiA0NC41NjE1Qzc5LjA3NTcgNDQuNTExNiA3OS43NzQ3IDQ1LjExODkgODAuMTg5MiA0NS44Njg5QzgwLjI0MzggNDUuOTY3OCA4MC4yODY2IDQ2LjA3ODQgODAuMzE5NyA0Ni4xOTU5QzgwLjU4MjggNDcuMTI5MSA4MS4yMzMgNDguMDQ3NiA4Mi4yMDI1IDQ4LjA0NzZIODIuNzcxNkM4My4zMTMxIDQ4LjA0NzYgODMuNzUyMSA0OC40ODY2IDgzLjc1MjEgNDkuMDI4MUM4My43NTIxIDQ5LjU2OTcgODQuMTkxMSA1MC4wMDg3IDg0LjczMjcgNTAuMDA4N0g4NC44OThDODUuMzU4NSA1MC4wMDg3IDg1Ljc1OTYgNTAuMzIyOCA4NS44Njk5IDUwLjc2OTlMODUuODk5NCA1MC44ODkyQzg1Ljk5MjQgNTEuMjY2MiA4Ni4zMzA3IDUxLjUzMTIgODYuNzE5IDUxLjUzMTJDODcuMDgxOCA1MS41MzEyIDg3LjQwNCA1MS43NjI5IDg3LjUxOTQgNTIuMTA2OEw4Ny41NTE0IDUyLjIwMkM4Ny42Mzc2IDUyLjQ1ODggODcuODY1NCA1Mi42NDIgODguMTM0OCA1Mi42NzA5TDg4LjQzMjEgNTIuNzAyOUM4OC42MTU0IDUyLjcyMjYgODguNzU0MyA1Mi44NzczIDg4Ljc1NDMgNTMuMDYxNkM4OC43NTQzIDUzLjI2MDggODguNTkyOCA1My40MjI0IDg4LjM5MzUgNTMuNDIyNFoiIGZpbGw9IiNGNEQwREUiLz4KPHBhdGggZD0iTTU2LjUwMjQgNzUuMDE3OUM2MS4zOTQ1IDc1LjYwMTIgNjQuNjE2MyA3Ni41OTU1IDY0LjYxNjMgNzcuNzI0QzY0LjYxNjMgNzkuNTIwMyA1Ni40NTM2IDgwLjk3NjYgNDYuMzg0MyA4MC45NzY2QzM2LjMxNTEgODAuOTc2NiAyOC4xNTIzIDc5LjUyMDMgMjguMTUyMyA3Ny43MjRDMjguMTUyMyA3Ni41Nzg0IDMxLjQ3MjIgNzUuNTcxMSAzNi40ODkzIDc0Ljk5MTciIHN0cm9rZT0iIzMzMzMzMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik00My4yODI3IDI2Ljk1NTdDMzIuODM4MSAyNy43MTggMjQuOTg5MSAzNi44MDMgMjUuNzUxNCA0Ny4yNDc1QzI2LjgxMDYgNjEuNzYwNyA0Ni45ODM1IDc3LjY2MTQgNDYuOTgzNSA3Ny42NjE0QzQ2Ljk4MzUgNzcuNjYxNCA1My40MjczIDcwLjk0OTYgNTguMzE0MyA2Mi4yTDU2LjgzNzQgNTguOTQ2N0w1My40ODQyIDU4Ljk0NjdMNTIuODI1NSA1Ni4zNTE5TDUwLjQ1MDMgNTUuMTU0NEM0OS41MzIyIDU1Ljg5MjkgNDcuNDM3OSA1Ni40NDA0IDQ1LjQ0NTkgNTYuNTg1OEMzOS41MjcyIDU3LjAxNzcgMzQuMzc4OSA1Mi41Njk5IDMzLjk0NjkgNDYuNjUxMUMzMy41MTQ5IDQwLjczMjQgMzcuOTYyOCAzNS41ODQxIDQzLjg4MTUgMzUuMTUyMUM0NS4zODA2IDM1LjA0MjcgNDYuODMwMyAzNS4yNDY0IDQ4LjE2NjQgMzUuNzA3Nkw1MC44MTc2IDM0LjMxMDNMNDkuOTE2MyAzMi4xNzhMNTIuNTAwNyAzMS41NTc2TDUxLjExNjIgMjguMDMyMkM0OC42ODM2IDI3LjE1MDUgNDYuMDMwMiAyNi43NTUxIDQzLjI4MjcgMjYuOTU1N1oiIGZpbGw9IiNGQkUyNzciIHN0cm9rZT0iIzMzMzMzMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMjkuMDMzMiA0NC44MDM3QzI5LjAzMzIgMzYuMzY5IDM1Ljg3MDkgMjkuNTMxMiA0NC4zMDU3IDI5LjUzMTIiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIG9wYWNpdHk9IjAuNSIgZD0iTTM0Ljc1NDYgNTAuMTMzNEgyNi4yNTEyTDI1LjcyNjYgNDcuMzc4OUgzMy45Njc3TDM0Ljc1NDYgNTAuMTMzNFoiIGZpbGw9IiMzMzMzMzMiLz4KPHBhdGggZD0iTTUyLjE0NjkgNTMuOTE1NEM1NC41NjQgNTIuNDk4MyA1Ni4wNTYyIDQ5LjI2ODQgNTUuOTUxOSA0NS4zMzI2QzU1Ljg3ODEgNDIuNTQ5OSA1NC43NTI4IDQwLjA0MjQgNTIuOTY2MyAzOC4xODA0TDU1Ljg2NzUgMzcuNzcwNkw1Ni4wNDc4IDM1LjQ0NzJMNTkuNTEwNiAzNi44MDczTDYwLjkzNDkgMzUuMDE1NkM2Mi44ODcxIDM3LjkwNTggNjQuMDY1NyA0MS4zNjgyIDY0LjE2NDkgNDUuMTEzMUM2NC4zMTQ2IDUwLjc1NzkgNjEuNjIxIDU2Ljg5NjEgNTguMjY4MyA2Mi4yOTQ4TDU2LjkwNjIgNTguNjM1OEw1NC4yODI1IDU4LjM2NjRMNTQuMjgyNSA1NS42MTJMNTIuMTQ2OSA1My45MTU0WiIgZmlsbD0iI0ZCRTI3NyIgc3Ryb2tlPSIjMzMzMzMzIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik02MC4wMzc2IDI5LjgyNzhDNTkuMzEwMyAyOC45MzMxIDU2LjQ3MTEgMjcuMTUwOCA1NS40MjU4IDI2Ljc0NjFMNTUuMDA0NSAzMS43MDMxTDU3LjcwODcgMzIuMDUzOUw2MC4wMzc2IDI5LjgyNzhaIiBmaWxsPSIjRkJFMjc3IiBzdHJva2U9IiMzMzMzMzMiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTM2Ljc3MjMgNDcuMjE2M0wyMC4wNTIxIDQ3LjIxNjNINS4xNjc0OUM0LjUyMjcgNDcuMjE2MyA0IDQ2LjY5MzYgNCA0Ni4wNDg4QzQgNDUuNDA0IDQuNTIyNyA0NC44ODEzIDUuMTY3NDkgNDQuODgxM0g2LjIwMDYyQzcuMTUwODQgNDQuODgxMyA3LjkyMTEzIDQ0LjExMSA3LjkyMTEzIDQzLjE2MDhDNy45MjExMyA0Mi4yMTA2IDguNjkxNDMgNDEuNDQwMyA5LjY0MTY1IDQxLjQ0MDNIMTAuMDYwN0MxMC45NzY5IDQxLjQ0MDMgMTEuNzE5NyA0MC42OTc1IDExLjcxOTcgMzkuNzgxMkMxMS43MTk3IDM4Ljg2NSAxMi40NjI1IDM4LjEyMjIgMTMuMzc4OCAzOC4xMjIySDEzLjY4NjZDMTQuNzE4NiAzOC4xMjIyIDE1LjU3NTIgMzcuMzI0NSAxNS42NDg1IDM2LjI5NTFMMTUuNzMxNiAzNS4xMjc2QzE1Ljc1MjcgMzQuODMxNyAxNS44MTE0IDM0LjUzODMgMTUuOTYxMSAzNC4yODIyQzE2LjM1ODYgMzMuNjAyIDE3LjQxNzcgMzIuMjg2MSAxOS42ODQ1IDMyLjIyMzZDMjIuNzQ3OSAzMi4xMzkyIDIzLjkwMTggMzMuMTY2OCAyNC41ODYgMzQuNDM1OUMyNC42ODggMzQuNjI1MSAyNC43NjUxIDM0Ljg0IDI0LjgyMjMgMzUuMDY4NUMyNS4yMTExIDM2LjYyMDMgMjYuMzAzNSAzOC4xMjIyIDI3LjkwMzMgMzguMTIyMkgyOC44MDg2QzI5LjcyNDkgMzguMTIyMiAzMC40Njc3IDM4Ljg2NSAzMC40Njc3IDM5Ljc4MTJWMzkuODE5QzMwLjQ2NzcgNDAuNzE0NCAzMS4xOTM1IDQxLjQ0MDMgMzIuMDg5IDQxLjQ0MDNDMzIuOTYxOSA0MS40NDAzIDMzLjY3ODIgNDIuMTMxNSAzMy43MDkzIDQzLjAwMzlMMzMuNzE0OSA0My4xNjA4QzMzLjc0OSA0NC4xMjA4IDM0LjUzNzMgNDQuODgxMyAzNS40OTc4IDQ0Ljg4MTNIMzUuOTgxOEgzNi43NzIzQzM3LjQxNzEgNDQuODgxMyAzNy45Mzk4IDQ1LjQwNCAzNy45Mzk4IDQ2LjA0ODhDMzcuOTM5OCA0Ni42OTM2IDM3LjQxNzEgNDcuMjE2MyAzNi43NzIzIDQ3LjIxNjNaIiBmaWxsPSIjRjhFOEVFIiBzdHJva2U9IiMzNjM0MzQiLz4KPHBhdGggZD0iTTMyLjQwNjYgNDUuNzY1MUgyMC4wODY0SDkuOTIyNzdDOS40OTQwNCA0NS43NjUxIDkuMTQ2NDggNDUuNDE3NiA5LjE0NjQ4IDQ0Ljk4ODlDOS4xNDY0OCA0NC41NjAxIDkuNDk0MDQgNDQuMjEyNiA5LjkyMjc3IDQ0LjIxMjZIMTAuNjc0OEMxMS4zMDY2IDQ0LjIxMjYgMTEuODE4OCA0My43MDA0IDExLjgxODggNDMuMDY4NkMxMS44MTg4IDQyLjQzNjcgMTIuMzMxIDQxLjkyNDYgMTIuOTYyOCA0MS45MjQ2SDEzLjMwNDVDMTMuOTEzOCA0MS45MjQ2IDE0LjQwNzcgNDEuNDMwNyAxNC40MDc3IDQwLjgyMTRDMTQuNDA3NyA0MC4yMTIyIDE0LjkwMTYgMzkuNzE4MyAxNS41MTA4IDM5LjcxODNIMTUuNzQ5M0MxNi40NTIzIDM5LjcxODMgMTcuMDM2MSAzOS4xNzU1IDE3LjA4NzMgMzguNDc0NEwxNy4xNDE0IDM3LjczMzVDMTcuMTU2MSAzNy41MzI1IDE3LjE5NjggMzcuMzMzNCAxNy4zMDA3IDM3LjE2MDhDMTcuNTczNSAzNi43MDc0IDE4LjI5NTYgMzUuODM3NiAxOS44MzU5IDM1Ljc5NjJDMjEuOTIzNiAzNS43NDAxIDIyLjcxIDM2LjQyMzMgMjMuMTc2MyAzNy4yNjcyQzIzLjIzNzcgMzcuMzc4NCAyMy4yODU5IDM3LjUwMjggMjMuMzIzMiAzNy42MzUxQzIzLjYxOTIgMzguNjg0OSAyNC4zNTA2IDM5LjcxODMgMjUuNDQxNCAzOS43MTgzSDI2LjA4MTdDMjYuNjkwOSAzOS43MTgzIDI3LjE4NDggNDAuMjEyMiAyNy4xODQ4IDQwLjgyMTRDMjcuMTg0OCA0MS40MzA3IDI3LjY3ODcgNDEuOTI0NiAyOC4yODc5IDQxLjkyNDZIMjguNDczOUMyOC45OTIgNDEuOTI0NiAyOS40NDMzIDQyLjI3OCAyOS41Njc0IDQyLjc4MUwyOS42MDA1IDQyLjkxNTJDMjkuNzA1MiA0My4zMzk0IDMwLjA4NTggNDMuNjM3NSAzMC41MjI3IDQzLjYzNzVDMzAuOTMwOCA0My42Mzc1IDMxLjI5MzMgNDMuODk4MiAzMS40MjMyIDQ0LjI4NTFMMzEuNDU5MSA0NC4zOTIxQzMxLjU1NjEgNDQuNjgxMSAzMS44MTI1IDQ0Ljg4NzIgMzIuMTE1NSA0NC45MTk3TDMyLjQ1IDQ0Ljk1NTdDMzIuNjU2MiA0NC45Nzc4IDMyLjgxMjUgNDUuMTUxOSAzMi44MTI1IDQ1LjM1OTJDMzIuODEyNSA0NS41ODM0IDMyLjYzMDggNDUuNzY1MSAzMi40MDY2IDQ1Ljc2NTFaIiBmaWxsPSIjRjREMERFIi8+CjxwYXRoIGQ9Ik01Mi45Mzk2IDIwLjE1MjNMNTEuNjUyMiAyMi4yNTgzTDUzLjE4MDggMjMuNDU2N0w1Mi41MDU0IDI1LjE2OTJMNTMuMzYzOSAyNi41ODk3IiBzdHJva2U9IiMzMzMzMzMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNNjYuNTY3MyAzMS43MjhMNjQuMzI3OCAzMC42OTAxTDYzLjMxMjMgMzIuMzQ1OUw2MS41MzM3IDMxLjg3MDlMNjAuMjIwNyAzMi44ODYzIiBzdHJva2U9IiMzMzMzMzMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K" alt="" style="width:100%;height:100%;" />
+        </div>
+
+        <h2 id="notAvailTitle" class="modal-title">
+          We are not available in your city yet
+        </h2>
+        <p class="modal-body">
+          We're not live in <strong id="cityNameLabel">your city</strong> yet.
+          Want us to let you know the moment Even Infinite arrives?
+        </p>
+
+        <div class="modal-actions">
+          <button id="changeLocationBtn" class="modal-btn-primary" type="button">
+            Change location
+          </button>
+          <button id="notifyBtn" class="modal-btn-link" type="button">
+            Notify me when available
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status">
+      Got it — we'll let you know.
+    </div>
+
+    <script>
+      const name = document.getElementById("name");
+      const mobile = document.getElementById("mobile");
+      const city = document.getElementById("city");
+      const btn = document.getElementById("continueBtn");
+
+      // restore values if user came back from OTP
+      name.value = sessionStorage.getItem("evenName") || "";
+      mobile.value = sessionStorage.getItem("evenMobile") || "";
+      const storedCity = sessionStorage.getItem("evenCity");
+      if (storedCity) city.value = storedCity;
+
+      function refresh() {
+        const ok =
+          name.value.trim().length > 0 && mobile.value.trim().length >= 10;
+        btn.disabled = !ok;
+        btn.classList.toggle("enabled", ok);
+      }
+      name.addEventListener("input", refresh);
+      mobile.addEventListener("input", () => {
+        // keep digits only
+        mobile.value = mobile.value.replace(/\D/g, "").slice(0, 10);
+        refresh();
+      });
+      refresh();
+
+      const modal = document.getElementById("notAvailableModal");
+      const cityLabel = document.getElementById("cityNameLabel");
+      const toast = document.getElementById("toast");
+
+      function isBengaluru(v) {
+        const c = (v || "").trim().toLowerCase();
+        return c === "bengaluru" || c === "bangalore";
+      }
+
+      function openModal(cityName) {
+        cityLabel.textContent = cityName || "your city";
+        modal.classList.add("shown");
+        document.body.style.overflow = "hidden";
+      }
+      function closeModal() {
+        modal.classList.remove("shown");
+        document.body.style.overflow = "";
+      }
+
+      btn.addEventListener("click", () => {
+        if (btn.disabled) return;
+        const cityVal = city.value.trim();
+        sessionStorage.setItem("evenName", name.value.trim());
+        sessionStorage.setItem("evenMobile", mobile.value.trim());
+        sessionStorage.setItem("evenCity", cityVal);
+
+        if (!isBengaluru(cityVal)) {
+          openModal(cityVal);
+          return;
+        }
+        window.location.href = "otp.html";
+      });
+
+      document
+        .getElementById("changeLocationBtn")
+        .addEventListener("click", () => {
+          closeModal();
+          city.focus();
+          city.select();
+        });
+
+      document.getElementById("notifyBtn").addEventListener("click", () => {
+        // Capture the waitlist signup
+        try {
+          const record = {
+            id:
+              Math.random().toString(36).slice(2, 10) +
+              Date.now().toString(36),
+            timestamp: new Date().toISOString(),
+            status: "waitlist_city",
+            name: sessionStorage.getItem("evenName") || "",
+            mobile: sessionStorage.getItem("evenMobile") || "",
+            city: sessionStorage.getItem("evenCity") || "",
+            insuranceSource: [],
+            insurers: [],
+            customInsurers: [],
+            members: [],
+          };
+          const all = JSON.parse(
+            localStorage.getItem("evenApplications") || "[]"
+          );
+          all.push(record);
+          localStorage.setItem("evenApplications", JSON.stringify(all));
+        } catch (err) {
+          console.warn("Failed to persist waitlist:", err);
+        }
+        closeModal();
+        toast.classList.add("shown");
+        setTimeout(() => {
+          toast.classList.remove("shown");
+          setTimeout(() => (window.location.href = "index.html"), 350);
+        }, 1500);
+      });
+
+      // Dismiss on overlay click (outside the sheet)
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+      });
+    </script>
+  </body>
+</html>
