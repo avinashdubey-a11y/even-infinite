@@ -479,6 +479,9 @@
         flex-direction: column;
         gap: 12px;
         width: 100%;
+        list-style: none;
+        margin: 0;
+        padding: 0;
       }
 
       .step {
@@ -491,31 +494,9 @@
         border-radius: 16px;
         padding: 16px;
         display: flex;
-        gap: 16px;
-        align-items: flex-start;
-        overflow: hidden;
-      }
-      .step-num {
-        flex-shrink: 0;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: rgba(0, 85, 255, 0.22);
-        border: 1px solid rgba(92, 130, 255, 0.45);
-        color: #bce5ff;
-        font-weight: 700;
-        font-size: 14px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        letter-spacing: 0;
-      }
-      .step-text {
-        flex: 1;
-        display: flex;
         flex-direction: column;
         gap: 4px;
-        min-width: 0;
+        overflow: hidden;
       }
 
       .step-card h4 {
@@ -1047,40 +1028,26 @@
           <ol class="steps">
             <li class="step">
               <div class="step-card">
-                <span class="step-num">1</span>
-                <div class="step-text">
-                  <h4>Book or walk in</h4>
-                  <p>Book on the Even app or visit Even Hospitals.</p>
-                </div>
+                <h4>Book or walk in</h4>
+                <p>Book on the Even app or visit Even Hospitals.</p>
               </div>
             </li>
             <li class="step">
               <div class="step-card">
-                <span class="step-num">2</span>
-                <div class="step-text">
-                  <h4>Show your Even Infinite pass</h4>
-                  <p>Use your virtual card at the hospital.</p>
-                </div>
+                <h4>Show your Even Infinite pass</h4>
+                <p>Use your virtual card at the hospital.</p>
               </div>
             </li>
             <li class="step">
               <div class="step-card">
-                <span class="step-num">3</span>
-                <div class="step-text">
-                  <h4>Consult for free</h4>
-                  <p>If your doctor prescribes a test, it is free too.</p>
-                </div>
+                <h4>Consult for free</h4>
+                <p>If your doctor prescribes a test, it is free too.</p>
               </div>
             </li>
             <li class="step">
               <div class="step-card">
-                <span class="step-num">4</span>
-                <div class="step-text">
-                  <h4>Need a procedure or surgery?</h4>
-                  <p>
-                    Talk to our team. We'll guide you on next steps and costs.
-                  </p>
-                </div>
+                <h4>Need a procedure or surgery?</h4>
+                <p>Talk to our team. We'll guide you on next steps and costs.</p>
               </div>
             </li>
           </ol>
