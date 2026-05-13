@@ -615,6 +615,78 @@
         </div>
       </div>
     </main>
+    <!-- Supabase client (real backend persistence) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+      window.SUPABASE_URL = "https://evzphmwqhhwateqxttzp.supabase.co";
+      window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2enBobXdxaGh3YXRlcXh0dHpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Njg4MDksImV4cCI6MjA5NDI0NDgwOX0.zyS_1bjARnlmBWBKiNZSJsswxlB0EAoMTB3oPLa1FKU";
+      window.sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+      window.saveEvenApplication = async function (record) {
+        try {
+          const row = {
+            status: record.status,
+            name: record.name || null,
+            mobile: record.mobile || null,
+            city: record.city || null,
+            insurance_source: record.insuranceSource || [],
+            insurers: record.insurers || [],
+            custom_insurers: record.customInsurers || [],
+            members: record.members || [],
+            policy_data: record.policyData || {},
+            consent: record.consent === true,
+            user_agent: navigator.userAgent,
+          };
+          const { error } = await window.sb
+            .from("applications")
+            .insert(row);
+          if (error) {
+            console.warn("Supabase insert failed:", error);
+            return null;
+          }
+          return true;
+        } catch (e) {
+          console.warn("Supabase save error:", e);
+          return null;
+        }
+      };
+
+      window.uploadEvenDoc = async function (file, insurer) {
+        if (!file) return null;
+        try {
+          const safeInsurer = String(insurer || "doc")
+            .replace(/[^a-z0-9]/gi, "_")
+            .toLowerCase();
+          const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+          const path =
+            Date.now() +
+            "-" +
+            Math.random().toString(36).slice(2, 8) +
+            "-" +
+            safeInsurer +
+            "." +
+            ext;
+          const { error } = await window.sb.storage
+            .from("policy-docs")
+            .upload(path, file, {
+              contentType: file.type || "application/octet-stream",
+              upsert: false,
+            });
+          if (error) {
+            console.warn("Upload failed:", error);
+            return null;
+          }
+          const { data } = window.sb.storage
+            .from("policy-docs")
+            .getPublicUrl(path);
+          return data.publicUrl;
+        } catch (e) {
+          console.warn("Upload error:", e);
+          return null;
+        }
+      };
+    </script>
+
 
     <!-- Not-available modal -->
     <div
@@ -720,30 +792,39 @@
         });
 
       document.getElementById("notifyBtn").addEventListener("click", () => {
-        // Capture the waitlist signup
+        const record = {
+          id:
+            Math.random().toString(36).slice(2, 10) +
+            Date.now().toString(36),
+          timestamp: new Date().toISOString(),
+          status: "waitlist_city",
+          name: sessionStorage.getItem("evenName") || "",
+          mobile: sessionStorage.getItem("evenMobile") || "",
+          city: sessionStorage.getItem("evenCity") || "",
+          insuranceSource: [],
+          insurers: [],
+          customInsurers: [],
+          members: [],
+        };
+
+        // Local backup (for on-device admin.html)
         try {
-          const record = {
-            id:
-              Math.random().toString(36).slice(2, 10) +
-              Date.now().toString(36),
-            timestamp: new Date().toISOString(),
-            status: "waitlist_city",
-            name: sessionStorage.getItem("evenName") || "",
-            mobile: sessionStorage.getItem("evenMobile") || "",
-            city: sessionStorage.getItem("evenCity") || "",
-            insuranceSource: [],
-            insurers: [],
-            customInsurers: [],
-            members: [],
-          };
           const all = JSON.parse(
             localStorage.getItem("evenApplications") || "[]"
           );
           all.push(record);
           localStorage.setItem("evenApplications", JSON.stringify(all));
         } catch (err) {
-          console.warn("Failed to persist waitlist:", err);
+          console.warn("Failed to persist waitlist (local):", err);
         }
+
+        // Centralized save in Supabase (fire-and-forget)
+        if (window.saveEvenApplication) {
+          window.saveEvenApplication(record).catch((e) =>
+            console.warn("Supabase save failed:", e)
+          );
+        }
+
         closeModal();
         toast.classList.add("shown");
         setTimeout(() => {
