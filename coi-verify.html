@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>COI Verification · Even</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
@@ -85,18 +88,52 @@
       white-space: nowrap;
       transition: background 0.15s, border-color 0.15s;
     }
+    .tb-btn { transition: background 0.18s cubic-bezier(0.32,0.72,0,1), border-color 0.18s, transform 0.12s; }
     .tb-btn:hover { background: rgba(157,188,255,0.14); border-color: rgba(157,188,255,0.3); }
-    .tb-btn.primary { background: #0055ff; border-color: #0055ff; color: #fff; }
+    .tb-btn:active { transform: scale(0.97); }
+    .tb-btn.primary { background: #0055ff; border-color: #0055ff; color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
     .tb-btn.primary:hover { background: #1a6aff; }
     .save-flash {
       font-size: 11px;
       font-weight: 700;
       color: #5fe2b1;
       opacity: 0;
-      transition: opacity 0.2s;
+      transform: translateY(2px);
+      transition: opacity 0.32s cubic-bezier(0.32,0.72,0,1), transform 0.32s cubic-bezier(0.32,0.72,0,1);
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
-    .save-flash.show { opacity: 1; }
+    .save-flash.show { opacity: 1; transform: translateY(0); }
+    .save-flash svg { width: 11px; height: 11px; }
+
+    /* Monospace for codes, IDs, and structured numeric fields */
+    .mono, #policyNumber, #sumInsured, #copayPercent,
+    #policyStartDate, #policyEndDate,
+    .qcard-meta, .qcard-insurer, .reviewed-meta,
+    .stat-chip .sv, #rejectionCode {
+      font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      font-feature-settings: "tnum" 1, "zero" 1;
+      letter-spacing: -0.01em;
+    }
+    .stat-chip .sv { font-weight: 600; }
+
+    /* Pending pulse */
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 0.55; }
+      50% { transform: scale(1.4); opacity: 1; }
+    }
+    .pulse-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #9dbcff;
+      margin-right: 5px;
+      animation: pulseDot 1.8s cubic-bezier(0.4,0,0.6,1) infinite;
+      vertical-align: middle;
+    }
 
     /* ── THREE PANE ─────────────────────────────────────────────── */
     .main-split {
@@ -579,7 +616,20 @@
       transition: background 0.15s;
       white-space: nowrap;
     }
+    .btn-mark-reviewed {
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: background 0.2s cubic-bezier(0.32,0.72,0,1), transform 0.12s;
+    }
     .btn-mark-reviewed:hover { background: #1a6aff; }
+    .btn-mark-reviewed:active { transform: scale(0.97); }
+    .v-btn { transition: background 0.18s cubic-bezier(0.32,0.72,0,1), border-color 0.18s, transform 0.12s, color 0.18s; }
+    .v-btn:active { transform: scale(0.96); }
+    .add-member-btn { transition: background 0.16s, border-color 0.16s, transform 0.12s; }
+    .add-member-btn:active { transform: scale(0.96); }
+    .ped-tag { transition: background 0.16s cubic-bezier(0.32,0.72,0,1), color 0.16s, border-color 0.16s, transform 0.1s; }
+    .ped-tag:active { transform: scale(0.96); }
+    .qcard { transition: all 0.18s cubic-bezier(0.32,0.72,0,1); }
+    .qcard:active { transform: scale(0.99); }
     .reviewed-meta {
       font-size: 11px;
       color: rgba(255,255,255,0.35);
@@ -628,13 +678,16 @@
   <span class="topbar-brand">COI Verification</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
-    <span class="stat-chip">Pending <span class="sv" id="cnt-pending">0</span></span>
+    <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
     <span class="stat-chip s-verified">Verified <span class="sv" id="cnt-verified">0</span></span>
     <span class="stat-chip s-rejected">Rejected <span class="sv" id="cnt-rejected">0</span></span>
     <span class="stat-chip s-waitlisted">Waitlisted <span class="sv" id="cnt-waitlisted">0</span></span>
     <span class="stat-chip s-escalated">Escalated <span class="sv" id="cnt-escalated">0</span></span>
   </div>
-  <span class="save-flash" id="saveFlash">Saved ✓</span>
+  <span class="save-flash" id="saveFlash">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 5"/></svg>
+    Saved
+  </span>
   <div class="topbar-actions">
     <a class="tb-btn" href="admin.html">← Applications</a>
     <button class="tb-btn primary" id="exportCsvBtn" type="button">Export CSV</button>
@@ -722,11 +775,11 @@
           <div class="fgrid">
             <div class="fg">
               <label class="flabel" for="policyNumber">Policy Number</label>
-              <input class="finput" id="policyNumber" type="text" placeholder="HLT-2024-00123" data-field="policyNumber" />
+              <input class="finput" id="policyNumber" type="text" placeholder="P/161200/01/2026/12849" data-field="policyNumber" />
             </div>
             <div class="fg">
               <label class="flabel" for="sumInsured">Sum Insured ₹</label>
-              <input class="finput" id="sumInsured" type="number" placeholder="500000" data-field="sumInsured" />
+              <input class="finput" id="sumInsured" type="number" placeholder="475000" data-field="sumInsured" />
             </div>
             <div class="fg">
               <label class="flabel" for="policyStartDate">Start Date</label>
@@ -1201,45 +1254,110 @@ function parseDate(str) {
 
 function trySmartExtract() {
   const iframe = document.getElementById('coiFrame');
-  if (!iframe) { showToast('No document loaded'); return; }
-  try {
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    if (!doc || !doc.body) { showToast('Cannot access document — cross-origin?'); return; }
-    const text = doc.body.innerText || '';
-    const filled = [];
+  if (!iframe) { showToast('Open an application first'); return; }
 
-    // Helpers
-    function grab(patterns) {
+  function runExtract() {
+    let doc;
+    try { doc = iframe.contentDocument || iframe.contentWindow.document; }
+    catch (e) { showToast('Cross-origin block — cannot read document'); return; }
+    if (!doc || !doc.body) { showToast('Document not ready yet'); return; }
+
+    const filled = [];
+    const setField = (id, val) => {
+      const el = document.getElementById(id);
+      if (!el || !val) return false;
+      el.value = val;
+      return true;
+    };
+
+    // ── Pass 1: structured DOM walk (label/value pairs) ──
+    const pairs = [];
+    // Cover common COI label/value structures
+    doc.querySelectorAll('.field, dl > div, tr').forEach(row => {
+      const lab = row.querySelector('.field-label, .label, dt, th');
+      const val = row.querySelector('.field-value, .value, dd, td:last-child');
+      if (lab && val && lab !== val) {
+        pairs.push([
+          (lab.textContent || '').toLowerCase().trim(),
+          (val.textContent || '').trim()
+        ]);
+      }
+    });
+
+    pairs.forEach(([label, value]) => {
+      if (!value) return;
+      if (/valid\s*upto|valid\s*till|expiry|expires?\s*on/i.test(label)) {
+        const d = parseDate(value);
+        if (d) { setField('policyEndDate', d) && filled.push('End Date'); }
+      } else if (/policy\s*start|inception|effective\s*from|valid\s*from|start\s*date/i.test(label)) {
+        const d = parseDate(value);
+        if (d) { setField('policyStartDate', d) && filled.push('Start Date'); }
+      } else if (/^policy\s*no|policy\s*number|certificate\s*no|ma[\-\s]*id|member\s*id/i.test(label)) {
+        if (setField('policyNumber', value)) filled.push('Policy Number');
+      } else if (/sum\s*insured|^si\b|sum\s*assured/i.test(label)) {
+        const num = value.replace(/[^\d]/g, '');
+        if (num && setField('sumInsured', num)) filled.push('Sum Insured');
+      } else if (/co[\-\s]*pay/i.test(label)) {
+        const pct = value.match(/(\d+)/);
+        if (pct && setField('copayPercent', pct[1])) filled.push('Co-pay');
+      } else if (/coverage\s*type|plan\s*type/i.test(label)) {
+        const v = value.toLowerCase();
+        const opt = v.includes('floater') ? 'Floater'
+                  : v.includes('group') ? 'Group'
+                  : v.includes('individual') ? 'Individual' : '';
+        if (opt && setField('coverageType', opt)) filled.push('Coverage Type');
+      }
+    });
+
+    // ── Pass 2: regex fallback on full text for anything still missing ──
+    const text = doc.body.innerText || doc.body.textContent || '';
+    const grabRegex = (patterns) => {
       for (const p of patterns) {
         const m = text.match(p);
         if (m && m[1]) return m[1].trim();
       }
       return null;
+    };
+
+    if (!document.getElementById('policyEndDate').value) {
+      const v = grabRegex([
+        /Valid\s*Upto[:\s]*([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4})/i,
+        /Valid\s*Till[:\s]*([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4})/i,
+        /Expiry[:\s]*([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4})/i,
+      ]);
+      if (v) { const d = parseDate(v); if (d && setField('policyEndDate', d)) filled.push('End Date'); }
+    }
+    if (!document.getElementById('policyNumber').value) {
+      const v = grabRegex([
+        /MA[\-\s]*ID[.:\s]*([A-Z0-9\/\-]+)/i,
+        /Policy\s*(?:No\.?|Number)[.:\s]+([A-Z0-9\/\-]+)/i,
+        /Certificate\s*No\.?[.:\s]+([A-Z0-9\/\-]+)/i,
+      ]);
+      if (v && setField('policyNumber', v)) filled.push('Policy Number');
+    }
+    if (!document.getElementById('sumInsured').value) {
+      const v = grabRegex([/Sum\s*Insured[:\s₹]*([0-9,]+)/i, /Sum\s*Assured[:\s₹]*([0-9,]+)/i]);
+      if (v && setField('sumInsured', v.replace(/,/g, ''))) filled.push('Sum Insured');
     }
 
-    // Valid date / end date
-    const validUpto = grab([/Valid Upto[:\s]+([^\n]+)/i, /Expiry[:\s]+([^\n]+)/i, /Valid Till[:\s]+([^\n]+)/i]);
-    if (validUpto) {
-      const d = parseDate(validUpto);
-      if (d) { document.getElementById('policyEndDate').value = d; filled.push('End Date'); }
-    }
-
-    // Policy / certificate number
-    const polNo = grab([/Policy No[.:\s]+([A-Z0-9\/\-]+)/i, /Certificate No[.:\s]+([A-Z0-9\/\-]+)/i, /Policy Number[:\s]+([A-Z0-9\/\-]+)/i]);
-    if (polNo) { document.getElementById('policyNumber').value = polNo; filled.push('Policy Number'); }
-
-    // Sum insured
-    const si = grab([/Sum Insured[:\s₹\s]*([0-9,]+)/i, /SI[:\s₹\s]+([0-9,]+)/i]);
-    if (si) { document.getElementById('sumInsured').value = si.replace(/,/g,''); filled.push('Sum Insured'); }
-
-    if (filled.length) {
+    // Dedupe and persist
+    const unique = [...new Set(filled)];
+    if (unique.length) {
       autoSave();
-      showToast(`Extracted: ${filled.join(', ')}`);
+      showToast('Filled: ' + unique.join(' · '));
     } else {
-      showToast('Nothing extractable — fill manually');
+      showToast('No matching fields found in document');
     }
-  } catch (e) {
-    showToast('Cross-origin: cannot read document');
+  }
+
+  // Wait for iframe if it's still loading
+  let doc;
+  try { doc = iframe.contentDocument; } catch (e) { showToast('Cross-origin: cannot read'); return; }
+  if (doc && doc.readyState === 'complete' && doc.body) {
+    runExtract();
+  } else {
+    showToast('Reading document…');
+    iframe.addEventListener('load', runExtract, { once: true });
   }
 }
 
@@ -1361,11 +1479,18 @@ function renderForm() {
   nameEl.textContent = app.name || '—';
   nameEl.classList.remove('form-pane-placeholder');
 
-  // First-time selection: build prefilled record from declared members and persist it
+  // First-time selection OR legacy record without members: prefill from declared family
   const vmap = loadVerifs();
   let v = vmap[app.id];
+  const hasMembers = (vRec) => safeArr(vRec?.adultsOnPolicy).length || safeArr(vRec?.childrenOnPolicy).length;
   if (!v) {
     v = buildPrefilledVerif(app);
+    vmap[app.id] = v;
+    saveVerifs(vmap);
+  } else if (!hasMembers(v) && safeArr(app.members).length) {
+    const pf = buildPrefilledVerif(app);
+    v.adultsOnPolicy = pf.adultsOnPolicy;
+    v.childrenOnPolicy = pf.childrenOnPolicy;
     vmap[app.id] = v;
     saveVerifs(vmap);
   }
@@ -1514,13 +1639,7 @@ function renderPedTags(selected) {
     const active = selected.includes(label) ? 'selected' : '';
     return `<span class="ped-tag ${active}" data-ped="${esc(label)}">${esc(label)}</span>`;
   }).join('');
-
-  container.querySelectorAll('.ped-tag').forEach(tag => {
-    tag.addEventListener('click', () => {
-      tag.classList.toggle('selected');
-      autoSave();
-    });
-  });
+  // No per-tag handlers — single delegated handler is set up once at init.
 }
 
 function readSelectedPed() {
@@ -1741,8 +1860,12 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
   container.innerHTML = PED_OPTIONS.map(label =>
     `<span class="ped-tag" data-ped="${esc(label)}">${esc(label)}</span>`
   ).join('');
-  container.querySelectorAll('.ped-tag').forEach(tag => {
-    tag.addEventListener('click', () => { tag.classList.toggle('selected'); autoSave(); });
+  // Delegated handler: survives all innerHTML rebuilds, multi-select works
+  container.addEventListener('click', e => {
+    const tag = e.target.closest('.ped-tag');
+    if (!tag || !container.contains(tag)) return;
+    tag.classList.toggle('selected');
+    autoSave();
   });
 })();
 
