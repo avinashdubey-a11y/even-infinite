@@ -1852,7 +1852,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════
-// PED INITIAL RENDER (empty state before app selection)
+// PED INITIAL RENDER + DOCUMENT-LEVEL DELEGATION
 // ═══════════════════════════════════════════════════════════════
 
 (function initPed() {
@@ -1860,13 +1860,41 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
   container.innerHTML = PED_OPTIONS.map(label =>
     `<span class="ped-tag" data-ped="${esc(label)}">${esc(label)}</span>`
   ).join('');
-  // Delegated handler: survives all innerHTML rebuilds, multi-select works
-  container.addEventListener('click', e => {
-    const tag = e.target.closest('.ped-tag');
-    if (!tag || !container.contains(tag)) return;
-    tag.classList.toggle('selected');
-    autoSave();
+})();
+
+// Document-level delegation — guaranteed to catch every click on any .ped-tag
+// regardless of how many times innerHTML rebuilds. Multi-select: each click
+// toggles only the clicked tag's .selected class. Others untouched.
+document.addEventListener('click', e => {
+  const tag = e.target.closest('.ped-tag');
+  if (!tag) return;
+  // Only handle clicks inside our pedTags container
+  if (!tag.closest('#pedTags')) return;
+  tag.classList.toggle('selected');
+  if (selectedId) autoSave();
+});
+
+// ═══════════════════════════════════════════════════════════════
+// ONE-TIME MIGRATION: fix all stale verifications on page load
+// ═══════════════════════════════════════════════════════════════
+
+(function migrateAllVerifications() {
+  const apps = loadApps();
+  const vmap = loadVerifs();
+  let dirty = false;
+  apps.forEach(app => {
+    const v = vmap[app.id];
+    if (!v) return; // no record yet — will be prefilled on first selection
+    const has = safeArr(v.adultsOnPolicy).length || safeArr(v.childrenOnPolicy).length;
+    if (!has && safeArr(app.members).length) {
+      const pf = buildPrefilledVerif(app);
+      v.adultsOnPolicy = pf.adultsOnPolicy;
+      v.childrenOnPolicy = pf.childrenOnPolicy;
+      vmap[app.id] = v;
+      dirty = true;
+    }
   });
+  if (dirty) saveVerifs(vmap);
 })();
 
 // ═══════════════════════════════════════════════════════════════
