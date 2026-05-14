@@ -703,6 +703,355 @@
     }
     .extract-toast.show { transform: translateX(-50%) translateY(0); }
 
+    /* ── VERDICT PILL BAR (top of form) ─────────────────────── */
+    .verdict-bar {
+      display: flex;
+      gap: 4px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(157,188,255,0.08);
+      background: rgba(8,10,20,0.5);
+      overflow-x: auto;
+    }
+    .verdict-bar::-webkit-scrollbar { display: none; }
+    .verdict-pill {
+      flex: 1;
+      min-width: 0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 8px;
+      border-radius: 16px;
+      background: transparent;
+      border: 1px solid rgba(157,188,255,0.14);
+      color: rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: all 0.16s cubic-bezier(0.32,0.72,0,1);
+      white-space: nowrap;
+      text-align: center;
+    }
+    .verdict-pill:hover { background: rgba(157,188,255,0.08); color: rgba(255,255,255,0.85); border-color: rgba(157,188,255,0.28); }
+    .verdict-pill:active { transform: scale(0.96); }
+    .verdict-pill.active.vp-pending    { background: rgba(157,188,255,0.18); border-color: rgba(157,188,255,0.55); color: #c4d6ff; }
+    .verdict-pill.active.vp-verified   { background: rgba(44,196,139,0.18);  border-color: rgba(44,196,139,0.55);  color: #5fe2b1; }
+    .verdict-pill.active.vp-rejected   { background: rgba(255,80,80,0.18);   border-color: rgba(255,80,80,0.55);   color: #ff9d9d; }
+    .verdict-pill.active.vp-waitlisted { background: rgba(255,193,7,0.18);   border-color: rgba(255,193,7,0.55);   color: #ffd166; }
+    .verdict-pill.active.vp-escalated  { background: rgba(255,140,0,0.18);   border-color: rgba(255,140,0,0.55);   color: #ffb347; }
+
+    /* ── SUM INSURED INDIAN FORMAT ──────────────────────────── */
+    .si-formatted {
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      margin-left: 4px;
+      font-size: 11px;
+    }
+    .si-formatted:empty { display: none; }
+
+    /* ── RELATION SELECT INSIDE MEMBER ROW ──────────────────── */
+    .member-row .rel-in {
+      flex: 0.85;
+      min-width: 0;
+      font-size: 11.5px;
+      padding: 5px 22px 5px 8px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' fill='none'%3E%3Cpath d='M1 1l3 3 3-3' stroke='rgba(157,188,255,0.4)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 7px center;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    /* ── SMOOTH REJECTION PANEL REVEAL ──────────────────────── */
+    .rejection-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.32s cubic-bezier(0.32,0.72,0,1), margin-top 0.32s cubic-bezier(0.32,0.72,0,1);
+      margin-top: 0;
+      background: rgba(255,80,80,0.04);
+      border: 1px solid rgba(255,80,80,0.12);
+      border-radius: 8px;
+      padding: 0;
+    }
+    .rejection-panel.show {
+      grid-template-rows: 1fr;
+      margin-top: 8px;
+      padding: 10px;
+    }
+    .rejection-panel > .rj-inner {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ── DESATURATED STATUS BADGES ──────────────────────────── */
+    /* override earlier saturated versions */
+    .sb-verified   { background: rgba(44,196,139,0.10) !important; color: #6fd9a8 !important; border-color: rgba(44,196,139,0.32) !important; }
+    .sb-rejected   { background: rgba(255,80,80,0.10) !important;  color: #f08a8a !important; border-color: rgba(255,80,80,0.32) !important; }
+    .sb-waitlisted { background: rgba(255,193,7,0.10) !important;  color: #e6c068 !important; border-color: rgba(255,193,7,0.32) !important; }
+    .sb-escalated  { background: rgba(255,140,0,0.10) !important;  color: #e6a45c !important; border-color: rgba(255,140,0,0.32) !important; }
+    .sb-pending    { background: rgba(157,188,255,0.08) !important; color: #a8c0f0 !important; border-color: rgba(157,188,255,0.28) !important; }
+
+    /* ── QUEUE CARD: TIME-SINCE CHIP + BULK CHECKBOX ────────── */
+    .qcard { display: flex; gap: 8px; align-items: flex-start; padding-left: 12px; }
+    .qcard-check {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      border: 1.4px solid rgba(157,188,255,0.32);
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+      display: none;
+      transition: all 0.14s;
+      position: relative;
+    }
+    .bulk-mode .qcard-check { display: block; }
+    .qcard-check.checked {
+      background: #0055ff;
+      border-color: #0055ff;
+    }
+    .qcard-check.checked::after {
+      content: '';
+      position: absolute;
+      left: 3px; top: 0px;
+      width: 4px; height: 8px;
+      border: solid #fff;
+      border-width: 0 1.6px 1.6px 0;
+      transform: rotate(45deg);
+    }
+    .qcard-content { flex: 1; min-width: 0; }
+    .qcard-bottom { display: flex; align-items: center; gap: 4px; }
+    .qcard-time {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.32);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+    .qcard-time.stale { color: #ffb347; }
+
+    /* ── BULK ACTIONS BAR ───────────────────────────────────── */
+    .bulk-bar {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: rgba(0,85,255,0.12);
+      border-bottom: 1px solid rgba(0,85,255,0.32);
+      flex-shrink: 0;
+    }
+    .bulk-bar.show { display: flex; }
+    .bulk-count {
+      font-size: 11px;
+      font-weight: 700;
+      color: #c4d6ff;
+      margin-right: auto;
+    }
+    .bulk-bar select, .bulk-bar button {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 14px;
+      background: rgba(0,85,255,0.18);
+      border: 1px solid rgba(92,130,255,0.5);
+      color: #fff;
+      cursor: pointer;
+    }
+    .bulk-bar button:hover { background: rgba(0,85,255,0.3); }
+
+    /* ── TOAST: TOP-RIGHT NEAR FORM ─────────────────────────── */
+    .extract-toast {
+      position: fixed !important;
+      top: 64px !important;
+      right: 18px !important;
+      left: auto !important;
+      bottom: auto !important;
+      transform: translateY(-12px) !important;
+    }
+    .extract-toast.show { transform: translateY(0) !important; }
+
+    /* ── UNDO TOAST ─────────────────────────────────────────── */
+    .undo-toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(20,22,40,0.96);
+      border: 1px solid rgba(157,188,255,0.32);
+      color: #e8eeff;
+      font-size: 12.5px;
+      padding: 8px 8px 8px 14px;
+      border-radius: 24px;
+      box-shadow: 0 10px 32px rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+      z-index: 9999;
+    }
+    .undo-toast.show { transform: translateX(-50%) translateY(0); }
+    .undo-toast button {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 16px;
+      background: rgba(92,130,255,0.2);
+      border: 1px solid rgba(92,130,255,0.5);
+      color: #c4d6ff;
+      cursor: pointer;
+    }
+    .undo-toast button:hover { background: rgba(92,130,255,0.35); }
+
+    /* ── SMART EXTRACT FLASH ────────────────────────────────── */
+    @keyframes extractFlash {
+      0%   { background: rgba(95,226,177,0.22); border-color: rgba(95,226,177,0.6); }
+      100% { background: rgba(157,188,255,0.05); border-color: rgba(157,188,255,0.15); }
+    }
+    .finput.flash, .fselect.flash { animation: extractFlash 1.4s cubic-bezier(0.32,0.72,0,1); }
+
+    /* ── AUDIT META ─────────────────────────────────────────── */
+    .audit-meta {
+      font-size: 10.5px;
+      color: rgba(255,255,255,0.32);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      margin-top: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── SAVED VIEWS DROPDOWN ───────────────────────────────── */
+    .views-menu {
+      position: relative;
+    }
+    .views-trigger {
+      background: rgba(157,188,255,0.08);
+      border: 1px solid rgba(157,188,255,0.18);
+      color: rgba(255,255,255,0.8);
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .views-popover {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      width: 220px;
+      background: rgba(15,18,32,0.98);
+      border: 1px solid rgba(157,188,255,0.18);
+      border-radius: 10px;
+      padding: 6px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .views-popover.show { display: flex; }
+    .views-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      text-align: left;
+      transition: background 0.12s;
+    }
+    .views-item:hover { background: rgba(157,188,255,0.08); color: #fff; }
+    .views-item.active { background: rgba(0,85,255,0.18); color: #fff; }
+    .views-item .vrm {
+      margin-left: auto;
+      opacity: 0;
+      font-size: 13px;
+      color: rgba(255,80,80,0.6);
+      cursor: pointer;
+    }
+    .views-item:hover .vrm { opacity: 1; }
+    .views-divider { height: 1px; background: rgba(157,188,255,0.1); margin: 4px 0; }
+
+    /* ── EXPORT OPTIONS MODAL ───────────────────────────────── */
+    .modal-back {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,7,15,0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      animation: fadeIn 0.18s ease-out;
+    }
+    .modal-back.show { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card {
+      background: rgba(15,18,32,0.98);
+      border: 1px solid rgba(157,188,255,0.22);
+      border-radius: 14px;
+      padding: 22px;
+      min-width: 360px;
+      max-width: 92vw;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.6);
+    }
+    .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+    .modal-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .modal-opt {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border: 1px solid rgba(157,188,255,0.18);
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.14s;
+    }
+    .modal-opt:hover { background: rgba(157,188,255,0.06); border-color: rgba(157,188,255,0.34); }
+    .modal-opt input[type="radio"] { accent-color: #0055ff; }
+    .modal-opt-text { flex: 1; font-size: 13px; }
+    .modal-opt-text .mo-hint { display: block; font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+    /* ── SKELETON LOADER ────────────────────────────────────── */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, rgba(157,188,255,0.05) 25%, rgba(157,188,255,0.12) 50%, rgba(157,188,255,0.05) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s linear infinite;
+      border-radius: 6px;
+    }
+
+    /* ── RECONCILIATION INDICATOR ───────────────────────────── */
+    .recon-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 0;
+      font-size: 11px;
+    }
+    .recon-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: rgba(157,188,255,0.3);
+    }
+    .recon-dot.match { background: #5fe2b1; }
+    .recon-dot.mismatch { background: #ffb347; }
+    .recon-row .recon-label { color: rgba(255,255,255,0.4); font-weight: 600; min-width: 70px; }
+    .recon-row .recon-val { color: rgba(255,255,255,0.85); }
+
+    /* ── PHONE LINK ─────────────────────────────────────────── */
+    a.tel-link { color: inherit; text-decoration: none; }
+    a.tel-link:hover { color: #5c82ff; text-decoration: underline; }
+
     /* ── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 1100px) {
       .form-pane { width: 380px; min-width: 320px; }
@@ -723,7 +1072,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:rgba(255,255,255,0.28);letter-spacing:0.04em" title="Build tag — confirms latest JS is loaded">build-2026-05-14c</span>
+  <span class="mono" style="font-size:10px;color:rgba(255,255,255,0.28);letter-spacing:0.04em" title="Build tag — confirms latest JS is loaded">build-2026-05-14d</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -737,6 +1086,14 @@
     Saved
   </span>
   <div class="topbar-actions">
+    <div class="views-menu" id="viewsMenu">
+      <button class="views-trigger" id="viewsTrigger" type="button">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Views
+      </button>
+      <div class="views-popover" id="viewsPopover"></div>
+    </div>
+    <button class="tb-btn" id="bulkToggleBtn" type="button" title="Toggle bulk-edit mode">Bulk</button>
     <a class="tb-btn" href="admin.html">← Applications</a>
     <button class="tb-btn primary" id="exportCsvBtn" type="button">Export CSV</button>
   </div>
@@ -747,6 +1104,19 @@
 
   <!-- ═══ QUEUE PANE ═══ -->
   <div class="queue-pane">
+    <div class="bulk-bar" id="bulkBar">
+      <span class="bulk-count" id="bulkCount">0 selected</span>
+      <select id="bulkStatus">
+        <option value="">Set status…</option>
+        <option value="verified">Verified</option>
+        <option value="rejected">Rejected</option>
+        <option value="waitlisted">Waitlisted</option>
+        <option value="escalated">Escalated</option>
+        <option value="pending">Pending</option>
+      </select>
+      <button id="bulkApplyBtn" type="button">Apply</button>
+      <button id="bulkCancelBtn" type="button">Cancel</button>
+    </div>
     <div class="queue-header">
       <input class="q-search" id="qSearch" type="search" placeholder="Search name, phone…" autocomplete="off" />
       <div class="q-filters" id="qFilters">
@@ -797,9 +1167,18 @@
       <span class="sbadge sb-pending" id="formPaneStatus" style="display:none">pending</span>
     </div>
 
+    <!-- Quick Verdict bar — sticky, one-click status change -->
+    <div class="verdict-bar" id="verdictBar" style="display:none">
+      <button type="button" class="verdict-pill vp-pending"    data-vs="pending"    title="Set Pending (1)">Pending</button>
+      <button type="button" class="verdict-pill vp-verified"   data-vs="verified"   title="Set Verified (2)">Verified</button>
+      <button type="button" class="verdict-pill vp-rejected"   data-vs="rejected"   title="Set Rejected (3)">Rejected</button>
+      <button type="button" class="verdict-pill vp-waitlisted" data-vs="waitlisted" title="Set Waitlisted (4)">Waitlisted</button>
+      <button type="button" class="verdict-pill vp-escalated"  data-vs="escalated"  title="Set Escalated (5)">Escalated</button>
+    </div>
+
     <div class="form-empty" id="formEmpty">
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      <p><strong>Verification form</strong>Appears once you select an application from the queue</p>
+      <p><strong>Verification form</strong>Pick from the queue, or press <span class="mono" style="background:rgba(157,188,255,0.1);padding:1px 6px;border-radius:4px">J</span> / <span class="mono" style="background:rgba(157,188,255,0.1);padding:1px 6px;border-radius:4px">K</span> to navigate, <span class="mono" style="background:rgba(157,188,255,0.1);padding:1px 6px;border-radius:4px">1</span>–<span class="mono" style="background:rgba(157,188,255,0.1);padding:1px 6px;border-radius:4px">5</span> to set status.</p>
     </div>
 
     <div class="form-body" id="formBody" style="display:none">
@@ -826,7 +1205,7 @@
               <input class="finput" id="policyNumber" type="text" placeholder="P/161200/01/2026/12849" data-field="policyNumber" />
             </div>
             <div class="fg">
-              <label class="flabel" for="sumInsured">Sum Insured ₹</label>
+              <label class="flabel" for="sumInsured">Sum Insured ₹ <span class="si-formatted mono" id="sumInsuredFormatted"></span></label>
               <input class="finput" id="sumInsured" type="number" placeholder="475000" data-field="sumInsured" />
             </div>
             <div class="fg">
@@ -947,35 +1326,38 @@
           </div>
 
           <div class="rejection-panel" id="rejectionPanel">
-            <div class="fgrid" style="gap:7px 10px; margin-bottom:0">
-              <div class="fg">
-                <label class="flabel" for="rejectionBucket">Bucket</label>
-                <select class="fselect" id="rejectionBucket" data-field="rejectionBucket">
-                  <option value="">— Select Bucket —</option>
-                  <option value="A">A · Document &amp; Submission</option>
-                  <option value="B">B · Identity &amp; Eligibility</option>
-                  <option value="C">C · Policy Standing</option>
-                  <option value="D">D · Product Scope</option>
-                  <option value="E">E · Coverage Adequacy</option>
-                  <option value="F">F · Waiting Periods</option>
-                  <option value="G">G · Verification Blockers</option>
-                  <option value="H">H · Risk &amp; Compliance</option>
-                </select>
+            <div class="rj-inner">
+              <div class="fgrid" style="gap:7px 10px; margin-bottom:0">
+                <div class="fg">
+                  <label class="flabel" for="rejectionBucket">Bucket</label>
+                  <select class="fselect" id="rejectionBucket" data-field="rejectionBucket">
+                    <option value="">— Select Bucket —</option>
+                    <option value="A">A · Document &amp; Submission</option>
+                    <option value="B">B · Identity &amp; Eligibility</option>
+                    <option value="C">C · Policy Standing</option>
+                    <option value="D">D · Product Scope</option>
+                    <option value="E">E · Coverage Adequacy</option>
+                    <option value="F">F · Waiting Periods</option>
+                    <option value="G">G · Verification Blockers</option>
+                    <option value="H">H · Risk &amp; Compliance</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label class="flabel" for="rejectionCode">Code</label>
+                  <select class="fselect" id="rejectionCode" data-field="rejectionCode">
+                    <option value="">— Select Code —</option>
+                  </select>
+                </div>
               </div>
-              <div class="fg">
-                <label class="flabel" for="rejectionCode">Code</label>
-                <select class="fselect" id="rejectionCode" data-field="rejectionCode">
-                  <option value="">— Select Code —</option>
-                </select>
-              </div>
+              <div class="reason-hint" id="reasonHint"></div>
             </div>
-            <div class="reason-hint" id="reasonHint"></div>
           </div>
 
           <div class="decision-row" style="justify-content:flex-end">
             <button class="btn-mark-reviewed" id="markReviewedBtn" type="button">Mark Reviewed</button>
           </div>
           <div class="reviewed-meta" id="reviewedMeta" style="margin-top:6px"></div>
+          <div class="audit-meta" id="auditMeta"></div>
         </div>
       </div>
 
@@ -986,16 +1368,40 @@
 
 <div class="extract-toast" id="extractToast"></div>
 
+<!-- Undo toast for accidental status changes -->
+<div class="undo-toast" id="undoToast">
+  <span id="undoMessage">Status changed</span>
+  <button id="undoBtn" type="button">Undo</button>
+</div>
+
+<!-- Export options modal -->
+<div class="modal-back" id="exportModal">
+  <div class="modal-card" role="dialog" aria-labelledby="emTitle">
+    <div class="modal-title" id="emTitle">Export to CSV</div>
+    <div class="modal-options">
+      <label class="modal-opt"><input type="radio" name="exportScope" value="all" checked /><span class="modal-opt-text">All applications<span class="mo-hint">Every record in localStorage</span></span></label>
+      <label class="modal-opt"><input type="radio" name="exportScope" value="filter" /><span class="modal-opt-text">Current filter / search<span class="mo-hint">Only what's visible in the queue right now</span></span></label>
+      <label class="modal-opt"><input type="radio" name="exportScope" value="selected" /><span class="modal-opt-text">Selected rows<span class="mo-hint">Bulk-mode checked items only</span></span></label>
+    </div>
+    <div class="modal-actions">
+      <button class="tb-btn" id="exportCancel" type="button">Cancel</button>
+      <button class="tb-btn primary" id="exportConfirm" type="button">Download</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════════════════
 
 const PED_OPTIONS = [
-  'Diabetes', 'Hypertension / High BP', 'Heart Disease / CAD',
-  'Asthma / Respiratory', 'Kidney Disease', 'Cancer / Tumor',
-  'Thyroid Disorder', 'Arthritis / Joint Pain', 'Neurological', 'Obesity / Metabolic'
+  'Arthritis / Joint Pain', 'Asthma / Respiratory', 'Cancer / Tumor',
+  'Diabetes', 'Heart Disease / CAD', 'Hypertension / High BP',
+  'Kidney Disease', 'Neurological', 'Obesity / Metabolic', 'Thyroid Disorder'
 ];
+
+const RELATION_OPTIONS = ['Self', 'Spouse', 'Parent', 'In-law', 'Sibling', 'Other'];
 
 const REJECTION_CODES = {
   A: [
@@ -1056,6 +1462,9 @@ let selectedId = null;
 let activeFilter = 'all';
 let searchQ = '';
 let saveTimer = null;
+let bulkSelected = new Set();
+let bulkMode = false;
+let undoSnapshot = null; // { id, prevStatus, timeoutId }
 
 // ═══════════════════════════════════════════════════════════════
 // STORAGE
@@ -1078,7 +1487,8 @@ function defaultVerif(id) {
     adultsOnPolicy: [], childrenOnPolicy: [],
     preExistingConditions: [],
     rejectionBucket: '', rejectionCode: '', rejectionReason: '',
-    verificationStatus: 'pending', reviewedAt: ''
+    verificationStatus: 'pending', reviewedAt: '',
+    lastEditedAt: ''
   };
 }
 
@@ -1089,28 +1499,100 @@ function getVerif(id) { return loadVerifs()[id] || defaultVerif(id); }
 function buildPrefilledVerif(app) {
   const v = defaultVerif(app.id);
   const members = safeArr(app.members);
-  // Treat self / spouse / parent / sibling as adults; only 'child' goes to children.
+  // Map declared relation onto our taxonomy
+  const relMap = { self: 'Self', spouse: 'Spouse', parent: 'Parent', 'in-law': 'In-law', sibling: 'Sibling' };
   members.forEach(m => {
     if (!m) return;
     const rel = (m.relation || '').toLowerCase();
-    const entry = { name: m.name || '', dob: '' };
+    const taxonomy = relMap[rel] || 'Other';
+    const entry = { name: m.name || '', dob: '', relation: taxonomy };
     if (rel === 'child') v.childrenOnPolicy.push(entry);
     else v.adultsOnPolicy.push(entry);
   });
-  // Fallback: if the application has no declared members, seed with the applicant.
   if (!v.adultsOnPolicy.length && !v.childrenOnPolicy.length && app.name) {
-    v.adultsOnPolicy.push({ name: app.name, dob: '' });
+    v.adultsOnPolicy.push({ name: app.name, dob: '', relation: 'Self' });
   }
   return v;
 }
 
+// Indian lakh formatting: 475000 -> ₹4,75,000
+function formatINR(num) {
+  if (num === '' || num == null || isNaN(num)) return '';
+  const n = Math.round(Number(num));
+  if (!n) return '';
+  const s = n.toString();
+  if (s.length <= 3) return '₹' + s;
+  const last3 = s.slice(-3);
+  const rest = s.slice(0, -3);
+  const withCommas = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',');
+  return '₹' + withCommas + ',' + last3;
+}
+
+// Smart date parser: accepts ISO, DD/MM/YYYY, DD-MM-YYYY, DD Mon YYYY
+function smartParseDate(input) {
+  if (!input) return '';
+  const trimmed = String(input).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed; // ISO
+  const months = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+  const m1 = trimmed.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+  if (m1) {
+    const mo = months[m1[2].toLowerCase().slice(0,3)];
+    if (mo) return `${m1[3]}-${String(mo).padStart(2,'0')}-${String(m1[1]).padStart(2,'0')}`;
+  }
+  const m2 = trimmed.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (m2) return `${m2[3]}-${String(m2[2]).padStart(2,'0')}-${String(m2[1]).padStart(2,'0')}`;
+  return '';
+}
+
+// Human-friendly date display: 2027-03-31 -> 31 Mar 2027
+function displayDate(iso) {
+  if (!iso) return '';
+  const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return iso;
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${parseInt(m[3],10)} ${monthNames[parseInt(m[2],10)-1]} ${m[1]}`;
+}
+
+// Relative time chip: "2h ago", "5d ago"
+function timeSince(iso) {
+  if (!iso) return '';
+  const ms = Date.now() - new Date(iso).getTime();
+  if (isNaN(ms) || ms < 0) return '';
+  const s = Math.floor(ms / 1000);
+  if (s < 60) return s + 's ago';
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  const d = Math.floor(h / 24);
+  if (d < 30) return d + 'd ago';
+  const mo = Math.floor(d / 30);
+  if (mo < 12) return mo + 'mo ago';
+  return Math.floor(d / 365) + 'y ago';
+}
+function isStale(iso) {
+  if (!iso) return false;
+  const ms = Date.now() - new Date(iso).getTime();
+  return ms > 24 * 60 * 60 * 1000; // > 24h
+}
+
 function persistVerif(id, data) {
   const vmap = loadVerifs();
-  vmap[id] = { ...data, submissionId: id };
+  vmap[id] = { ...data, submissionId: id, lastEditedAt: new Date().toISOString() };
   saveVerifs(vmap);
   flashSaved();
   updateStats();
   renderQueue();
+  // Refresh audit display if same record is on screen
+  if (id === selectedId) updateAuditDisplay(vmap[id]);
+}
+
+function updateAuditDisplay(v) {
+  const el = document.getElementById('auditMeta');
+  if (!el) return;
+  const parts = [];
+  if (v?.lastEditedAt) parts.push('Last edited ' + fmtDate(v.lastEditedAt));
+  el.textContent = parts.join(' · ');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1129,6 +1611,13 @@ function fmtMobile(m) {
   if (!m) return '—';
   const d = m.replace(/\D/g, '');
   return d.length === 10 ? '+91 ' + d.slice(0,5) + ' ' + d.slice(5) : m;
+}
+function fmtMobileLink(m) {
+  if (!m) return '—';
+  const d = m.replace(/\D/g, '');
+  if (d.length !== 10) return esc(m);
+  const display = '+91 ' + d.slice(0,5) + ' ' + d.slice(5);
+  return `<a class="tel-link mono" href="tel:+91${d}" onclick="event.stopPropagation()">${display}</a>`;
 }
 function getInsurers(app) {
   return [...safeArr(app.insurers), ...safeArr(app.customInsurers)].filter(Boolean);
@@ -1207,13 +1696,20 @@ function renderQueue() {
     const vs = (vmap[app.id]||{}).verificationStatus || 'pending';
     const insurers = getInsurers(app);
     const sel = app.id === selectedId;
+    const checked = bulkSelected.has(app.id) ? 'checked' : '';
+    const t = timeSince(app.timestamp);
+    const staleClass = isStale(app.timestamp) && vs === 'pending' ? 'stale' : '';
     return `
       <div class="qcard ${sel ? 'selected' : ''} vs-${esc(vs)}" data-id="${esc(app.id)}">
-        <div class="qcard-name">${esc(app.name || '—')}</div>
-        <div class="qcard-meta">${esc(fmtMobile(app.mobile))}</div>
-        <div class="qcard-bottom">
-          <span class="qcard-insurer">${esc(insurers[0] || '—')}</span>
-          <span class="sbadge sb-${esc(vs)}">${esc(vs)}</span>
+        <span class="qcard-check ${checked}" data-bulkid="${esc(app.id)}" aria-label="Select for bulk"></span>
+        <div class="qcard-content">
+          <div class="qcard-name">${esc(app.name || '—')}</div>
+          <div class="qcard-meta">${fmtMobileLink(app.mobile)}</div>
+          <div class="qcard-bottom">
+            <span class="qcard-insurer">${esc(insurers[0] || '—')}</span>
+            <span class="qcard-time ${staleClass}">${t}</span>
+            <span class="sbadge sb-${esc(vs)}">${esc(vs)}</span>
+          </div>
         </div>
       </div>`;
   }).join('');
@@ -1223,6 +1719,17 @@ function renderQueue() {
 
 // Event delegation: works even after innerHTML rebuilds
 document.getElementById('queueList').addEventListener('click', e => {
+  // Checkbox toggle (bulk mode)
+  const check = e.target.closest('.qcard-check');
+  if (check && check.dataset.bulkid) {
+    e.stopPropagation();
+    const id = check.dataset.bulkid;
+    if (bulkSelected.has(id)) bulkSelected.delete(id);
+    else bulkSelected.add(id);
+    check.classList.toggle('checked');
+    updateBulkUI();
+    return;
+  }
   const card = e.target.closest('.qcard');
   if (!card || !card.dataset.id) return;
   selectApp(card.dataset.id);
@@ -1322,6 +1829,8 @@ function trySmartExtract() {
       const el = document.getElementById(id);
       if (!el || !val) return false;
       el.value = val;
+      flashField(id);
+      if (id === 'sumInsured') updateSumInsuredFormatted();
       return true;
     };
 
@@ -1485,11 +1994,11 @@ function runOcr() {
         return null;
       }
       const validUpto = grab([/Valid Upto[:\s]+([^\n]+)/i, /Valid Till[:\s]+([^\n]+)/i, /Expiry[:\s]+([^\n]+)/i]);
-      if (validUpto) { const d = parseDate(validUpto); if (d) { document.getElementById('policyEndDate').value = d; filled.push('End Date'); } }
+      if (validUpto) { const d = parseDate(validUpto); if (d) { document.getElementById('policyEndDate').value = d; flashField('policyEndDate'); filled.push('End Date'); } }
       const polNo = grab([/Policy No[.:\s]+([A-Z0-9\/\-]+)/i, /Certificate No[.:\s]+([A-Z0-9\/\-]+)/i]);
-      if (polNo) { document.getElementById('policyNumber').value = polNo; filled.push('Policy Number'); }
+      if (polNo) { document.getElementById('policyNumber').value = polNo; flashField('policyNumber'); filled.push('Policy Number'); }
       const si = grab([/Sum Insured[:\s₹]*([0-9,]+)/i]);
-      if (si) { document.getElementById('sumInsured').value = si.replace(/,/g,''); filled.push('Sum Insured'); }
+      if (si) { document.getElementById('sumInsured').value = si.replace(/,/g,''); flashField('sumInsured'); updateSumInsuredFormatted(); filled.push('Sum Insured'); }
 
       body.removeChild(overlay);
       ocrRunning = false;
@@ -1523,6 +2032,7 @@ function renderForm() {
   if (!app) {
     formEmpty.style.display = 'flex';
     formBody.style.display = 'none';
+    document.getElementById('verdictBar').style.display = 'none';
     nameEl.textContent = 'Select an application';
     nameEl.classList.add('form-pane-placeholder');
     statusEl.style.display = 'none';
@@ -1531,6 +2041,7 @@ function renderForm() {
 
   formEmpty.style.display = 'none';
   formBody.style.display = 'block';
+  document.getElementById('verdictBar').style.display = 'flex';
   nameEl.textContent = app.name || '—';
   nameEl.classList.remove('form-pane-placeholder');
 
@@ -1567,9 +2078,26 @@ function renderForm() {
   const insurers = getInsurers(app);
   const sources = safeArr(app.insuranceSource).map(s => s === 'employer' ? 'Through employer' : s === 'individual' ? 'Bought myself' : s);
   const members = safeArr(app.members).filter(m => !m.primary);
+  // Reconciliation indicators: compare declared (app) vs verified data (v)
+  const declaredMemberCount = safeArr(app.members).length;
+  const verifiedMemberCount = safeArr(v.adultsOnPolicy).length + safeArr(v.childrenOnPolicy).length;
+  const memberRecon = !verifiedMemberCount ? 'pending'
+                    : declaredMemberCount === verifiedMemberCount ? 'match' : 'mismatch';
+  const reconHtml = `
+    <div class="fg fcol-full" style="background:rgba(157,188,255,0.04);border:1px solid rgba(157,188,255,0.1);border-radius:7px;padding:8px 10px;margin-bottom:4px">
+      <div class="flabel" style="margin-bottom:4px">Reconciliation</div>
+      <div class="recon-row">
+        <span class="recon-dot ${memberRecon}"></span>
+        <span class="recon-label">Members</span>
+        <span class="recon-val">Declared ${declaredMemberCount} · On policy ${verifiedMemberCount}</span>
+      </div>
+      ${v.policyEndDate ? `<div class="recon-row"><span class="recon-dot match"></span><span class="recon-label">Coverage</span><span class="recon-val">valid until ${displayDate(v.policyEndDate)}</span></div>` : ''}
+    </div>
+  `;
   document.getElementById('submittedGrid').innerHTML = `
+    ${reconHtml}
     <div class="fg"><span class="flabel">Name</span><span class="fval">${esc(app.name||'—')}</span></div>
-    <div class="fg"><span class="flabel">Phone</span><span class="fval">${esc(fmtMobile(app.mobile))}</span></div>
+    <div class="fg"><span class="flabel">Phone</span><span class="fval">${fmtMobileLink(app.mobile)}</span></div>
     <div class="fg"><span class="flabel">Insurer(s)</span><span class="fval">${insurers.length ? insurers.map(i=>`<span class="mtag">${esc(i)}</span>`).join('') : '<span class="fval muted">—</span>'}</span></div>
     <div class="fg"><span class="flabel">Source</span><span class="fval">${sources.join(', ')||'—'}</span></div>
     <div class="fg"><span class="flabel">City</span><span class="fval">${esc(app.city||'—')}</span></div>
@@ -1596,6 +2124,11 @@ function renderForm() {
 
   // — PED
   renderPedTags(safeArr(v.preExistingConditions));
+
+  // — Verdict pill sync + Sum Insured live format + audit meta
+  syncVerdictPills(vs);
+  updateSumInsuredFormatted();
+  updateAuditDisplay(v);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1618,12 +2151,12 @@ function renderMembersSection(type, members) {
   hint.style.display = 'none';
 
   members.forEach((m, i) => {
-    const row = buildMemberRow(type, i, m.name || '', m.dob || '');
+    const row = buildMemberRow(type, i, m.name || '', m.dob || '', m.relation || '');
     container.appendChild(row);
   });
 }
 
-function buildMemberRow(type, idx, name, dob) {
+function buildMemberRow(type, idx, name, dob, relation) {
   const row = document.createElement('div');
   row.className = 'member-row';
   row.dataset.type = type;
@@ -1633,16 +2166,38 @@ function buildMemberRow(type, idx, name, dob) {
   nameIn.className = 'finput name-in';
   nameIn.type = 'text';
   nameIn.placeholder = (type === 'adult' ? 'Adult' : 'Child') + ' ' + (idx + 1) + ' name';
-  nameIn.value = name;
+  nameIn.value = name || '';
   nameIn.addEventListener('input', autoSave);
 
+  const relIn = document.createElement('select');
+  relIn.className = 'fselect rel-in';
+  relIn.title = 'Relation';
+  const options = type === 'adult' ? RELATION_OPTIONS : ['Child', 'Stepchild', 'Other'];
+  relIn.innerHTML = '<option value="">Relation</option>' + options.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
+  if (relation) relIn.value = relation;
+  relIn.addEventListener('change', autoSave);
+
+  // Smart DOB: text input that accepts multiple formats, stores ISO internally
   const dobIn = document.createElement('input');
-  dobIn.className = 'finput dob-in';
-  dobIn.type = 'date';
-  dobIn.title = 'DOB — optional';
-  dobIn.placeholder = 'DOB (optional)';
-  dobIn.value = dob;
-  dobIn.addEventListener('change', autoSave);
+  dobIn.className = 'finput dob-in mono';
+  dobIn.type = 'text';
+  dobIn.title = 'DOB — optional. Accepts 21 May 1996, 21/05/1996, 1996-05-21';
+  dobIn.placeholder = 'DOB';
+  dobIn.dataset.iso = dob || '';
+  dobIn.value = dob ? displayDate(dob) : '';
+  dobIn.addEventListener('blur', () => {
+    const raw = dobIn.value.trim();
+    if (!raw) { dobIn.dataset.iso = ''; autoSave(); return; }
+    const iso = smartParseDate(raw);
+    if (iso) {
+      dobIn.dataset.iso = iso;
+      dobIn.value = displayDate(iso);
+      dobIn.style.borderColor = '';
+    } else {
+      dobIn.style.borderColor = 'rgba(255,80,80,0.5)';
+    }
+    autoSave();
+  });
 
   const rmBtn = document.createElement('button');
   rmBtn.className = 'remove-member-btn';
@@ -1652,6 +2207,7 @@ function buildMemberRow(type, idx, name, dob) {
   rmBtn.addEventListener('click', () => removeMember(type, idx));
 
   row.appendChild(nameIn);
+  row.appendChild(relIn);
   row.appendChild(dobIn);
   row.appendChild(rmBtn);
   return row;
@@ -1688,7 +2244,8 @@ function readMembersFromDOM(type) {
   const rows = document.getElementById(containerId).querySelectorAll('.member-row');
   return Array.from(rows).map(row => ({
     name: row.querySelector('.name-in')?.value || '',
-    dob: row.querySelector('.dob-in')?.value || ''
+    dob: row.querySelector('.dob-in')?.dataset.iso || '',
+    relation: row.querySelector('.rel-in')?.value || ''
   }));
 }
 
@@ -1792,6 +2349,326 @@ function setupToggle(togId, bodyId) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// VERDICT PILL BAR (top of form)
+// ═══════════════════════════════════════════════════════════════
+
+function setVerdictFromPills(status) {
+  const sel = document.getElementById('vstatus');
+  if (!sel) return;
+  sel.value = status;
+  applyVstatusStyle(status);
+  toggleRejectionPanel(status === 'rejected');
+  syncVerdictPills(status);
+  autoSave();
+}
+
+function syncVerdictPills(status) {
+  document.querySelectorAll('.verdict-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.vs === status);
+  });
+}
+
+document.getElementById('verdictBar').addEventListener('click', e => {
+  const pill = e.target.closest('.verdict-pill');
+  if (!pill || !selectedId) return;
+  const newStatus = pill.dataset.vs;
+  const current = (loadVerifs()[selectedId] || {}).verificationStatus || 'pending';
+  if (current === newStatus) return;
+  // Capture undo snapshot
+  captureUndo(selectedId, current, newStatus);
+  setVerdictFromPills(newStatus);
+});
+
+// ═══════════════════════════════════════════════════════════════
+// UNDO TOAST
+// ═══════════════════════════════════════════════════════════════
+
+function captureUndo(id, prevStatus, newStatus) {
+  // Clear any pending undo
+  if (undoSnapshot?.timeoutId) clearTimeout(undoSnapshot.timeoutId);
+  const msg = document.getElementById('undoMessage');
+  const toast = document.getElementById('undoToast');
+  msg.textContent = `Set to ${newStatus}`;
+  toast.classList.add('show');
+  const timeoutId = setTimeout(() => {
+    toast.classList.remove('show');
+    undoSnapshot = null;
+  }, 5000);
+  undoSnapshot = { id, prevStatus, timeoutId };
+}
+
+document.getElementById('undoBtn').addEventListener('click', () => {
+  if (!undoSnapshot) return;
+  const { id, prevStatus, timeoutId } = undoSnapshot;
+  clearTimeout(timeoutId);
+  document.getElementById('undoToast').classList.remove('show');
+  // Revert
+  if (id === selectedId) {
+    setVerdictFromPills(prevStatus);
+  } else {
+    const vmap = loadVerifs();
+    if (vmap[id]) {
+      vmap[id].verificationStatus = prevStatus;
+      saveVerifs(vmap);
+      updateStats();
+      renderQueue();
+    }
+  }
+  undoSnapshot = null;
+});
+
+// ═══════════════════════════════════════════════════════════════
+// SUM INSURED LIVE FORMATTING
+// ═══════════════════════════════════════════════════════════════
+
+function updateSumInsuredFormatted() {
+  const el = document.getElementById('sumInsuredFormatted');
+  const inp = document.getElementById('sumInsured');
+  if (!el || !inp) return;
+  el.textContent = formatINR(inp.value);
+}
+document.getElementById('sumInsured').addEventListener('input', updateSumInsuredFormatted);
+
+// ═══════════════════════════════════════════════════════════════
+// SMART EXTRACT FLASH HIGHLIGHT
+// ═══════════════════════════════════════════════════════════════
+
+function flashField(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('flash');
+  void el.offsetWidth; // force reflow to restart animation
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 1500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// KEYBOARD NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+
+const STATUS_HOTKEYS = { '1': 'pending', '2': 'verified', '3': 'rejected', '4': 'waitlisted', '5': 'escalated' };
+
+document.addEventListener('keydown', e => {
+  // Skip if typing in an input/textarea/select (unless meta keys)
+  const tag = (e.target.tagName || '').toLowerCase();
+  const isTyping = tag === 'input' || tag === 'textarea' || tag === 'select';
+
+  // Cmd/Ctrl+R → Mark Reviewed (overrides browser refresh — but only when on this page and an app is selected)
+  if ((e.metaKey || e.ctrlKey) && e.key === 'r' && selectedId) {
+    e.preventDefault();
+    document.getElementById('markReviewedBtn')?.click();
+    return;
+  }
+
+  // Esc closes modals, popovers
+  if (e.key === 'Escape') {
+    document.getElementById('exportModal').classList.remove('show');
+    document.getElementById('viewsPopover').classList.remove('show');
+    return;
+  }
+
+  if (isTyping) return;
+
+  // J / K / Arrow nav through queue
+  if (e.key === 'j' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    navigateQueue(1);
+    return;
+  }
+  if (e.key === 'k' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    navigateQueue(-1);
+    return;
+  }
+
+  // 1-5 hotkeys for status (requires selected app)
+  if (STATUS_HOTKEYS[e.key] && selectedId) {
+    e.preventDefault();
+    const newStatus = STATUS_HOTKEYS[e.key];
+    const current = (loadVerifs()[selectedId] || {}).verificationStatus || 'pending';
+    if (current !== newStatus) {
+      captureUndo(selectedId, current, newStatus);
+      setVerdictFromPills(newStatus);
+    }
+    return;
+  }
+});
+
+function navigateQueue(direction) {
+  const cards = Array.from(document.querySelectorAll('#queueList .qcard'));
+  if (!cards.length) return;
+  const currentIdx = cards.findIndex(c => c.classList.contains('selected'));
+  let nextIdx = currentIdx + direction;
+  if (nextIdx < 0) nextIdx = 0;
+  if (nextIdx >= cards.length) nextIdx = cards.length - 1;
+  const target = cards[nextIdx];
+  if (target?.dataset.id) {
+    selectApp(target.dataset.id);
+    target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SKELETON LOADER
+// ═══════════════════════════════════════════════════════════════
+
+function showFormSkeleton() {
+  const body = document.getElementById('formBody');
+  if (!body || body.style.display === 'none') return;
+  // Brief skeleton overlay during heavy re-renders (not currently triggered — kept for future)
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BULK MODE
+// ═══════════════════════════════════════════════════════════════
+
+function toggleBulkMode() {
+  bulkMode = !bulkMode;
+  document.body.classList.toggle('bulk-mode', bulkMode);
+  if (!bulkMode) {
+    bulkSelected.clear();
+    renderQueue();
+  }
+  updateBulkUI();
+}
+
+function updateBulkUI() {
+  const bar = document.getElementById('bulkBar');
+  const count = document.getElementById('bulkCount');
+  const show = bulkMode && bulkSelected.size > 0;
+  bar.classList.toggle('show', show);
+  count.textContent = bulkSelected.size + ' selected';
+}
+
+function applyBulkStatus() {
+  const status = document.getElementById('bulkStatus').value;
+  if (!status || !bulkSelected.size) { showToast('Pick a status first'); return; }
+  const vmap = loadVerifs();
+  bulkSelected.forEach(id => {
+    if (!vmap[id]) vmap[id] = defaultVerif(id);
+    vmap[id].verificationStatus = status;
+    vmap[id].lastEditedAt = new Date().toISOString();
+  });
+  saveVerifs(vmap);
+  showToast(`Set ${bulkSelected.size} → ${status}`);
+  bulkSelected.clear();
+  bulkMode = false;
+  document.body.classList.remove('bulk-mode');
+  updateBulkUI();
+  updateStats();
+  renderQueue();
+  if (selectedId) renderForm();
+}
+
+document.getElementById('bulkToggleBtn').addEventListener('click', toggleBulkMode);
+document.getElementById('bulkCancelBtn').addEventListener('click', () => {
+  bulkSelected.clear();
+  bulkMode = false;
+  document.body.classList.remove('bulk-mode');
+  updateBulkUI();
+  renderQueue();
+});
+document.getElementById('bulkApplyBtn').addEventListener('click', applyBulkStatus);
+
+// ═══════════════════════════════════════════════════════════════
+// SAVED VIEWS
+// ═══════════════════════════════════════════════════════════════
+
+function loadViews() {
+  try { return JSON.parse(localStorage.getItem('coiSavedViews') || '[]'); } catch { return []; }
+}
+function saveViews(arr) { localStorage.setItem('coiSavedViews', JSON.stringify(arr)); }
+
+function renderViewsPopover() {
+  const pop = document.getElementById('viewsPopover');
+  const views = loadViews();
+  let html = '';
+  if (views.length) {
+    html += views.map((v, i) => `
+      <button class="views-item" data-vidx="${i}" title="Load view">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>
+        ${esc(v.name)}
+        <span class="vrm" data-rmidx="${i}" title="Delete view">×</span>
+      </button>`).join('');
+    html += '<div class="views-divider"></div>';
+  } else {
+    html += '<div style="padding:8px 10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic">No saved views yet</div><div class="views-divider"></div>';
+  }
+  html += '<button class="views-item" id="viewsSaveCurrent"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save current as…</button>';
+  pop.innerHTML = html;
+}
+
+document.getElementById('viewsTrigger').addEventListener('click', e => {
+  e.stopPropagation();
+  renderViewsPopover();
+  document.getElementById('viewsPopover').classList.toggle('show');
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('#viewsMenu')) {
+    document.getElementById('viewsPopover')?.classList.remove('show');
+  }
+});
+document.getElementById('viewsPopover').addEventListener('click', e => {
+  const saveBtn = e.target.closest('#viewsSaveCurrent');
+  if (saveBtn) {
+    const name = prompt('Name this view (e.g., "Bengaluru pending")');
+    if (name) {
+      const views = loadViews();
+      views.push({ name: name.trim().slice(0, 60), filter: activeFilter, search: searchQ });
+      saveViews(views);
+      renderViewsPopover();
+    }
+    return;
+  }
+  const rm = e.target.closest('[data-rmidx]');
+  if (rm) {
+    e.stopPropagation();
+    const i = parseInt(rm.dataset.rmidx, 10);
+    const views = loadViews();
+    views.splice(i, 1);
+    saveViews(views);
+    renderViewsPopover();
+    return;
+  }
+  const item = e.target.closest('[data-vidx]');
+  if (item) {
+    const i = parseInt(item.dataset.vidx, 10);
+    const view = loadViews()[i];
+    if (view) {
+      activeFilter = view.filter || 'all';
+      searchQ = view.search || '';
+      document.getElementById('qSearch').value = searchQ;
+      document.querySelectorAll('.q-pill').forEach(p => p.classList.toggle('active', p.dataset.f === activeFilter));
+      renderQueue();
+      document.getElementById('viewsPopover').classList.remove('show');
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// EXPORT OPTIONS MODAL
+// ═══════════════════════════════════════════════════════════════
+
+function getFilteredApps() {
+  const apps = loadApps().slice().reverse();
+  const vmap = loadVerifs();
+  return apps.filter(app => {
+    if (activeFilter !== 'all') {
+      const vs = (vmap[app.id]||{}).verificationStatus || 'pending';
+      if (vs !== activeFilter) return false;
+    }
+    return matchesSearch(app, searchQ, vmap);
+  });
+}
+
+document.getElementById('exportCancel').addEventListener('click', () => {
+  document.getElementById('exportModal').classList.remove('show');
+});
+document.getElementById('exportModal').addEventListener('click', e => {
+  if (e.target.id === 'exportModal') document.getElementById('exportModal').classList.remove('show');
+});
+
+// ═══════════════════════════════════════════════════════════════
 // WIRE FORM EVENTS
 // ═══════════════════════════════════════════════════════════════
 
@@ -1802,10 +2679,11 @@ function wireFormEvents() {
     el.addEventListener('change', autoSave);
   });
 
-  // vstatus: style + rejection panel
+  // vstatus: style + rejection panel + pill sync
   document.getElementById('vstatus').addEventListener('change', function() {
     applyVstatusStyle(this.value);
     toggleRejectionPanel(this.value === 'rejected');
+    syncVerdictPills(this.value);
     autoSave();
   });
 
@@ -1882,7 +2760,19 @@ document.getElementById('qSearch').addEventListener('input', function() {
 // ═══════════════════════════════════════════════════════════════
 
 document.getElementById('exportCsvBtn').addEventListener('click', () => {
-  const apps = loadApps();
+  document.getElementById('exportModal').classList.add('show');
+});
+
+document.getElementById('exportConfirm').addEventListener('click', () => {
+  const scope = document.querySelector('input[name="exportScope"]:checked')?.value || 'all';
+  document.getElementById('exportModal').classList.remove('show');
+  doExportCsv(scope);
+});
+
+function doExportCsv(scope) {
+  let apps = loadApps();
+  if (scope === 'filter') apps = getFilteredApps().slice().reverse(); // newest-first order from filter
+  else if (scope === 'selected') apps = apps.filter(a => bulkSelected.has(a.id));
   const vmap = loadVerifs();
 
   const headers = [
@@ -1891,7 +2781,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
     'Waiting Period','Call Status','Adults on Policy','Children on Policy',
     'Pre-existing Conditions','Ops Comments',
     'Verification Status','Rejection Bucket','Rejection Code','Rejection Reason',
-    'Reviewed At'
+    'Reviewed At','Last Edited At'
   ];
 
   function cell(v) {
@@ -1904,8 +2794,18 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
     const insurers = getInsurers(app).join('; ');
     const sources = safeArr(app.insuranceSource).join('; ');
     const declaredMembers = safeArr(app.members).map(m => m.name + (m.relation ? ' (' + m.relation + ')' : '')).join('; ');
-    const adults = safeArr(v.adultsOnPolicy).map((m,i) => (m.name || 'Adult '+(i+1)) + (m.dob ? ' ('+m.dob+')' : '')).join('; ');
-    const children = safeArr(v.childrenOnPolicy).map((m,i) => (m.name || 'Child '+(i+1)) + (m.dob ? ' ('+m.dob+')' : '')).join('; ');
+    const adults = safeArr(v.adultsOnPolicy).map((m,i) => {
+      const parts = [m.name || 'Adult '+(i+1)];
+      if (m.relation) parts.push(m.relation);
+      if (m.dob) parts.push(m.dob);
+      return parts.join(' | ');
+    }).join('; ');
+    const children = safeArr(v.childrenOnPolicy).map((m,i) => {
+      const parts = [m.name || 'Child '+(i+1)];
+      if (m.relation) parts.push(m.relation);
+      if (m.dob) parts.push(m.dob);
+      return parts.join(' | ');
+    }).join('; ');
     const peds = safeArr(v.preExistingConditions).join('; ');
     return [
       app.id, app.timestamp, app.name, app.mobile, app.city,
@@ -1915,7 +2815,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
       adults, children, peds, v.opsComments,
       v.verificationStatus || 'pending',
       v.rejectionBucket, v.rejectionCode, v.rejectionReason,
-      v.reviewedAt
+      v.reviewedAt, v.lastEditedAt
     ].map(cell).join(',');
   });
 
@@ -1927,7 +2827,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
   a.download = `even-coi-verif-${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
-});
+}
 
 // ═══════════════════════════════════════════════════════════════
 // PED INITIAL RENDER + DOCUMENT-LEVEL DELEGATION
