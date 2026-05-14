@@ -5,7 +5,7 @@
   <title>Seeding test data…</title>
   <style>
     body { background: #0a0c18; color: #fff; font-family: "Centra No2","Inter",sans-serif;
-      display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+      display: flex; align-items: center; justify-content: center; min-height: 100dvh; margin: 0; }
     .msg { text-align: center; }
     .msg h2 { margin: 0 0 8px; font-size: 20px; }
     .msg p { color: rgba(255,255,255,0.5); font-size: 14px; margin: 0; }
@@ -17,9 +17,12 @@
   <p>Redirecting to COI Verification in a moment.</p>
 </div>
 <script>
+  const COI_SAMPLE = "assets/coi-samples/sample-coi.html";
+
   const applications = [
     {
       id: "app_seed_001",
+      coiDocument: COI_SAMPLE,
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
       name: "Meera Subramanian",
       mobile: "9884012374",
@@ -36,6 +39,7 @@
     },
     {
       id: "app_seed_002",
+      coiDocument: COI_SAMPLE,
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
       name: "Rahul Krishnaswamy",
       mobile: "7760934821",
@@ -50,6 +54,7 @@
     },
     {
       id: "app_seed_003",
+      coiDocument: COI_SAMPLE,
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 11).toISOString(),
       name: "Divya Nair",
       mobile: "9845673210",
@@ -67,6 +72,7 @@
     },
     {
       id: "app_seed_004",
+      coiDocument: COI_SAMPLE,
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(),
       name: "Karthik Venkataraman",
       mobile: "8049127653",
@@ -82,6 +88,7 @@
     },
     {
       id: "app_seed_005",
+      coiDocument: COI_SAMPLE,
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
       name: "Ananya Iyer",
       mobile: "9739084562",
@@ -97,6 +104,7 @@
     },
     {
       id: "app_seed_006",
+      coiDocument: COI_SAMPLE,
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 33).toISOString(),
       name: "Vikram Hegde",
       mobile: "9916234780",
@@ -113,12 +121,12 @@
     }
   ];
 
-  // Merge with existing — don't overwrite if seed IDs already present
+  // Always overwrite seed entries with fresh data (updates coiDocument)
   let existing = [];
   try { existing = JSON.parse(localStorage.getItem("evenApplications") || "[]"); } catch {}
-  const existingIds = new Set(existing.map(a => a.id));
-  const merged = [...existing, ...applications.filter(a => !existingIds.has(a.id))];
-  localStorage.setItem("evenApplications", JSON.stringify(merged));
+  const seedIds = new Set(applications.map(a => a.id));
+  const nonSeed = existing.filter(a => !seedIds.has(a.id));
+  localStorage.setItem("evenApplications", JSON.stringify([...nonSeed, ...applications]));
 
   setTimeout(() => { window.location.href = "coi-verify.html"; }, 800);
 </script>
