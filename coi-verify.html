@@ -575,26 +575,73 @@
     .no-members-hint { font-size: 11.5px; color: rgba(255,255,255,0.25); font-style: italic; padding: 4px 0; }
 
     /* ── PED TAG PICKER ─────────────────────────────────────── */
-    .ped-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .ped-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .ped-toolbar-label {
+      font-size: 10.5px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 500;
+    }
+    .ped-toolbar-actions { display: flex; gap: 4px; }
+    .ped-action {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 16px;
+      background: rgba(157,188,255,0.08);
+      border: 1px solid rgba(157,188,255,0.18);
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      transition: all 0.14s cubic-bezier(0.32,0.72,0,1);
+    }
+    .ped-action:hover { background: rgba(157,188,255,0.16); color: #fff; border-color: rgba(157,188,255,0.35); }
+    .ped-action:active { transform: scale(0.96); }
+
+    .ped-tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .ped-tag {
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 600;
-      padding: 4px 10px;
+      padding: 5px 12px 5px 10px;
       border-radius: 20px;
       background: rgba(157,188,255,0.06);
-      border: 1px solid rgba(157,188,255,0.14);
-      color: rgba(255,255,255,0.5);
+      border: 1px solid rgba(157,188,255,0.16);
+      color: rgba(255,255,255,0.55);
       cursor: pointer;
-      transition: all 0.12s;
+      transition: all 0.14s cubic-bezier(0.32,0.72,0,1);
       user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      position: relative;
     }
-    .ped-tag:hover { background: rgba(157,188,255,0.1); color: rgba(255,255,255,0.8); border-color: rgba(157,188,255,0.3); }
+    .ped-tag::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1.4px solid rgba(157,188,255,0.35);
+      background: transparent;
+      flex-shrink: 0;
+      transition: all 0.14s cubic-bezier(0.32,0.72,0,1);
+    }
+    .ped-tag:hover { background: rgba(157,188,255,0.12); color: rgba(255,255,255,0.85); border-color: rgba(157,188,255,0.32); }
     .ped-tag.selected {
-      background: rgba(255,193,7,0.12);
-      border-color: rgba(255,193,7,0.4);
+      background: rgba(255,193,7,0.14);
+      border-color: rgba(255,193,7,0.55);
       color: #ffd166;
     }
-    .ped-note { font-size: 10.5px; color: rgba(255,255,255,0.25); margin-top: 6px; font-style: italic; }
+    .ped-tag.selected::before {
+      background: #ffd166;
+      border-color: #ffd166;
+      box-shadow: inset 0 0 0 2.5px rgba(20,18,8,0.85);
+    }
+    .ped-note { font-size: 10.5px; color: rgba(255,255,255,0.3); margin-top: 8px; font-style: italic; line-height: 1.5; }
 
     /* ── DECISION FOOTER ─────────────────────────────────────── */
     .decision-row {
@@ -676,7 +723,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:rgba(255,255,255,0.28);letter-spacing:0.04em" title="Build tag — confirms latest JS is loaded">build-2026-05-14b</span>
+  <span class="mono" style="font-size:10px;color:rgba(255,255,255,0.28);letter-spacing:0.04em" title="Build tag — confirms latest JS is loaded">build-2026-05-14c</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -870,8 +917,15 @@
           Pre-existing Conditions <span class="chev">▼</span>
         </button>
         <div class="fsec-body" id="body-ped">
+          <div class="ped-toolbar">
+            <span class="ped-toolbar-label">Tap any that apply — multiple allowed</span>
+            <div class="ped-toolbar-actions">
+              <button type="button" class="ped-action" id="pedSelectAll">Select all</button>
+              <button type="button" class="ped-action" id="pedClearAll">Clear</button>
+            </div>
+          </div>
           <div class="ped-tags" id="pedTags"></div>
-          <p class="ped-note">Click to flag conditions declared in or evident from the policy document.</p>
+          <p class="ped-note">Flag conditions declared by the applicant or visible in the COI exclusions / waiting-period section.</p>
         </div>
       </div>
 
@@ -1780,6 +1834,18 @@ function wireFormEvents() {
   // Add member buttons
   document.getElementById('addAdultBtn').addEventListener('click', () => addMember('adult'));
   document.getElementById('addChildBtn').addEventListener('click', () => addMember('child'));
+
+  // PED bulk actions
+  document.getElementById('pedSelectAll').addEventListener('click', () => {
+    pedSet = new Set(PED_OPTIONS);
+    document.querySelectorAll('#pedTags .ped-tag').forEach(t => t.classList.add('selected'));
+    if (selectedId) autoSave();
+  });
+  document.getElementById('pedClearAll').addEventListener('click', () => {
+    pedSet = new Set();
+    document.querySelectorAll('#pedTags .ped-tag').forEach(t => t.classList.remove('selected'));
+    if (selectedId) autoSave();
+  });
 
   // Section toggles
   setupToggle('tog-submitted', 'body-submitted');
