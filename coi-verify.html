@@ -676,6 +676,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
+  <span class="mono" style="font-size:10px;color:rgba(255,255,255,0.28);letter-spacing:0.04em" title="Build tag — confirms latest JS is loaded">build-2026-05-14b</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -1479,18 +1480,26 @@ function renderForm() {
   nameEl.textContent = app.name || '—';
   nameEl.classList.remove('form-pane-placeholder');
 
-  // First-time selection OR legacy record without members: prefill from declared family
+  // Migration: prefill adults/children from declared members.
+  // - Treats records with only empty placeholder rows ([{name:'',dob:''}]) as not-yet-prefilled
+  // - Uses explicit prefilledFromMembers flag so migration runs exactly once
   const vmap = loadVerifs();
   let v = vmap[app.id];
-  const hasMembers = (vRec) => safeArr(vRec?.adultsOnPolicy).length || safeArr(vRec?.childrenOnPolicy).length;
+  const hasRealMembers = (vRec) => {
+    const a = safeArr(vRec?.adultsOnPolicy).some(m => m && (m.name || m.dob));
+    const c = safeArr(vRec?.childrenOnPolicy).some(m => m && (m.name || m.dob));
+    return a || c;
+  };
   if (!v) {
     v = buildPrefilledVerif(app);
+    v.prefilledFromMembers = true;
     vmap[app.id] = v;
     saveVerifs(vmap);
-  } else if (!hasMembers(v) && safeArr(app.members).length) {
+  } else if (!v.prefilledFromMembers && !hasRealMembers(v) && safeArr(app.members).length) {
     const pf = buildPrefilledVerif(app);
     v.adultsOnPolicy = pf.adultsOnPolicy;
     v.childrenOnPolicy = pf.childrenOnPolicy;
+    v.prefilledFromMembers = true;
     vmap[app.id] = v;
     saveVerifs(vmap);
   }
@@ -1633,17 +1642,20 @@ function readMembersFromDOM(type) {
 // PED TAGS
 // ═══════════════════════════════════════════════════════════════
 
+// JS-managed PED selection — single source of truth.
+let pedSet = new Set();
+
 function renderPedTags(selected) {
+  pedSet = new Set(safeArr(selected));
   const container = document.getElementById('pedTags');
   container.innerHTML = PED_OPTIONS.map(label => {
-    const active = selected.includes(label) ? 'selected' : '';
+    const active = pedSet.has(label) ? 'selected' : '';
     return `<span class="ped-tag ${active}" data-ped="${esc(label)}">${esc(label)}</span>`;
   }).join('');
-  // No per-tag handlers — single delegated handler is set up once at init.
 }
 
 function readSelectedPed() {
-  return Array.from(document.querySelectorAll('.ped-tag.selected')).map(t => t.dataset.ped);
+  return Array.from(pedSet);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1862,15 +1874,21 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
   ).join('');
 })();
 
-// Document-level delegation — guaranteed to catch every click on any .ped-tag
-// regardless of how many times innerHTML rebuilds. Multi-select: each click
-// toggles only the clicked tag's .selected class. Others untouched.
+// Document-level delegation. Source of truth = pedSet, NOT the DOM class.
+// Click flips the Set membership and reflects it on the tag. Multi-select
+// is guaranteed because each click only mutates one entry in the Set.
 document.addEventListener('click', e => {
-  const tag = e.target.closest('.ped-tag');
+  const tag = e.target.closest('#pedTags .ped-tag');
   if (!tag) return;
-  // Only handle clicks inside our pedTags container
-  if (!tag.closest('#pedTags')) return;
-  tag.classList.toggle('selected');
+  const label = tag.dataset.ped;
+  if (!label) return;
+  if (pedSet.has(label)) {
+    pedSet.delete(label);
+    tag.classList.remove('selected');
+  } else {
+    pedSet.add(label);
+    tag.classList.add('selected');
+  }
   if (selectedId) autoSave();
 });
 
@@ -1884,12 +1902,17 @@ document.addEventListener('click', e => {
   let dirty = false;
   apps.forEach(app => {
     const v = vmap[app.id];
-    if (!v) return; // no record yet — will be prefilled on first selection
-    const has = safeArr(v.adultsOnPolicy).length || safeArr(v.childrenOnPolicy).length;
-    if (!has && safeArr(app.members).length) {
+    if (!v) return;
+    if (v.prefilledFromMembers) return;
+    // Real entries = at least one row with a name OR dob filled in
+    const hasReal =
+      safeArr(v.adultsOnPolicy).some(m => m && (m.name || m.dob)) ||
+      safeArr(v.childrenOnPolicy).some(m => m && (m.name || m.dob));
+    if (!hasReal && safeArr(app.members).length) {
       const pf = buildPrefilledVerif(app);
       v.adultsOnPolicy = pf.adultsOnPolicy;
       v.childrenOnPolicy = pf.childrenOnPolicy;
+      v.prefilledFromMembers = true;
       vmap[app.id] = v;
       dirty = true;
     }
