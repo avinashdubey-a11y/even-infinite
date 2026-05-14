@@ -790,6 +790,7 @@
                 Add Adult
               </button>
             </div>
+            <div class="ped-note" style="margin:0 0 6px">Name and DOB are both optional — agents may leave blank when unknown.</div>
             <div id="adultsContainer">
               <div class="no-members-hint" id="noAdultsHint">No adults added yet</div>
             </div>
@@ -863,11 +864,7 @@
             <div class="reason-hint" id="reasonHint"></div>
           </div>
 
-          <div class="decision-row">
-            <div class="fg" style="flex:1; min-width:130px">
-              <label class="flabel" for="reviewedBy">Reviewed By</label>
-              <input class="finput" id="reviewedBy" type="text" placeholder="Your name" data-field="reviewedBy" />
-            </div>
+          <div class="decision-row" style="justify-content:flex-end">
             <button class="btn-mark-reviewed" id="markReviewedBtn" type="button">Mark Reviewed</button>
           </div>
           <div class="reviewed-meta" id="reviewedMeta" style="margin-top:6px"></div>
@@ -964,8 +961,8 @@ function loadVerifs() {
 }
 function saveVerifs(v) { localStorage.setItem('coiVerifications', JSON.stringify(v)); }
 
-function getVerif(id) {
-  return loadVerifs()[id] || {
+function defaultVerif(id) {
+  return {
     submissionId: id,
     policyNumber: '', sumInsured: '', policyStartDate: '', policyEndDate: '',
     coverageType: '', copayPercent: '', waitingPeriodActive: '', callStatus: '',
@@ -973,8 +970,30 @@ function getVerif(id) {
     adultsOnPolicy: [], childrenOnPolicy: [],
     preExistingConditions: [],
     rejectionBucket: '', rejectionCode: '', rejectionReason: '',
-    verificationStatus: 'pending', reviewedBy: '', reviewedAt: ''
+    verificationStatus: 'pending', reviewedAt: ''
   };
+}
+
+function getVerif(id) { return loadVerifs()[id] || defaultVerif(id); }
+
+// Build a fresh verification record, prefilling adults/children from the
+// applicant's declared family members.
+function buildPrefilledVerif(app) {
+  const v = defaultVerif(app.id);
+  const members = safeArr(app.members);
+  // Treat self / spouse / parent / sibling as adults; only 'child' goes to children.
+  members.forEach(m => {
+    if (!m) return;
+    const rel = (m.relation || '').toLowerCase();
+    const entry = { name: m.name || '', dob: '' };
+    if (rel === 'child') v.childrenOnPolicy.push(entry);
+    else v.adultsOnPolicy.push(entry);
+  });
+  // Fallback: if the application has no declared members, seed with the applicant.
+  if (!v.adultsOnPolicy.length && !v.childrenOnPolicy.length && app.name) {
+    v.adultsOnPolicy.push({ name: app.name, dob: '' });
+  }
+  return v;
 }
 
 function persistVerif(id, data) {
@@ -1091,10 +1110,15 @@ function renderQueue() {
       </div>`;
   }).join('');
 
-  list.querySelectorAll('.qcard').forEach(c =>
-    c.addEventListener('click', () => selectApp(c.dataset.id))
-  );
+  // Event delegation handles clicks (set up once at init)
 }
+
+// Event delegation: works even after innerHTML rebuilds
+document.getElementById('queueList').addEventListener('click', e => {
+  const card = e.target.closest('.qcard');
+  if (!card || !card.dataset.id) return;
+  selectApp(card.dataset.id);
+});
 
 // ═══════════════════════════════════════════════════════════════
 // SELECT APP
@@ -1111,20 +1135,22 @@ function selectApp(id) {
 // VIEWER
 // ═══════════════════════════════════════════════════════════════
 
+const EMPTY_VIEWER_HTML = `<div class="viewer-empty">
+  <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+  <p><strong>No document</strong>Select an application to view its COI</p>
+</div>`;
+
 function renderViewer() {
   const apps = loadApps();
   const app = apps.find(a => a.id === selectedId);
   const body = document.getElementById('viewerBody');
-  const empty = document.getElementById('viewerEmpty');
   const extractBtn = document.getElementById('extractBtn');
   const ocrBtn = document.getElementById('ocrBtn');
   const openBtn = document.getElementById('openInTabBtn');
   const titleEl = document.getElementById('viewerTitle');
 
   if (!app || !app.coiDocument) {
-    body.innerHTML = '';
-    body.appendChild(empty);
-    empty.style.display = 'flex';
+    body.innerHTML = EMPTY_VIEWER_HTML;
     extractBtn.style.display = 'none';
     ocrBtn.style.display = 'none';
     openBtn.style.display = 'none';
@@ -1142,8 +1168,6 @@ function renderViewer() {
   openBtn.style.display = 'inline-flex';
   extractBtn.style.display = isHtml ? 'inline-flex' : 'none';
   ocrBtn.style.display = isImage ? 'inline-flex' : 'none';
-
-  empty.style.display = 'none';
 
   if (isImage) {
     body.innerHTML = `<div style="overflow:auto;width:100%;height:100%;display:flex;align-items:flex-start;justify-content:center;padding:16px;background:#111320">
@@ -1337,7 +1361,14 @@ function renderForm() {
   nameEl.textContent = app.name || '—';
   nameEl.classList.remove('form-pane-placeholder');
 
-  const v = getVerif(app.id);
+  // First-time selection: build prefilled record from declared members and persist it
+  const vmap = loadVerifs();
+  let v = vmap[app.id];
+  if (!v) {
+    v = buildPrefilledVerif(app);
+    vmap[app.id] = v;
+    saveVerifs(vmap);
+  }
   const vs = v.verificationStatus || 'pending';
 
   statusEl.className = `sbadge sb-${vs}`;
@@ -1359,7 +1390,7 @@ function renderForm() {
   `;
 
   // — Policy fields
-  const scalarFields = ['policyNumber','sumInsured','policyStartDate','policyEndDate','coverageType','copayPercent','waitingPeriodActive','callStatus','opsComments','rejectionBucket','rejectionCode','reviewedBy'];
+  const scalarFields = ['policyNumber','sumInsured','policyStartDate','policyEndDate','coverageType','copayPercent','waitingPeriodActive','callStatus','opsComments','rejectionBucket','rejectionCode'];
   scalarFields.forEach(f => {
     const el = document.getElementById(f);
     if (el) el.value = v[f] || '';
@@ -1413,14 +1444,15 @@ function buildMemberRow(type, idx, name, dob) {
   const nameIn = document.createElement('input');
   nameIn.className = 'finput name-in';
   nameIn.type = 'text';
-  nameIn.placeholder = (type === 'adult' ? 'Adult' : 'Child') + ' ' + (idx + 1) + ' name (optional)';
+  nameIn.placeholder = (type === 'adult' ? 'Adult' : 'Child') + ' ' + (idx + 1) + ' name';
   nameIn.value = name;
   nameIn.addEventListener('input', autoSave);
 
   const dobIn = document.createElement('input');
   dobIn.className = 'finput dob-in';
   dobIn.type = 'date';
-  dobIn.title = 'DOB (optional)';
+  dobIn.title = 'DOB — optional';
+  dobIn.placeholder = 'DOB (optional)';
   dobIn.value = dob;
   dobIn.addEventListener('change', autoSave);
 
@@ -1542,7 +1574,7 @@ function updateReviewedMeta(ts) {
 function getCurrentData() {
   const scalars = ['policyNumber','sumInsured','policyStartDate','policyEndDate','coverageType',
                    'copayPercent','waitingPeriodActive','callStatus','opsComments','rejectionBucket',
-                   'rejectionCode','reviewedBy'];
+                   'rejectionCode'];
   const data = {};
   scalars.forEach(f => { const el = document.getElementById(f); data[f] = el ? el.value : ''; });
   data.verificationStatus = document.getElementById('vstatus')?.value || 'pending';
@@ -1662,7 +1694,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
     'Waiting Period','Call Status','Adults on Policy','Children on Policy',
     'Pre-existing Conditions','Ops Comments',
     'Verification Status','Rejection Bucket','Rejection Code','Rejection Reason',
-    'Reviewed By','Reviewed At'
+    'Reviewed At'
   ];
 
   function cell(v) {
@@ -1686,7 +1718,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
       adults, children, peds, v.opsComments,
       v.verificationStatus || 'pending',
       v.rejectionBucket, v.rejectionCode, v.rejectionReason,
-      v.reviewedBy, v.reviewedAt
+      v.reviewedAt
     ].map(cell).join(',');
   });
 
