@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Seeding test data…</title>
+  <style>
+    body { background: #0a0c18; color: #fff; font-family: "Centra No2","Inter",sans-serif;
+      display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .msg { text-align: center; }
+    .msg h2 { margin: 0 0 8px; font-size: 20px; }
+    .msg p { color: rgba(255,255,255,0.5); font-size: 14px; margin: 0; }
+  </style>
+</head>
+<body>
+<div class="msg">
+  <h2>Seeding test applications…</h2>
+  <p>Redirecting to COI Verification in a moment.</p>
+</div>
+<script>
+  const applications = [
+    {
+      id: "app_seed_001",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+      name: "Meera Subramanian",
+      mobile: "9884012374",
+      city: "Bengaluru",
+      status: "submitted",
+      insurers: ["Digit Insurance"],
+      customInsurers: [],
+      insuranceSource: ["individual"],
+      members: [
+        { name: "Meera Subramanian", relation: "self", primary: true },
+        { name: "Arjun Subramanian", relation: "spouse", primary: false },
+        { name: "Kavya Subramanian", relation: "child", primary: false }
+      ]
+    },
+    {
+      id: "app_seed_002",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+      name: "Rahul Krishnaswamy",
+      mobile: "7760934821",
+      city: "Bengaluru",
+      status: "submitted",
+      insurers: ["Aditya Birla Health Insurance"],
+      customInsurers: [],
+      insuranceSource: ["employer"],
+      members: [
+        { name: "Rahul Krishnaswamy", relation: "self", primary: true }
+      ]
+    },
+    {
+      id: "app_seed_003",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 11).toISOString(),
+      name: "Divya Nair",
+      mobile: "9845673210",
+      city: "Bengaluru",
+      status: "submitted",
+      insurers: ["Manipal Cigna Health Insurance"],
+      customInsurers: [],
+      insuranceSource: ["individual"],
+      members: [
+        { name: "Divya Nair", relation: "self", primary: true },
+        { name: "Suresh Nair", relation: "spouse", primary: false },
+        { name: "Rohit Nair", relation: "child", primary: false },
+        { name: "Lakshmi Nair", relation: "parent", primary: false }
+      ]
+    },
+    {
+      id: "app_seed_004",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(),
+      name: "Karthik Venkataraman",
+      mobile: "8049127653",
+      city: "Bengaluru",
+      status: "submitted",
+      insurers: ["Digit Insurance"],
+      customInsurers: [],
+      insuranceSource: ["employer"],
+      members: [
+        { name: "Karthik Venkataraman", relation: "self", primary: true },
+        { name: "Preethi Venkataraman", relation: "spouse", primary: false }
+      ]
+    },
+    {
+      id: "app_seed_005",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
+      name: "Ananya Iyer",
+      mobile: "9739084562",
+      city: "Bengaluru",
+      status: "submitted",
+      insurers: ["Aditya Birla Health Insurance"],
+      customInsurers: [],
+      insuranceSource: ["individual"],
+      members: [
+        { name: "Ananya Iyer", relation: "self", primary: true },
+        { name: "Siddharth Iyer", relation: "spouse", primary: false }
+      ]
+    },
+    {
+      id: "app_seed_006",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 33).toISOString(),
+      name: "Vikram Hegde",
+      mobile: "9916234780",
+      city: "Bengaluru",
+      status: "submitted",
+      insurers: ["Manipal Cigna Health Insurance"],
+      customInsurers: [],
+      insuranceSource: ["employer"],
+      members: [
+        { name: "Vikram Hegde", relation: "self", primary: true },
+        { name: "Smitha Hegde", relation: "spouse", primary: false },
+        { name: "Aditya Hegde", relation: "child", primary: false }
+      ]
+    }
+  ];
+
+  // Merge with existing — don't overwrite if seed IDs already present
+  let existing = [];
+  try { existing = JSON.parse(localStorage.getItem("evenApplications") || "[]"); } catch {}
+  const existingIds = new Set(existing.map(a => a.id));
+  const merged = [...existing, ...applications.filter(a => !existingIds.has(a.id))];
+  localStorage.setItem("evenApplications", JSON.stringify(merged));
+
+  setTimeout(() => { window.location.href = "coi-verify.html"; }, 800);
+</script>
+</body>
+</html>

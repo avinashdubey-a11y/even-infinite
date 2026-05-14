@@ -198,7 +198,7 @@
         display: block;
         animation: cardFloat 5s ease-in-out infinite alternate;
         transform-origin: 50% 60%;
-        will-change: transform;
+        transform: translateZ(0);
       }
       @keyframes cardFloat {
         0% {
@@ -232,7 +232,22 @@
         cursor: pointer;
       }
 
-      .cta-btn:active { transform: translateY(1px); }
+      .cta-btn:active { transform: scale(0.98) translateY(1px); }
+      .cta-icon-wrap {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1), background 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .cta-btn:hover .cta-icon-wrap {
+        transform: translateX(2px) translateY(-1px) scale(1.08);
+        background: rgba(255, 255, 255, 0.25);
+      }
 
       /* Section eyebrow */
       .section-eyebrow {
@@ -367,8 +382,8 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 64px;
-        padding: 64px 0 64px;
+        gap: 80px;
+        padding: 80px 0 80px;
         background: #151726;
       }
 
@@ -464,9 +479,9 @@
       /* How to use — mirrors the .eligibility section styling */
       .how-to-use {
         position: relative;
-        width: 360px;
-        max-width: 100%;
-        padding: 0 16px;
+        width: 100%;
+        padding: 48px 16px;
+        background: #1d2131;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -547,7 +562,7 @@
       .need-help-text {
         flex: 1;
         min-width: 0;
-        padding: 16px 0;
+        padding: 20px 0;
         display: flex;
         flex-direction: column;
         gap: 16px;
@@ -641,11 +656,11 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transform: rotate(180deg);
-        transition: transform 0.2s ease;
+        transform: rotate(0deg);
+        transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
       }
 
-      .faq-item[open] .faq-chevron { transform: rotate(0deg); }
+      .faq-item[open] .faq-chevron { transform: rotate(180deg); }
 
       .faq-a {
         padding-top: 8px;
@@ -675,6 +690,8 @@
         background: rgba(2, 4, 27, 0.55);
         backdrop-filter: blur(3px);
         -webkit-backdrop-filter: blur(3px);
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
         display: none;
         align-items: center;
         justify-content: center;
@@ -699,7 +716,7 @@
         align-items: center;
         gap: 12px;
         box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-        animation: modalIn 0.18s ease-out both;
+        animation: modalIn 0.22s cubic-bezier(0.32, 0.72, 0, 1) both;
       }
 
       @keyframes modalIn {
@@ -824,6 +841,104 @@
           overflow: hidden;
         }
       }
+
+      /* Double-bezel shells */
+      .card-shell {
+        border-radius: 16px;
+        padding: 2px;
+        background: rgba(157, 188, 255, 0.06);
+        border: 1px solid rgba(157, 188, 255, 0.1);
+      }
+      .eligibility-card-shell {
+        border-radius: 18px;
+        padding: 2px;
+        background: rgba(188, 229, 255, 0.05);
+        border: 1px solid rgba(188, 229, 255, 0.08);
+      }
+      .step-card-shell {
+        border-radius: 18px;
+        padding: 2px;
+        background: rgba(157, 188, 255, 0.04);
+        border: 1px solid rgba(157, 188, 255, 0.07);
+        width: 100%;
+      }
+      .benefit-card { box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); }
+      .eligibility-card { box-shadow: inset 0 1px 0 rgba(188,229,255,0.08); }
+      .step-card { box-shadow: inset 0 1px 0 rgba(188,229,255,0.06); }
+
+      /* FIX 8: Benefit card bento — dominant first card */
+      .benefit-card:first-child {
+        padding: 20px 16px;
+        border: 1px solid rgba(157, 188, 255, 0.3);
+      }
+      .benefit-card:first-child .benefit-title {
+        font-size: 16px;
+      }
+      .benefit-card:first-child .benefit-body {
+        font-size: 13px;
+      }
+      .benefit-card:first-child .benefit-icon {
+        width: 48px;
+        height: 48px;
+      }
+
+      /* Scroll entry animations */
+      .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.7s cubic-bezier(0.32, 0.72, 0, 1), transform 0.7s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal-delay-1 { transition-delay: 0.1s; }
+      .reveal-delay-2 { transition-delay: 0.2s; }
+      .reveal-delay-3 { transition-delay: 0.3s; }
+
+      /* Social proof strip */
+      .social-proof {
+        width: 328px;
+        max-width: 100%;
+      }
+      .proof-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        background: rgba(157, 188, 255, 0.06);
+        border: 1px solid rgba(157, 188, 255, 0.12);
+        border-radius: 16px;
+        padding: 20px 16px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+      }
+      .proof-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        flex: 1;
+      }
+      .proof-number {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -0.3px;
+        line-height: 1.1;
+      }
+      .proof-label {
+        font-size: 10px;
+        font-weight: 400;
+        color: rgba(157, 188, 255, 0.7);
+        text-align: center;
+        line-height: 1.3;
+      }
+      .proof-divider {
+        width: 1px;
+        height: 32px;
+        background: rgba(157, 188, 255, 0.15);
+        flex-shrink: 0;
+      }
     </style>
   </head>
   <body>
@@ -855,7 +970,7 @@
           <!-- CTA -->
           <button id="ctaBtn" class="cta-btn" type="button">
             <span>Get Even Infinite for free</span>
-            <svg
+            <span class="cta-icon-wrap"><svg
               width="13"
               height="10"
               viewBox="0 0 13 10"
@@ -869,7 +984,7 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
-            </svg>
+            </svg></span>
           </button>
 
           <!-- Benefits -->
@@ -881,7 +996,7 @@
             </div>
 
             <div class="benefit-cards">
-              <article class="benefit-card">
+              <div class="card-shell reveal reveal-delay-1"><article class="benefit-card">
                 <span class="benefit-glow-l" aria-hidden="true"></span>
                 <span class="benefit-glow-r" aria-hidden="true"></span>
                 <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUuODc4MTEgMjguNzMxNkM2LjE4Mjc2IDIzLjU3MTEgOS40NDI5IDE5LjA1MTcgMTQuMjQzOCAxNy4xMzQ3TDIwLjAwMDYgMTQuODM1OUwyNS43NTc1IDE3LjEzNDdDMzAuNTU4NCAxOS4wNTE3IDMzLjgxODYgMjMuNTcxIDM0LjEyMzIgMjguNzMxNUwzNC4zMjIzIDMyLjEwMjlDMzQuNDM1NCAzNC4wMTc4IDMyLjkxMyAzNS42MzI3IDMwLjk5NDggMzUuNjMyN0g5LjAwNjYyQzcuMDg4NDQgMzUuNjMyNyA1LjU2NjA0IDM0LjAxNzggNS42NzkwOCAzMi4xMDI5TDUuODc4MTEgMjguNzMxNloiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl8xXzEyNjQzKSIgc3Ryb2tlPSJ1cmwoI3BhaW50MV9saW5lYXJfMV8xMjY0MykiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xNC4yMTI1IDI0LjExOTRWMjEuODA0NkMxNC4yMTI1IDE4LjYwODUgMTYuODAzNCAxNi4wMTc2IDE5Ljk5OTUgMTYuMDE3NkMyMy4xOTU2IDE2LjAxNzYgMjUuNzg2NSAxOC42MDg1IDI1Ljc4NjUgMjEuODA0NlYyNS4yNzY4TTE0LjIxMjUgMjQuMTE5NEMxNi4xMzAxIDI0LjExOTQgMTcuNjg0NyAyNS42NzQgMTcuNjg0NyAyNy41OTE3VjI5LjkwNjVNMTQuMjEyNSAyNC4xMTk0QzEyLjI5NDggMjQuMTE5NCAxMC43NDAyIDI1LjY3NCAxMC43NDAyIDI3LjU5MTdWMjkuOTA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9IjIwIiBjeT0iMTEuODY1MiIgcj0iNy4yNSIgZmlsbD0idXJsKCNwYWludDJfbGluZWFyXzFfMTI2NDMpIiBzdHJva2U9InVybCgjcGFpbnQzX2xpbmVhcl8xXzEyNjQzKSIgc3Ryb2tlLXdpZHRoPSIwLjUiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8xXzEyNjQzIiB4MT0iMjAuMDAxIiB5MT0iNC40OTgwNSIgeDI9IjIwLjAwMDciIHkyPSIzNS42MzI3IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMyQ0M0OEIiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTU1RTQzIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQxX2xpbmVhcl8xXzEyNjQzIiB4MT0iMjAuMDAwNyIgeTE9IjE0LjgzNTkiIHgyPSIyMC4wMDA3IiB5Mj0iMzUuNjMyNyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSJ3aGl0ZSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IndoaXRlIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzFfMTI2NDMiIHgxPSIyMCIgeTE9IjQuMzY1MjMiIHgyPSIyMCIgeTI9IjM1Ljk5OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMkNDNDhCIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzE1NUU0MyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50M19saW5lYXJfMV8xMjY0MyIgeDE9IjIwIiB5MT0iNC4zNjUyMyIgeDI9IjIwIiB5Mj0iMzUuOTk5NSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSJ3aGl0ZSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IndoaXRlIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K" alt="" class="benefit-icon" />
@@ -892,9 +1007,9 @@
                     Even Hospitals &amp; with Even doctors (Online).
                   </p>
                 </div>
-              </article>
+              </article></div>
 
-              <article class="benefit-card">
+              <div class="card-shell reveal reveal-delay-2"><article class="benefit-card">
                 <span class="benefit-glow-l" aria-hidden="true"></span>
                 <span class="benefit-glow-r" aria-hidden="true"></span>
                 <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI5Ljk0MDkgMTIuNDcwMUwxNS4xNzY3IDMzLjE3MTNDMTMuNDM5NiAzNS42MDY4IDEwLjA1NjYgMzYuMTczIDcuNjIxMDMgMzQuNDM2MUM1LjE4NTQ0IDMyLjY5OSA0LjYxOTEyIDI5LjMxNiA2LjM1NjIgMjYuODgwNEwyMS4xMjA0IDYuMTc5MjdMMjkuOTQwOSAxMi40NzAxWiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzFfMTI2NTUpIiBzdHJva2U9InVybCgjcGFpbnQxX2xpbmVhcl8xXzEyNjU1KSIgc3Ryb2tlLXdpZHRoPSIwLjUiLz4KPHJlY3QgeD0iMjAuMzI0IiB5PSIyLjQxODUzIiB3aWR0aD0iMTYuMDY1OCIgaGVpZ2h0PSI1LjQ0NzAxIiByeD0iMi43MjM1IiB0cmFuc2Zvcm09InJvdGF0ZSgzNS40OTY3IDIwLjMyNCAyLjQxODUzKSIgZmlsbD0idXJsKCNwYWludDJfbGluZWFyXzFfMTI2NTUpIiBzdHJva2U9InVybCgjcGFpbnQzX2xpbmVhcl8xXzEyNjU1KSIgc3Ryb2tlLXdpZHRoPSIwLjUiLz4KPHBhdGggZD0iTTEyLjk4NjggMTguMzY3N0wyNS4xNjk2IDE4LjM2NzYiIHN0cm9rZT0idXJsKCNwYWludDRfbGluZWFyXzFfMTI2NTUpIiBzdHJva2Utd2lkdGg9IjAuNSIvPgo8cGF0aCBkPSJNMzAuNDQ2OSAyMy40NDE2TDMzLjYxMTYgMjguMzA3OEMzNC42MzQ2IDI5Ljg4MDQgMzQuNDE3NSAzMS45NTQ1IDMzLjA5MDkgMzMuMjgxQzMxLjU0MDIgMzQuODMxNiAyOS4wMjYyIDM0LjgzMTYgMjcuNDc1NSAzMy4yODFDMjYuMTQ4OSAzMS45NTQ1IDI1LjkzMTggMjkuODgwNCAyNi45NTQ4IDI4LjMwNzhMMzAuMTE5NSAyMy40NDE2QzMwLjE5NjMgMjMuMzIzNiAzMC4zNzAxIDIzLjMyMzYgMzAuNDQ2OSAyMy40NDE2WiIgZmlsbD0idXJsKCNwYWludDVfbGluZWFyXzFfMTI2NTUpIiBzdHJva2U9InVybCgjcGFpbnQ2X2xpbmVhcl8xXzEyNjU1KSIgc3Ryb2tlLXdpZHRoPSIwLjUiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8xXzEyNjU1IiB4MT0iMjUuNjc1NiIgeTE9IjkuMTIxIiB4Mj0iNy43OTA5MSIgeTI9IjMyLjIxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMyQ0M0OEIiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTU1RTQzIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQxX2xpbmVhcl8xXzEyNjU1IiB4MT0iMjUuNjc1NiIgeTE9IjkuMTIxIiB4Mj0iLTEyLjcwNzEiIHkyPSI2Mi45MzgyIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IndoaXRlIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0id2hpdGUiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50Ml9saW5lYXJfMV8xMjY1NSIgeDE9IjI4LjU0ODUiIHkxPSIyLjA2OTgyIiB4Mj0iMzAuMDY0NCIgeTI9IjM1LjE0ODUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzJDQzQ4QiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNTVFNDMiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDNfbGluZWFyXzFfMTI2NTUiIHgxPSIyOC41NDg1IiB5MT0iMi4wNjk4MiIgeDI9IjI4LjU0ODUiIHkyPSIxNC42MTE4IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IndoaXRlIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0id2hpdGUiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50NF9saW5lYXJfMV8xMjY1NSIgeDE9IjE4Ljk2MjkiIHkxPSIxNy41Mzc2IiB4Mj0iMTkuNDQ5MiIgeTI9IjIxLjAzODYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0id2hpdGUiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJ3aGl0ZSIgc3RvcC1vcGFjaXR5PSIwIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ1X2xpbmVhcl8xXzEyNjU1IiB4MT0iMzMuNzEwNyIgeTE9IjI2LjE1OTkiIHgyPSIyNy4yMjgzIiB5Mj0iMzIuNDU5NSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMkNDNDhCIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzE1NUU0MyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50Nl9saW5lYXJfMV8xMjY1NSIgeDE9IjMzLjcxMDciIHkxPSIyNi4xNTk5IiB4Mj0iMTkuMjU0IiB5Mj0iNDAuNjE2NiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSJ3aGl0ZSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IndoaXRlIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K" alt="" class="benefit-icon" />
@@ -905,9 +1020,9 @@
                     scan, it's free. No bills at the collection counter.
                   </p>
                 </div>
-              </article>
+              </article></div>
 
-              <article class="benefit-card">
+              <div class="card-shell reveal reveal-delay-3"><article class="benefit-card">
                 <span class="benefit-glow-l" aria-hidden="true"></span>
                 <span class="benefit-glow-r" aria-hidden="true"></span>
                 <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwLjg1MTYgOS42NDgzNEMxMC44NTE2IDguODY0NDkgMTEuNzEyNCA4LjM4NTM4IDEyLjM3ODYgOC43OTg0OEwxMy45MjY0IDkuNzU4MjlDMTQuMjQ5MiA5Ljk1ODQ4IDE0LjY1NzYgOS45NTg0OCAxNC45ODA0IDkuNzU4MjlMMTcuNTI4MiA4LjE3ODM3QzE3Ljg1MSA3Ljk3ODE4IDE4LjI1OTQgNy45NzgxOCAxOC41ODIyIDguMTc4MzdMMjEuMTMgOS43NTgyOUMyMS40NTI4IDkuOTU4NDggMjEuODYxMiA5Ljk1ODQ4IDIyLjE4NCA5Ljc1ODI5TDI0LjczMTggOC4xNzgzN0MyNS4wNTQ2IDcuOTc4MTggMjUuNDYzIDcuOTc4MTggMjUuNzg1OCA4LjE3ODM3TDI4LjMzMzYgOS43NTgyOUMyOC42NTY0IDkuOTU4NDggMjkuMDY0OCA5Ljk1ODQ4IDI5LjM4NzYgOS43NTgyOUwzMC45Mjk5IDguODAxOTFDMzEuNTk3MiA4LjM4ODA5IDMyLjQ1OTMgOC44Njk2MSAzMi40NTY5IDkuNjU0ODRMMzIuMzg1IDMzLjA3MzlDMzIuMzc4NSAzNS4xOTU4IDMwLjY1NjUgMzYuOTEyNiAyOC41MzQ1IDM2LjkxMjZIMTQuNzAyMUMxMi41NzU1IDM2LjkxMjYgMTAuODUxNiAzNS4xODg2IDEwLjg1MTYgMzMuMDYyVjkuNjQ4MzRaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMV8xMjY2MykiIGZpbGwtb3BhY2l0eT0iMC40Ii8+CjxwYXRoIGQ9Ik03IDUuNzk2NzhDNyA1LjAxMjkyIDcuODYwODQgNC41MzM4MiA4LjUyNzAxIDQuOTQ2OTJMMTAuMDc0OCA1LjkwNjczQzEwLjM5NzYgNi4xMDY5MSAxMC44MDYgNi4xMDY5MSAxMS4xMjg4IDUuOTA2NzNMMTMuNjc2NiA0LjMyNjgxQzEzLjk5OTQgNC4xMjY2MiAxNC40MDc4IDQuMTI2NjIgMTQuNzMwNiA0LjMyNjgxTDE3LjI3ODQgNS45MDY3M0MxNy42MDEyIDYuMTA2OTEgMTguMDA5NiA2LjEwNjkxIDE4LjMzMjQgNS45MDY3M0wyMC44ODAyIDQuMzI2ODFDMjEuMjAzMSA0LjEyNjYyIDIxLjYxMTQgNC4xMjY2MiAyMS45MzQyIDQuMzI2ODFMMjQuNDgyIDUuOTA2NzNDMjQuODA0OSA2LjEwNjkxIDI1LjIxMzIgNi4xMDY5MSAyNS41MzYxIDUuOTA2NzNMMjcuMDc4MyA0Ljk1MDM1QzI3Ljc0NTcgNC41MzY1MiAyOC42MDc3IDUuMDE4MDUgMjguNjA1MyA1LjgwMzI4TDI4LjUzMzQgMjkuMjIyM0MyOC41MjY5IDMxLjM0NDMgMjYuODA0OSAzMy4wNjEgMjQuNjgyOSAzMy4wNjFIMTAuODUwNkM4LjcyMzk1IDMzLjA2MSA3IDMxLjMzNzEgNyAyOS4yMTA1VjUuNzk2NzhaIiBmaWxsPSIjMjMyNTQ2Ii8+CjxwYXRoIGQ9Ik03IDUuNzk2NzhDNyA1LjAxMjkyIDcuODYwODQgNC41MzM4MiA4LjUyNzAxIDQuOTQ2OTJMMTAuMDc0OCA1LjkwNjczQzEwLjM5NzYgNi4xMDY5MSAxMC44MDYgNi4xMDY5MSAxMS4xMjg4IDUuOTA2NzNMMTMuNjc2NiA0LjMyNjgxQzEzLjk5OTQgNC4xMjY2MiAxNC40MDc4IDQuMTI2NjIgMTQuNzMwNiA0LjMyNjgxTDE3LjI3ODQgNS45MDY3M0MxNy42MDEyIDYuMTA2OTEgMTguMDA5NiA2LjEwNjkxIDE4LjMzMjQgNS45MDY3M0wyMC44ODAyIDQuMzI2ODFDMjEuMjAzMSA0LjEyNjYyIDIxLjYxMTQgNC4xMjY2MiAyMS45MzQyIDQuMzI2ODFMMjQuNDgyIDUuOTA2NzNDMjQuODA0OSA2LjEwNjkxIDI1LjIxMzIgNi4xMDY5MSAyNS41MzYxIDUuOTA2NzNMMjcuMDc4MyA0Ljk1MDM1QzI3Ljc0NTcgNC41MzY1MiAyOC42MDc3IDUuMDE4MDUgMjguNjA1MyA1LjgwMzI4TDI4LjUzMzQgMjkuMjIyM0MyOC41MjY5IDMxLjM0NDMgMjYuODA0OSAzMy4wNjEgMjQuNjgyOSAzMy4wNjFIMTAuODUwNkM4LjcyMzk1IDMzLjA2MSA3IDMxLjMzNzEgNyAyOS4yMTA1VjUuNzk2NzhaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfMV8xMjY2MykiLz4KPHBhdGggZD0iTTcgNS43OTY3OEM3IDUuMDEyOTIgNy44NjA4NCA0LjUzMzgyIDguNTI3MDEgNC45NDY5MkwxMC4wNzQ4IDUuOTA2NzNDMTAuMzk3NiA2LjEwNjkxIDEwLjgwNiA2LjEwNjkxIDExLjEyODggNS45MDY3M0wxMy42NzY2IDQuMzI2ODFDMTMuOTk5NCA0LjEyNjYyIDE0LjQwNzggNC4xMjY2MiAxNC43MzA2IDQuMzI2ODFMMTcuMjc4NCA1LjkwNjczQzE3LjYwMTIgNi4xMDY5MSAxOC4wMDk2IDYuMTA2OTEgMTguMzMyNCA1LjkwNjczTDIwLjg4MDIgNC4zMjY4MUMyMS4yMDMxIDQuMTI2NjIgMjEuNjExNCA0LjEyNjYyIDIxLjkzNDIgNC4zMjY4MUwyNC40ODIgNS45MDY3M0MyNC44MDQ5IDYuMTA2OTEgMjUuMjEzMiA2LjEwNjkxIDI1LjUzNjEgNS45MDY3M0wyNy4wNzgzIDQuOTUwMzVDMjcuNzQ1NyA0LjUzNjUyIDI4LjYwNzcgNS4wMTgwNSAyOC42MDUzIDUuODAzMjhMMjguNTMzNCAyOS4yMjIzQzI4LjUyNjkgMzEuMzQ0MyAyNi44MDQ5IDMzLjA2MSAyNC42ODI5IDMzLjA2MUgxMC44NTA2QzguNzIzOTUgMzMuMDYxIDcgMzEuMzM3MSA3IDI5LjIxMDVWNS43OTY3OFoiIHN0cm9rZT0idXJsKCNwYWludDJfbGluZWFyXzFfMTI2NjMpIiBzdHJva2Utd2lkdGg9IjAuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTQuOTkwNSAxMy4xNzk3SDE2LjUyNEMxOC42NTUzIDEzLjE3OTcgMjAuMzgzIDE0LjkwNzQgMjAuMzgzIDE3LjAzODZDMjAuMzgzIDE5LjE2OTkgMTguNjU1MyAyMC44OTc2IDE2LjUyNCAyMC44OTc2SDE0LjY4MzdMMTguODgzMSAyNi44Mzg5IiBzdHJva2U9IndoaXRlIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE0LjIyMDcgMTMuMTc5N0gyMi4zNzgxIiBzdHJva2U9IndoaXRlIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTE0LjIyMDcgMTcuMDYyNUgyMi4zNzgxIiBzdHJva2U9IndoaXRlIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8xXzEyNjYzIiB4MT0iMjEuNjU3IiB5MT0iNy44NTE1NiIgeDI9IjIxLjY1NyIgeTI9IjM2LjkxMjYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzJDQzQ4QiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNTVFNDMiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDFfbGluZWFyXzFfMTI2NjMiIHgxPSIxNy44MDU0IiB5MT0iNCIgeDI9IjE3LjgwNTQiIHkyPSIzMy4wNjEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzJDQzQ4QiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNTVFNDMiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzFfMTI2NjMiIHgxPSIxNy44MDU0IiB5MT0iNCIgeDI9IjE3LjgwNTQiIHkyPSIzMy4wNjEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0id2hpdGUiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJ3aGl0ZSIgc3RvcC1vcGFjaXR5PSIwIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==" alt="" class="benefit-icon" />
@@ -921,7 +1036,7 @@
                     Infinite covers the gap. From day one.
                   </p>
                 </div>
-              </article>
+              </article></div>
             </div>
 
             <a class="view-all" href="#">
@@ -949,7 +1064,7 @@
       <!-- ============== BODY CONTENT ============== -->
       <div class="body-content">
         <!-- Partners -->
-        <section class="partners">
+        <section class="partners reveal">
           <div class="section-eyebrow">
             <span class="eyebrow-line"></span>
             <span class="eyebrow-text">In partnership with</span>
@@ -962,14 +1077,36 @@
           />
         </section>
 
+
+        <!-- Desire / Social proof strip -->
+        <section class="social-proof reveal">
+          <div class="proof-strip">
+            <div class="proof-stat">
+              <span class="proof-number">47,200+</span>
+              <span class="proof-label">families covered</span>
+            </div>
+            <div class="proof-divider" aria-hidden="true"></div>
+            <div class="proof-stat">
+              <span class="proof-number">3 insurers</span>
+              <span class="proof-label">live · more coming</span>
+            </div>
+            <div class="proof-divider" aria-hidden="true"></div>
+            <div class="proof-stat">
+              <span class="proof-number">Day 1</span>
+              <span class="proof-label">50% off inpatient</span>
+            </div>
+          </div>
+        </section>
+
         <!-- Who can get Even Infinite? -->
-        <section class="eligibility">
+        <section class="eligibility reveal">
           <div class="section-eyebrow">
             <span class="eyebrow-line"></span>
             <span class="eyebrow-text">Who can get Even Infinite?</span>
             <span class="eyebrow-line"></span>
           </div>
           <div class="eligibility-list">
+            <div class="eligibility-card-shell reveal reveal-delay-1">
             <article class="eligibility-card">
               <span class="elig-glow" aria-hidden="true"></span>
               <img
@@ -985,6 +1122,8 @@
                 </p>
               </div>
             </article>
+            </div>
+            <div class="eligibility-card-shell reveal reveal-delay-2">
             <article class="eligibility-card">
               <span class="elig-glow" aria-hidden="true"></span>
               <img
@@ -1000,6 +1139,8 @@
                 </p>
               </div>
             </article>
+            </div>
+            <div class="eligibility-card-shell reveal reveal-delay-3">
             <article class="eligibility-card">
               <span class="elig-glow" aria-hidden="true"></span>
               <img
@@ -1014,11 +1155,12 @@
                 </p>
               </div>
             </article>
+            </div>
           </div>
         </section>
 
         <!-- How to use Even Infinite -->
-        <section class="how-to-use">
+        <section class="how-to-use reveal">
           <span class="how-glow" aria-hidden="true"></span>
           <div class="section-eyebrow">
             <span class="eyebrow-line"></span>
@@ -1027,34 +1169,46 @@
           </div>
           <ol class="steps">
             <li class="step">
+              <span class="step-num">1</span>
+              <div class="step-card-shell">
               <div class="step-card">
                 <h4>Book or walk in</h4>
                 <p>Book on the Even app or visit Even Hospitals.</p>
               </div>
+              </div>
             </li>
             <li class="step">
+              <span class="step-num">2</span>
+              <div class="step-card-shell">
               <div class="step-card">
                 <h4>Show your Even Infinite pass</h4>
                 <p>Use your virtual card at the hospital.</p>
               </div>
+              </div>
             </li>
             <li class="step">
+              <span class="step-num">3</span>
+              <div class="step-card-shell">
               <div class="step-card">
                 <h4>Consult for free</h4>
                 <p>If your doctor prescribes a test, it is free too.</p>
               </div>
+              </div>
             </li>
             <li class="step">
+              <span class="step-num">4</span>
+              <div class="step-card-shell">
               <div class="step-card">
                 <h4>Need a procedure or surgery?</h4>
                 <p>Talk to our team. We'll guide you on next steps and costs.</p>
+              </div>
               </div>
             </li>
           </ol>
         </section>
 
         <!-- Need help -->
-        <section class="need-help">
+        <section class="need-help reveal">
           <span class="help-glow" aria-hidden="true"></span>
           <div class="need-help-text">
             <h4>Need help?</h4>
@@ -1070,7 +1224,7 @@
         </section>
 
         <!-- FAQ -->
-        <section class="faq">
+        <section class="faq reveal">
           <div class="section-eyebrow">
             <span class="eyebrow-line"></span>
             <span class="eyebrow-text">Frequently asked questions</span>
@@ -1310,7 +1464,7 @@
                 stroke-width="1.6"
                 stroke-linecap="round"
               />
-            </svg>
+            </svg></span>
           </button>
         </div>
 
@@ -1373,5 +1527,20 @@
     <!-- Vercel Web Analytics + Speed Insights (auto-served by Vercel on deploy) -->
     <script defer src="/_vercel/insights/script.js"></script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
+    <script>
+  (function() {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      observer.observe(el);
+    });
+  })();
+</script>
   </body>
 </html>
