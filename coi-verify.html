@@ -3018,6 +3018,17 @@ wireFormEvents();
 updateStats();
 renderQueue();
 
+// Deep-link: ?id=<applicationId> auto-selects that application.
+// Used by admin.html when an ops agent clicks a row.
+(function autoSelectFromUrl() {
+  try {
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (!id) return;
+    const exists = loadApps().some(a => a.id === id);
+    if (exists) selectApp(id);
+  } catch (e) { /* no-op */ }
+})();
+
 window.addEventListener('storage', e => {
   if (e.key === 'evenApplications' || e.key === 'coiVerifications') {
     updateStats();

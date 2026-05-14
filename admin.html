@@ -236,9 +236,12 @@
         vertical-align: top;
         color: var(--ink);
       }
-      tbody tr { transition: background 0.12s; }
+      tbody tr { transition: background 0.12s; cursor: pointer; }
       tbody tr:hover { background: var(--bg-soft); }
       tbody tr:last-child td { border-bottom: 0; }
+      /* Don't bubble pointer cursor into the View raw details */
+      tbody tr details.row-expand { cursor: default; }
+      tbody tr details.row-expand summary { cursor: pointer; }
 
       .status-badge {
         font-size: 10.5px;
@@ -552,6 +555,18 @@
           </div>
         `;
       }
+
+      // Row click → open the verify tool deep-linked to this application.
+      // Delegated so it survives every render() re-build of the table body.
+      tableHost.addEventListener("click", (e) => {
+        // Ignore clicks inside <details> (View raw expander)
+        if (e.target.closest("details.row-expand")) return;
+        const tr = e.target.closest("tr[data-id]");
+        if (!tr) return;
+        const id = tr.dataset.id;
+        if (!id) return;
+        window.location.href = `coi-verify.html?id=${encodeURIComponent(id)}`;
+      });
 
       filterButtons.forEach((b) => {
         b.addEventListener("click", () => {
