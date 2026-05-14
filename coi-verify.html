@@ -1,1296 +1,1738 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>COI Verification · Even Infinite</title>
-    <style>
-      *, *::before, *::after { box-sizing: border-box; }
-      html, body { margin: 0; padding: 0; height: 100%; }
-      body {
-        background: #0a0c18;
-        color: #fff;
-        font-family: "Centra No2", "Inter", -apple-system, BlinkMacSystemFont,
-          "Helvetica Neue", Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      button { font-family: inherit; border: 0; background: transparent; color: inherit; cursor: pointer; }
-      a { color: #5c82ff; text-decoration: none; }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>COI Verification · Even</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body {
+      background: #0a0c18;
+      color: #e8eeff;
+      font-family: "Centra No2", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    button { font-family: inherit; border: 0; background: transparent; color: inherit; cursor: pointer; }
+    a { color: #5c82ff; text-decoration: none; }
+    input, select, textarea { font-family: inherit; }
 
-      /* ── TOPBAR ── */
-      .topbar {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-        padding: 14px 20px;
-        border-bottom: 1px solid rgba(157, 188, 255, 0.12);
-        background: rgba(10, 12, 24, 0.95);
-        flex-shrink: 0;
-        z-index: 10;
-      }
-      .topbar-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin: 0;
-        margin-right: 4px;
-        white-space: nowrap;
-      }
-      .topbar-stats {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        flex: 1;
-      }
-      .stat-chip {
-        background: rgba(157, 188, 255, 0.08);
-        border: 1px solid rgba(157, 188, 255, 0.2);
-        color: rgba(255,255,255,0.7);
-        font-size: 12px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 20px;
-        white-space: nowrap;
-      }
-      .stat-chip .chip-val {
-        color: #fff;
-        font-weight: 700;
-        margin-left: 4px;
-      }
-      .stat-chip.chip-verified { border-color: rgba(44,196,139,0.4); }
-      .stat-chip.chip-verified .chip-val { color: #5fe2b1; }
-      .stat-chip.chip-rejected { border-color: rgba(255,80,80,0.4); }
-      .stat-chip.chip-rejected .chip-val { color: #ff8080; }
-      .stat-chip.chip-waitlisted { border-color: rgba(255,193,7,0.4); }
-      .stat-chip.chip-waitlisted .chip-val { color: #ffd166; }
-      .stat-chip.chip-escalated { border-color: rgba(255,140,0,0.4); }
-      .stat-chip.chip-escalated .chip-val { color: #ffb347; }
+    /* ── TOPBAR ─────────────────────────────────────────────────── */
+    .topbar {
+      flex-shrink: 0;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px;
+      border-bottom: 1px solid rgba(157,188,255,0.1);
+      background: rgba(8,10,20,0.98);
+      z-index: 100;
+    }
+    .topbar-brand {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      color: #fff;
+    }
+    .topbar-divider { width: 1px; height: 20px; background: rgba(157,188,255,0.15); flex-shrink: 0; }
+    .topbar-stats {
+      display: flex;
+      gap: 5px;
+      flex: 1;
+      overflow: hidden;
+    }
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(157,188,255,0.06);
+      border: 1px solid rgba(157,188,255,0.14);
+      color: rgba(255,255,255,0.55);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .stat-chip .sv { font-weight: 700; }
+    .stat-chip.s-verified { border-color: rgba(44,196,139,0.3); }
+    .stat-chip.s-verified .sv { color: #5fe2b1; }
+    .stat-chip.s-rejected { border-color: rgba(255,80,80,0.3); }
+    .stat-chip.s-rejected .sv { color: #ff8080; }
+    .stat-chip.s-waitlisted { border-color: rgba(255,193,7,0.3); }
+    .stat-chip.s-waitlisted .sv { color: #ffd166; }
+    .stat-chip.s-escalated { border-color: rgba(255,140,0,0.3); }
+    .stat-chip.s-escalated .sv { color: #ffb347; }
+    .topbar-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+    .tb-btn {
+      background: rgba(157,188,255,0.08);
+      border: 1px solid rgba(157,188,255,0.18);
+      color: rgba(255,255,255,0.8);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .tb-btn:hover { background: rgba(157,188,255,0.14); border-color: rgba(157,188,255,0.3); }
+    .tb-btn.primary { background: #0055ff; border-color: #0055ff; color: #fff; }
+    .tb-btn.primary:hover { background: #1a6aff; }
+    .save-flash {
+      font-size: 11px;
+      font-weight: 700;
+      color: #5fe2b1;
+      opacity: 0;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .save-flash.show { opacity: 1; }
 
-      .topbar-actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        flex-shrink: 0;
-      }
-      .topbar-actions a,
-      .topbar-actions button {
-        background: rgba(157, 188, 255, 0.1);
-        border: 1px solid rgba(157, 188, 255, 0.25);
-        color: #fff;
-        padding: 7px 14px;
-        border-radius: 24px;
-        font-size: 13px;
-        font-weight: 700;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .topbar-actions .primary {
-        background: #0055ff;
-        border-color: #0055ff;
-      }
+    /* ── THREE PANE ─────────────────────────────────────────────── */
+    .main-split {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
 
-      /* ── SPLIT PANE ── */
-      .split {
-        display: flex;
-        flex: 1;
-        overflow: hidden;
-      }
+    /* ── QUEUE PANE ─────────────────────────────────────────────── */
+    .queue-pane {
+      width: 248px;
+      min-width: 220px;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(157,188,255,0.1);
+      display: flex;
+      flex-direction: column;
+      background: rgba(8,10,20,0.6);
+    }
+    .queue-header {
+      padding: 10px 10px 8px;
+      border-bottom: 1px solid rgba(157,188,255,0.07);
+      flex-shrink: 0;
+    }
+    .q-search {
+      width: 100%;
+      height: 34px;
+      background: rgba(157,188,255,0.06);
+      border: 1px solid rgba(157,188,255,0.15);
+      border-radius: 8px;
+      color: #e8eeff;
+      font-size: 12.5px;
+      padding: 0 10px;
+      outline: none;
+      margin-bottom: 8px;
+      transition: border-color 0.15s;
+    }
+    .q-search:focus { border-color: rgba(0,85,255,0.5); }
+    .q-search::placeholder { color: rgba(255,255,255,0.25); }
+    .q-filters { display: flex; gap: 4px; flex-wrap: wrap; }
+    .q-pill {
+      background: transparent;
+      border: 1px solid rgba(157,188,255,0.15);
+      color: rgba(255,255,255,0.5);
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .q-pill:hover { border-color: rgba(157,188,255,0.3); color: rgba(255,255,255,0.8); }
+    .q-pill.active { background: rgba(0,85,255,0.22); border-color: rgba(0,85,255,0.7); color: #fff; }
+    .queue-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px;
+    }
+    .queue-list::-webkit-scrollbar { width: 3px; }
+    .queue-list::-webkit-scrollbar-thumb { background: rgba(157,188,255,0.15); border-radius: 3px; }
+    .queue-empty { padding: 32px 12px; text-align: center; color: rgba(255,255,255,0.3); font-size: 12px; line-height: 1.5; }
+    .queue-empty strong { display: block; color: rgba(255,255,255,0.55); margin-bottom: 4px; font-size: 13px; }
 
-      /* ── LEFT PANEL ── */
-      .left-panel {
-        width: 320px;
-        min-width: 280px;
-        flex-shrink: 0;
-        border-right: 1px solid rgba(157, 188, 255, 0.12);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      .left-header {
-        padding: 14px 14px 10px;
-        border-bottom: 1px solid rgba(157, 188, 255, 0.08);
-        flex-shrink: 0;
-      }
-      .search-input {
-        width: 100%;
-        height: 36px;
-        background: rgba(26, 29, 59, 0.8);
-        border: 1px solid rgba(157, 188, 255, 0.2);
-        border-radius: 10px;
-        color: #fff;
-        font-family: inherit;
-        font-size: 13px;
-        padding: 0 12px;
-        outline: none;
-        margin-bottom: 10px;
-      }
-      .search-input:focus { border-color: rgba(0, 85, 255, 0.6); }
-      .search-input::placeholder { color: rgba(255,255,255,0.35); }
+    .qcard {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(157,188,255,0.08);
+      background: transparent;
+      margin-bottom: 4px;
+      cursor: pointer;
+      transition: all 0.12s;
+      position: relative;
+      overflow: hidden;
+    }
+    .qcard::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2.5px;
+      background: transparent;
+      transition: background 0.15s;
+    }
+    .qcard:hover { background: rgba(157,188,255,0.05); border-color: rgba(157,188,255,0.18); }
+    .qcard.selected { background: rgba(0,85,255,0.1); border-color: rgba(0,85,255,0.45); }
+    .qcard.selected::before { background: #0055ff; }
+    .qcard.vs-verified::before { background: #5fe2b1; }
+    .qcard.vs-rejected::before { background: #ff8080; }
+    .qcard.vs-waitlisted::before { background: #ffd166; }
+    .qcard.vs-escalated::before { background: #ffb347; }
+    .qcard-name { font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 2px; }
+    .qcard-meta { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 5px; }
+    .qcard-bottom { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+    .qcard-insurer { font-size: 10.5px; color: rgba(157,188,255,0.7); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px; }
 
-      .filter-pills {
-        display: flex;
-        gap: 5px;
-        flex-wrap: wrap;
-      }
-      .filter-pill {
-        background: rgba(157, 188, 255, 0.08);
-        border: 1px solid rgba(157, 188, 255, 0.18);
-        color: rgba(255,255,255,0.7);
-        font-size: 11px;
-        font-weight: 600;
-        padding: 4px 9px;
-        border-radius: 20px;
-        cursor: pointer;
-      }
-      .filter-pill.active {
-        background: rgba(0, 85, 255, 0.3);
-        border-color: #0055ff;
-        color: #fff;
-      }
+    /* Status badges */
+    .sbadge {
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .sb-pending    { background: rgba(157,188,255,0.1); color: #9dbcff; border: 1px solid rgba(157,188,255,0.25); }
+    .sb-verified   { background: rgba(44,196,139,0.12); color: #5fe2b1; border: 1px solid rgba(44,196,139,0.35); }
+    .sb-rejected   { background: rgba(255,80,80,0.12); color: #ff8080; border: 1px solid rgba(255,80,80,0.35); }
+    .sb-waitlisted { background: rgba(255,193,7,0.12); color: #ffd166; border: 1px solid rgba(255,193,7,0.35); }
+    .sb-escalated  { background: rgba(255,140,0,0.12); color: #ffb347; border: 1px solid rgba(255,140,0,0.35); }
 
-      .app-list {
-        flex: 1;
-        overflow-y: auto;
-        padding: 8px 8px;
-      }
-      .app-list::-webkit-scrollbar { width: 4px; }
-      .app-list::-webkit-scrollbar-track { background: transparent; }
-      .app-list::-webkit-scrollbar-thumb { background: rgba(157,188,255,0.2); border-radius: 4px; }
+    /* ── VIEWER PANE ─────────────────────────────────────────────── */
+    .viewer-pane {
+      flex: 1;
+      min-width: 340px;
+      border-right: 1px solid rgba(157,188,255,0.1);
+      display: flex;
+      flex-direction: column;
+      background: #0d0f1e;
+    }
+    .viewer-header {
+      flex-shrink: 0;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(157,188,255,0.08);
+      background: rgba(8,10,20,0.7);
+    }
+    .viewer-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: rgba(255,255,255,0.4);
+      flex: 1;
+    }
+    .viewer-actions { display: flex; gap: 6px; align-items: center; }
+    .v-btn {
+      background: rgba(157,188,255,0.07);
+      border: 1px solid rgba(157,188,255,0.15);
+      color: rgba(255,255,255,0.65);
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.12s;
+      text-decoration: none;
+    }
+    .v-btn:hover { background: rgba(157,188,255,0.12); color: #fff; border-color: rgba(157,188,255,0.3); }
+    .v-btn.ocr-active { background: rgba(255,193,7,0.12); border-color: rgba(255,193,7,0.4); color: #ffd166; }
+    .v-btn.extract-active { background: rgba(44,196,139,0.12); border-color: rgba(44,196,139,0.4); color: #5fe2b1; }
+    .viewer-body {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    .viewer-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #f5f5f5;
+    }
+    .viewer-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+      padding: 32px;
+    }
+    .viewer-empty svg { opacity: 0.2; }
+    .viewer-empty p { margin: 0; font-size: 13px; line-height: 1.5; }
+    .viewer-empty strong { display: block; color: rgba(255,255,255,0.35); font-size: 15px; margin-bottom: 4px; }
 
-      .app-card {
-        padding: 12px;
-        border-radius: 10px;
-        border: 1px solid rgba(157, 188, 255, 0.1);
-        background: rgba(20, 22, 38, 0.4);
-        margin-bottom: 6px;
-        cursor: pointer;
-        transition: border-color 0.15s, background 0.15s;
-      }
-      .app-card:hover {
-        border-color: rgba(157, 188, 255, 0.3);
-        background: rgba(20, 22, 38, 0.7);
-      }
-      .app-card.selected {
-        border: 1px solid #0055ff;
-        background: rgba(0, 85, 255, 0.1);
-      }
-      .app-card-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 8px;
-        margin-bottom: 6px;
-      }
-      .app-card-name {
-        font-weight: 700;
-        font-size: 14px;
-        line-height: 1.3;
-      }
-      .app-card-phone {
-        color: rgba(255,255,255,0.5);
-        font-size: 12px;
-        margin-top: 1px;
-      }
-      .app-card-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 3px;
-        margin-bottom: 6px;
-      }
-      .tag {
-        display: inline-block;
-        font-size: 10px;
-        padding: 2px 7px;
-        border-radius: 20px;
-        background: rgba(157, 188, 255, 0.12);
-        border: 1px solid rgba(157, 188, 255, 0.18);
-        color: #d6e4ff;
-      }
-      .app-card-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .app-card-date {
-        color: rgba(255,255,255,0.4);
-        font-size: 11px;
-      }
+    .ocr-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(8,10,20,0.88);
+      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      z-index: 10;
+    }
+    .ocr-progress-wrap { width: 220px; }
+    .ocr-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); text-align: center; margin-bottom: 10px; }
+    .ocr-bar-bg { height: 4px; background: rgba(157,188,255,0.12); border-radius: 4px; overflow: hidden; }
+    .ocr-bar-fill { height: 100%; background: #5c82ff; border-radius: 4px; width: 0%; transition: width 0.2s; }
 
-      /* Status badges */
-      .status-badge {
-        font-size: 10px;
-        font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 20px;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        white-space: nowrap;
-      }
-      .vstatus-pending    { background: rgba(157,188,255,0.12); color: #9dbcff; border: 1px solid rgba(157,188,255,0.3); }
-      .vstatus-verified   { background: rgba(44,196,139,0.15); color: #5fe2b1; border: 1px solid rgba(44,196,139,0.4); }
-      .vstatus-rejected   { background: rgba(255,80,80,0.15); color: #ff8080; border: 1px solid rgba(255,80,80,0.4); }
-      .vstatus-waitlisted { background: rgba(255,193,7,0.15); color: #ffd166; border: 1px solid rgba(255,193,7,0.4); }
-      .vstatus-escalated  { background: rgba(255,140,0,0.15); color: #ffb347; border: 1px solid rgba(255,140,0,0.4); }
+    /* ── FORM PANE ─────────────────────────────────────────────── */
+    .form-pane {
+      width: 420px;
+      min-width: 360px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .form-pane-header {
+      flex-shrink: 0;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px;
+      border-bottom: 1px solid rgba(157,188,255,0.08);
+      background: rgba(8,10,20,0.7);
+    }
+    .form-pane-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .form-pane-placeholder { color: rgba(255,255,255,0.25); font-weight: 400; font-style: italic; }
 
-      .left-empty {
-        padding: 40px 16px;
-        text-align: center;
-        color: rgba(255,255,255,0.45);
-        font-size: 13px;
-      }
-      .left-empty strong { display: block; color: #fff; font-size: 15px; margin-bottom: 6px; }
+    .form-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px 48px;
+    }
+    .form-body::-webkit-scrollbar { width: 4px; }
+    .form-body::-webkit-scrollbar-thumb { background: rgba(157,188,255,0.15); border-radius: 4px; }
 
-      /* ── RIGHT PANEL ── */
-      .right-panel {
-        flex: 1;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-      }
-      .right-panel::-webkit-scrollbar { width: 5px; }
-      .right-panel::-webkit-scrollbar-track { background: transparent; }
-      .right-panel::-webkit-scrollbar-thumb { background: rgba(157,188,255,0.2); border-radius: 4px; }
+    .form-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+      color: rgba(255,255,255,0.25);
+    }
+    .form-empty svg { opacity: 0.15; margin-bottom: 12px; }
+    .form-empty p { margin: 0; font-size: 13px; line-height: 1.5; }
+    .form-empty strong { color: rgba(255,255,255,0.4); font-size: 15px; }
 
-      .right-empty {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255,255,255,0.35);
-        gap: 10px;
-        padding: 40px;
-        text-align: center;
-      }
-      .right-empty svg { opacity: 0.2; }
-      .right-empty p { margin: 0; font-size: 15px; }
+    /* ── SECTIONS ─────────────────────────────────────────────── */
+    .fsec {
+      margin-bottom: 10px;
+      background: rgba(20,22,40,0.55);
+      border: 1px solid rgba(157,188,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .fsec-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(157,188,255,0.07);
+      transition: background 0.12s;
+    }
+    .fsec-toggle:hover { background: rgba(157,188,255,0.04); }
+    .fsec-toggle .chev { opacity: 0.4; font-size: 10px; transition: transform 0.18s; }
+    .fsec-toggle.collapsed .chev { transform: rotate(-90deg); }
+    .fsec-body { padding: 12px; }
+    .fsec-body.hidden { display: none; }
 
-      .detail-wrap {
-        padding: 20px 24px 60px;
-        max-width: 900px;
-        width: 100%;
-      }
-      .detail-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 20px;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-      .detail-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin: 0 0 4px;
-      }
-      .detail-subtitle {
-        color: rgba(255,255,255,0.5);
-        font-size: 13px;
-      }
-      .save-flash {
-        font-size: 12px;
-        font-weight: 700;
-        color: #5fe2b1;
-        opacity: 0;
-        transition: opacity 0.2s;
-        align-self: center;
-      }
-      .save-flash.show { opacity: 1; }
+    /* ── FORM FIELDS ─────────────────────────────────────────── */
+    .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; }
+    .fgrid.single { grid-template-columns: 1fr; }
+    .fcol-full { grid-column: 1 / -1; }
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .flabel {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.38);
+    }
+    .fval {
+      font-size: 13px;
+      color: #e8eeff;
+      line-height: 1.4;
+    }
+    .fval.muted { color: rgba(255,255,255,0.35); font-style: italic; }
+    .member-tags { display: flex; flex-wrap: wrap; gap: 3px; }
+    .mtag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(92,130,255,0.12);
+      border: 1px solid rgba(92,130,255,0.25);
+      color: #9dbcff;
+    }
+    .finput, .fselect, .ftextarea {
+      width: 100%;
+      background: rgba(157,188,255,0.05);
+      border: 1px solid rgba(157,188,255,0.15);
+      border-radius: 7px;
+      color: #e8eeff;
+      font-size: 13px;
+      padding: 7px 10px;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+      -webkit-appearance: none;
+    }
+    .finput:focus, .fselect:focus, .ftextarea:focus {
+      border-color: rgba(0,85,255,0.55);
+      background: rgba(0,85,255,0.05);
+    }
+    .finput::placeholder, .ftextarea::placeholder { color: rgba(255,255,255,0.2); }
+    .fselect {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(157,188,255,0.4)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+      cursor: pointer;
+    }
+    .fselect option { background: #1a1d3b; color: #e8eeff; }
+    .ftextarea { resize: vertical; line-height: 1.5; min-height: 64px; }
+    .finput[readonly], .ftextarea[readonly] {
+      color: rgba(255,255,255,0.4);
+      cursor: default;
+      background: rgba(157,188,255,0.02);
+    }
 
-      /* ── SECTIONS ── */
-      .section {
-        background: rgba(20, 22, 38, 0.6);
-        border: 1px solid rgba(157, 188, 255, 0.12);
-        border-radius: 14px;
-        margin-bottom: 16px;
-        overflow: hidden;
-      }
-      .section-toggle {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 18px;
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: rgba(255,255,255,0.7);
-        cursor: pointer;
-        background: rgba(255,255,255,0.02);
-        border-bottom: 1px solid rgba(157,188,255,0.08);
-      }
-      .section-toggle .chevron {
-        transition: transform 0.2s;
-        opacity: 0.5;
-        font-size: 11px;
-      }
-      .section-toggle.collapsed .chevron { transform: rotate(-90deg); }
-      .section-body {
-        padding: 16px 18px;
-      }
-      .section-body.hidden { display: none; }
+    /* ── DECISION STATUS SELECT ─────────────────────────────── */
+    #vstatus {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 28px 8px 12px;
+      border-width: 1.5px;
+    }
+    #vstatus.vs-pending    { border-color: rgba(157,188,255,0.3); background: rgba(157,188,255,0.05); color: #9dbcff; }
+    #vstatus.vs-verified   { border-color: rgba(44,196,139,0.45); background: rgba(44,196,139,0.06); color: #5fe2b1; }
+    #vstatus.vs-rejected   { border-color: rgba(255,80,80,0.45);  background: rgba(255,80,80,0.06);  color: #ff8080; }
+    #vstatus.vs-waitlisted { border-color: rgba(255,193,7,0.45);  background: rgba(255,193,7,0.06);  color: #ffd166; }
+    #vstatus.vs-escalated  { border-color: rgba(255,140,0,0.45);  background: rgba(255,140,0,0.06);  color: #ffb347; }
 
-      /* ── GRID ── */
-      .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px 20px;
-      }
-      .grid-field label {
-        display: block;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: rgba(255,255,255,0.45);
-        margin-bottom: 5px;
-      }
-      .grid-field .field-val {
-        font-size: 14px;
-        color: #fff;
-        line-height: 1.4;
-      }
-      .grid-field .field-val.muted { color: rgba(255,255,255,0.45); font-style: italic; }
+    .rejection-panel {
+      background: rgba(255,80,80,0.04);
+      border: 1px solid rgba(255,80,80,0.12);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 8px;
+      display: none;
+    }
+    .rejection-panel.show { display: block; }
+    .reason-hint {
+      margin-top: 8px;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.4);
+      font-style: italic;
+      line-height: 1.45;
+      padding: 8px;
+      background: rgba(157,188,255,0.03);
+      border: 1px solid rgba(157,188,255,0.08);
+      border-radius: 6px;
+      display: none;
+    }
+    .reason-hint.show { display: block; }
 
-      .member-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-      .member-tag {
-        font-size: 12px;
-        padding: 3px 9px;
-        border-radius: 20px;
-        background: rgba(92, 130, 255, 0.15);
-        border: 1px solid rgba(92, 130, 255, 0.3);
-        color: #9dbcff;
-      }
+    /* ── MEMBERS SECTION ─────────────────────────────────────── */
+    .member-group { margin-bottom: 12px; }
+    .member-group:last-child { margin-bottom: 0; }
+    .member-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.38);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .add-member-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(92,130,255,0.1);
+      border: 1px solid rgba(92,130,255,0.25);
+      color: #9dbcff;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .add-member-btn:hover { background: rgba(92,130,255,0.18); border-color: rgba(92,130,255,0.45); color: #c4d6ff; }
+    .member-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+    .member-row .finput { font-size: 12px; padding: 5px 8px; }
+    .member-row .name-in { flex: 1.2; }
+    .member-row .dob-in { flex: 1; min-width: 0; }
+    .member-row .dob-in::placeholder { font-size: 11px; }
+    .remove-member-btn {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(255,80,80,0.1);
+      border: 1px solid rgba(255,80,80,0.2);
+      color: rgba(255,80,80,0.7);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.12s;
+      line-height: 1;
+    }
+    .remove-member-btn:hover { background: rgba(255,80,80,0.2); color: #ff8080; border-color: rgba(255,80,80,0.4); }
+    .no-members-hint { font-size: 11.5px; color: rgba(255,255,255,0.25); font-style: italic; padding: 4px 0; }
 
-      /* ── FORM FIELDS ── */
-      .form-input,
-      .form-select,
-      .form-textarea {
-        width: 100%;
-        background: rgba(26, 29, 59, 0.7);
-        border: 1px solid rgba(157, 188, 255, 0.2);
-        border-radius: 8px;
-        color: #fff;
-        font-family: inherit;
-        font-size: 14px;
-        padding: 8px 12px;
-        outline: none;
-        transition: border-color 0.15s;
-      }
-      .form-input:focus,
-      .form-select:focus,
-      .form-textarea:focus {
-        border-color: rgba(0, 85, 255, 0.6);
-      }
-      .form-input::placeholder,
-      .form-textarea::placeholder { color: rgba(255,255,255,0.3); }
-      .form-select {
-        appearance: none;
-        -webkit-appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(157,188,255,0.5)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        padding-right: 32px;
-        cursor: pointer;
-      }
-      .form-select option { background: #1a1d3b; color: #fff; }
-      .form-textarea { resize: vertical; line-height: 1.5; }
-      .form-input[readonly], .form-textarea[readonly] {
-        color: rgba(255,255,255,0.55);
-        cursor: default;
-        background: rgba(157, 188, 255, 0.04);
-      }
+    /* ── PED TAG PICKER ─────────────────────────────────────── */
+    .ped-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .ped-tag {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(157,188,255,0.06);
+      border: 1px solid rgba(157,188,255,0.14);
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .ped-tag:hover { background: rgba(157,188,255,0.1); color: rgba(255,255,255,0.8); border-color: rgba(157,188,255,0.3); }
+    .ped-tag.selected {
+      background: rgba(255,193,7,0.12);
+      border-color: rgba(255,193,7,0.4);
+      color: #ffd166;
+    }
+    .ped-note { font-size: 10.5px; color: rgba(255,255,255,0.25); margin-top: 6px; font-style: italic; }
 
-      .form-label {
-        display: block;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: rgba(255,255,255,0.45);
-        margin-bottom: 5px;
-      }
-      .form-group { margin-bottom: 0; }
-      .full-width { grid-column: 1 / -1; }
+    /* ── DECISION FOOTER ─────────────────────────────────────── */
+    .decision-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-mark-reviewed {
+      background: #0055ff;
+      border: 1px solid #0055ff;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-mark-reviewed:hover { background: #1a6aff; }
+    .reviewed-meta {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.4;
+    }
 
-      /* ── DECISION SECTION ── */
-      .status-select-wrap {
-        position: relative;
-        margin-bottom: 16px;
-      }
-      .status-select-wrap label {
-        display: block;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: rgba(255,255,255,0.45);
-        margin-bottom: 6px;
-      }
-      #vstatus {
-        font-size: 15px;
-        font-weight: 700;
-        padding: 10px 36px 10px 14px;
-        border-width: 2px;
-        transition: border-color 0.2s, background 0.2s;
-      }
-      #vstatus.vs-pending    { border-color: rgba(157,188,255,0.3); background: rgba(157,188,255,0.07); }
-      #vstatus.vs-verified   { border-color: rgba(44,196,139,0.5);  background: rgba(44,196,139,0.08); }
-      #vstatus.vs-rejected   { border-color: rgba(255,80,80,0.5);   background: rgba(255,80,80,0.08); }
-      #vstatus.vs-waitlisted { border-color: rgba(255,193,7,0.5);   background: rgba(255,193,7,0.08); }
-      #vstatus.vs-escalated  { border-color: rgba(255,140,0,0.5);   background: rgba(255,140,0,0.08); }
+    /* ── EXTRACT RESULT TOAST ──────────────────────────────────── */
+    .extract-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(20,22,40,0.96);
+      border: 1px solid rgba(92,130,255,0.4);
+      color: #e8eeff;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+      z-index: 9999;
+      white-space: nowrap;
+    }
+    .extract-toast.show { transform: translateX(-50%) translateY(0); }
 
-      .rejection-fields {
-        background: rgba(255,80,80,0.05);
-        border: 1px solid rgba(255,80,80,0.15);
-        border-radius: 10px;
-        padding: 14px;
-        margin-top: 14px;
-        display: none;
-      }
-      .rejection-fields.show { display: block; }
-      .rejection-fields .grid-2 { gap: 10px 16px; }
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .form-pane { width: 380px; min-width: 320px; }
+    }
+    @media (max-width: 900px) {
+      body { overflow: auto; height: auto; }
+      .main-split { flex-direction: column; overflow: visible; height: auto; }
+      .queue-pane { width: 100%; min-width: 0; border-right: none; border-bottom: 1px solid rgba(157,188,255,0.1); height: auto; }
+      .queue-list { max-height: 260px; overflow-y: auto; }
+      .viewer-pane { min-width: 0; height: 480px; border-right: none; border-bottom: 1px solid rgba(157,188,255,0.1); }
+      .form-pane { width: 100%; min-width: 0; }
+      .fgrid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
 
-      /* ── COI VIEWER ── */
-      .coi-viewer-frame {
-        width: 100%;
-        height: 520px;
-        border: none;
-        border-radius: 8px;
-        background: #f5f5f5;
-        display: block;
-      }
-      .coi-viewer-placeholder {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 180px;
-        color: rgba(255,255,255,0.35);
-        font-size: 13px;
-        gap: 8px;
-        text-align: center;
-      }
-      .coi-viewer-placeholder svg { opacity: 0.25; }
-      .coi-viewer-actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        margin-bottom: 10px;
-        flex-wrap: wrap;
-      }
-      .coi-open-btn {
-        background: rgba(157, 188, 255, 0.1);
-        border: 1px solid rgba(157, 188, 255, 0.25);
-        color: #fff;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        text-decoration: none;
-        font-family: inherit;
-      }
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <span class="topbar-brand">COI Verification</span>
+  <div class="topbar-divider"></div>
+  <div class="topbar-stats">
+    <span class="stat-chip">Pending <span class="sv" id="cnt-pending">0</span></span>
+    <span class="stat-chip s-verified">Verified <span class="sv" id="cnt-verified">0</span></span>
+    <span class="stat-chip s-rejected">Rejected <span class="sv" id="cnt-rejected">0</span></span>
+    <span class="stat-chip s-waitlisted">Waitlisted <span class="sv" id="cnt-waitlisted">0</span></span>
+    <span class="stat-chip s-escalated">Escalated <span class="sv" id="cnt-escalated">0</span></span>
+  </div>
+  <span class="save-flash" id="saveFlash">Saved ✓</span>
+  <div class="topbar-actions">
+    <a class="tb-btn" href="admin.html">← Applications</a>
+    <button class="tb-btn primary" id="exportCsvBtn" type="button">Export CSV</button>
+  </div>
+</div>
 
-      .reason-box {
-        margin-top: 12px;
-        background: rgba(157,188,255,0.04);
-        border: 1px solid rgba(157,188,255,0.12);
-        border-radius: 8px;
-        padding: 10px 12px;
-        font-size: 13px;
-        color: rgba(255,255,255,0.55);
-        line-height: 1.5;
-        font-style: italic;
-        min-height: 56px;
-        display: none;
-      }
-      .reason-box.show { display: block; }
+<!-- ═══ THREE-PANE ═══ -->
+<div class="main-split">
 
-      .decision-footer {
-        margin-top: 16px;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        flex-wrap: wrap;
-      }
-      .btn-review {
-        background: #0055ff;
-        border: 1px solid #0055ff;
-        color: #fff;
-        font-size: 14px;
-        font-weight: 700;
-        padding: 10px 22px;
-        border-radius: 24px;
-        cursor: pointer;
-        transition: background 0.15s;
-      }
-      .btn-review:hover { background: #1a6aff; }
-      .reviewed-at {
-        color: rgba(255,255,255,0.45);
-        font-size: 12px;
-      }
-
-      /* ── RESPONSIVE ── */
-      @media (max-width: 900px) {
-        body { overflow: auto; height: auto; }
-        .split { flex-direction: column; overflow: visible; }
-        .left-panel {
-          width: 100%;
-          min-width: 0;
-          border-right: none;
-          border-bottom: 1px solid rgba(157, 188, 255, 0.12);
-          overflow: visible;
-          height: auto;
-        }
-        .app-list { max-height: 320px; overflow-y: auto; }
-        .right-panel { overflow: visible; }
-        .grid-2 { grid-template-columns: 1fr; }
-        .detail-wrap { padding: 16px 14px 40px; }
-        .topbar { padding: 10px 14px; }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <h1 class="topbar-title">COI Verification</h1>
-      <div class="topbar-stats">
-        <span class="stat-chip">Pending <span class="chip-val" id="cnt-pending">0</span></span>
-        <span class="stat-chip chip-verified">Verified <span class="chip-val" id="cnt-verified">0</span></span>
-        <span class="stat-chip chip-rejected">Rejected <span class="chip-val" id="cnt-rejected">0</span></span>
-        <span class="stat-chip chip-waitlisted">Waitlisted <span class="chip-val" id="cnt-waitlisted">0</span></span>
-        <span class="stat-chip chip-escalated">Escalated <span class="chip-val" id="cnt-escalated">0</span></span>
-      </div>
-      <div class="topbar-actions">
-        <a href="admin.html">← Applications</a>
-        <button class="primary" id="exportCsvBtn" type="button">Export CSV</button>
+  <!-- ═══ QUEUE PANE ═══ -->
+  <div class="queue-pane">
+    <div class="queue-header">
+      <input class="q-search" id="qSearch" type="search" placeholder="Search name, phone…" autocomplete="off" />
+      <div class="q-filters" id="qFilters">
+        <button class="q-pill active" data-f="all">All</button>
+        <button class="q-pill" data-f="pending">Pending</button>
+        <button class="q-pill" data-f="verified">Verified</button>
+        <button class="q-pill" data-f="rejected">Rejected</button>
+        <button class="q-pill" data-f="waitlisted">Waitlisted</button>
+        <button class="q-pill" data-f="escalated">Escalated</button>
       </div>
     </div>
+    <div class="queue-list" id="queueList"></div>
+  </div>
 
-    <!-- SPLIT PANE -->
-    <div class="split">
+  <!-- ═══ VIEWER PANE ═══ -->
+  <div class="viewer-pane">
+    <div class="viewer-header">
+      <span class="viewer-title" id="viewerTitle">COI Document</span>
+      <div class="viewer-actions">
+        <button class="v-btn" id="extractBtn" type="button" style="display:none"
+          title="Auto-fill fields from this document">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Smart Extract
+        </button>
+        <button class="v-btn" id="ocrBtn" type="button" style="display:none"
+          title="Run OCR to read text from image">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          Run OCR
+        </button>
+        <a class="v-btn" id="openInTabBtn" href="#" target="_blank" rel="noopener" style="display:none">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          New tab
+        </a>
+      </div>
+    </div>
+    <div class="viewer-body" id="viewerBody">
+      <div class="viewer-empty" id="viewerEmpty">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+        <p><strong>No document</strong>Select an application to view its COI</p>
+      </div>
+    </div>
+  </div>
 
-      <!-- LEFT PANEL -->
-      <div class="left-panel">
-        <div class="left-header">
-          <input class="search-input" id="searchInput" type="search" placeholder="Search name, phone, insurer…" autocomplete="off" />
-          <div class="filter-pills" id="filterPills">
-            <button class="filter-pill active" data-f="all">All</button>
-            <button class="filter-pill" data-f="pending">Pending</button>
-            <button class="filter-pill" data-f="verified">Verified</button>
-            <button class="filter-pill" data-f="rejected">Rejected</button>
-            <button class="filter-pill" data-f="waitlisted">Waitlisted</button>
-            <button class="filter-pill" data-f="escalated">Escalated</button>
-          </div>
+  <!-- ═══ FORM PANE ═══ -->
+  <div class="form-pane">
+    <div class="form-pane-header">
+      <span class="form-pane-name form-pane-placeholder" id="formPaneName">Select an application</span>
+      <span class="sbadge sb-pending" id="formPaneStatus" style="display:none">pending</span>
+    </div>
+
+    <div class="form-empty" id="formEmpty">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      <p><strong>Verification form</strong>Appears once you select an application from the queue</p>
+    </div>
+
+    <div class="form-body" id="formBody" style="display:none">
+
+      <!-- 1. Submitted Info -->
+      <div class="fsec">
+        <button type="button" class="fsec-toggle collapsed" id="tog-submitted">
+          Submitted Info <span class="chev">▼</span>
+        </button>
+        <div class="fsec-body hidden" id="body-submitted">
+          <div class="fgrid" id="submittedGrid"></div>
         </div>
-        <div class="app-list" id="appList"></div>
       </div>
 
-      <!-- RIGHT PANEL -->
-      <div class="right-panel" id="rightPanel">
-        <div class="right-empty" id="rightEmpty">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h5"/></svg>
-          <p>Select an application to verify</p>
+      <!-- 2. Policy Details -->
+      <div class="fsec">
+        <button type="button" class="fsec-toggle" id="tog-policy">
+          Policy Details <span class="chev">▼</span>
+        </button>
+        <div class="fsec-body" id="body-policy">
+          <div class="fgrid">
+            <div class="fg">
+              <label class="flabel" for="policyNumber">Policy Number</label>
+              <input class="finput" id="policyNumber" type="text" placeholder="HLT-2024-00123" data-field="policyNumber" />
+            </div>
+            <div class="fg">
+              <label class="flabel" for="sumInsured">Sum Insured ₹</label>
+              <input class="finput" id="sumInsured" type="number" placeholder="500000" data-field="sumInsured" />
+            </div>
+            <div class="fg">
+              <label class="flabel" for="policyStartDate">Start Date</label>
+              <input class="finput" id="policyStartDate" type="date" data-field="policyStartDate" />
+            </div>
+            <div class="fg">
+              <label class="flabel" for="policyEndDate">End Date</label>
+              <input class="finput" id="policyEndDate" type="date" data-field="policyEndDate" />
+            </div>
+            <div class="fg">
+              <label class="flabel" for="coverageType">Coverage Type</label>
+              <select class="fselect" id="coverageType" data-field="coverageType">
+                <option value="">— Select —</option>
+                <option value="Individual">Individual</option>
+                <option value="Floater">Floater</option>
+                <option value="Group">Group</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="flabel" for="copayPercent">Co-pay %</label>
+              <input class="finput" id="copayPercent" type="number" min="0" max="100" placeholder="0" data-field="copayPercent" />
+            </div>
+            <div class="fg">
+              <label class="flabel" for="waitingPeriodActive">Waiting Period</label>
+              <select class="fselect" id="waitingPeriodActive" data-field="waitingPeriodActive">
+                <option value="">— Select —</option>
+                <option value="Yes">Active</option>
+                <option value="No">Cleared</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="flabel" for="callStatus">Call Status</label>
+              <select class="fselect" id="callStatus" data-field="callStatus">
+                <option value="">— Select —</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Not Confirmed">Not Confirmed</option>
+                <option value="No Answer">No Answer</option>
+                <option value="Callback Requested">Callback Requested</option>
+              </select>
+            </div>
+            <div class="fg fcol-full">
+              <label class="flabel" for="opsComments">Ops Notes</label>
+              <textarea class="ftextarea" id="opsComments" rows="3" placeholder="Red flags, context, clarifications…" data-field="opsComments"></textarea>
+            </div>
+          </div>
         </div>
-        <div class="detail-wrap" id="detailWrap" style="display:none">
-          <div class="detail-header">
-            <div>
-              <div class="detail-title" id="detailName"></div>
-              <div class="detail-subtitle" id="detailSub"></div>
-            </div>
-            <span class="save-flash" id="saveFlash">Saved ✓</span>
-          </div>
+      </div>
 
-          <!-- Section 1: Submitted Data (collapsible) -->
-          <div class="section">
-            <button type="button" class="section-toggle" id="toggleSubmitted">
-              Submitted Data
-              <span class="chevron">▼</span>
-            </button>
-            <div class="section-body" id="bodySubmitted">
-              <div class="grid-2" id="submittedGrid"></div>
+      <!-- 3. Members on Policy -->
+      <div class="fsec">
+        <button type="button" class="fsec-toggle" id="tog-members">
+          Members on Policy <span class="chev">▼</span>
+        </button>
+        <div class="fsec-body" id="body-members">
+          <div class="member-group">
+            <div class="member-group-label">
+              Adults
+              <button class="add-member-btn" type="button" id="addAdultBtn">
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+                Add Adult
+              </button>
             </div>
-          </div>
-
-          <!-- Section 1b: COI Document Viewer -->
-          <div class="section" id="coiDocSection">
-            <button type="button" class="section-toggle" id="toggleCoiDoc">
-              COI Document
-              <span class="chevron">▼</span>
-            </button>
-            <div class="section-body" id="bodyCoiDoc">
-              <div class="coi-viewer-actions">
-                <a class="coi-open-btn" id="coiOpenLink" href="#" target="_blank" rel="noopener" style="display:none">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  Open in new tab
-                </a>
-              </div>
-              <div id="coiViewerInner">
-                <div class="coi-viewer-placeholder">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                  <span>No document attached</span>
-                </div>
-              </div>
+            <div id="adultsContainer">
+              <div class="no-members-hint" id="noAdultsHint">No adults added yet</div>
             </div>
           </div>
-
-          <!-- Section 2: Policy Details -->
-          <div class="section">
-            <button type="button" class="section-toggle" id="togglePolicy">
-              Policy Details
-              <span class="chevron">▼</span>
-            </button>
-            <div class="section-body" id="bodyPolicy">
-              <div class="grid-2">
-                <div class="form-group">
-                  <label class="form-label" for="policyNumber">Policy Number</label>
-                  <input class="form-input" id="policyNumber" type="text" placeholder="e.g. HLT-2024-00123" data-field="policyNumber" />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="sumInsured">Sum Insured ₹</label>
-                  <input class="form-input" id="sumInsured" type="number" placeholder="e.g. 500000" data-field="sumInsured" />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="policyStartDate">Policy Start Date</label>
-                  <input class="form-input" id="policyStartDate" type="date" data-field="policyStartDate" />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="policyEndDate">Policy End Date</label>
-                  <input class="form-input" id="policyEndDate" type="date" data-field="policyEndDate" />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="coverageType">Coverage Type</label>
-                  <select class="form-select" id="coverageType" data-field="coverageType">
-                    <option value="">— Select —</option>
-                    <option value="Individual">Individual</option>
-                    <option value="Floater">Floater</option>
-                    <option value="Group">Group</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="copayPercent">Co-pay %</label>
-                  <input class="form-input" id="copayPercent" type="number" min="0" max="100" placeholder="0–100" data-field="copayPercent" />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="waitingPeriodActive">Waiting Period Active</label>
-                  <select class="form-select" id="waitingPeriodActive" data-field="waitingPeriodActive">
-                    <option value="">— Select —</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                    <option value="Unknown">Unknown</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="callStatus">Call Status</label>
-                  <select class="form-select" id="callStatus" data-field="callStatus">
-                    <option value="">— Select —</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Not Confirmed">Not Confirmed</option>
-                    <option value="No Answer">No Answer</option>
-                    <option value="Callback Requested">Callback Requested</option>
-                  </select>
-                </div>
-                <div class="form-group full-width">
-                  <label class="form-label" for="opsComments">Ops Comments</label>
-                  <textarea class="form-textarea" id="opsComments" rows="4" placeholder="Red flags, context, notes…" data-field="opsComments"></textarea>
-                </div>
-              </div>
+          <div class="member-group">
+            <div class="member-group-label">
+              Children
+              <button class="add-member-btn" type="button" id="addChildBtn">
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+                Add Child
+              </button>
+            </div>
+            <div id="childrenContainer">
+              <div class="no-members-hint" id="noChildrenHint">No children added yet</div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Section 3: Decision -->
-          <div class="section">
-            <button type="button" class="section-toggle" id="toggleDecision">
-              Decision
-              <span class="chevron">▼</span>
-            </button>
-            <div class="section-body" id="bodyDecision">
-              <div class="status-select-wrap">
-                <label for="vstatus">Verification Status</label>
-                <select class="form-select vs-pending" id="vstatus" data-field="verificationStatus">
-                  <option value="pending">Pending</option>
-                  <option value="verified">Verified</option>
-                  <option value="rejected">Rejected</option>
-                  <option value="waitlisted">Waitlisted</option>
-                  <option value="escalated">Escalated</option>
+      <!-- 4. Pre-existing Conditions -->
+      <div class="fsec">
+        <button type="button" class="fsec-toggle" id="tog-ped">
+          Pre-existing Conditions <span class="chev">▼</span>
+        </button>
+        <div class="fsec-body" id="body-ped">
+          <div class="ped-tags" id="pedTags"></div>
+          <p class="ped-note">Click to flag conditions declared in or evident from the policy document.</p>
+        </div>
+      </div>
+
+      <!-- 5. Decision -->
+      <div class="fsec">
+        <button type="button" class="fsec-toggle" id="tog-decision">
+          Decision <span class="chev">▼</span>
+        </button>
+        <div class="fsec-body" id="body-decision">
+          <div class="fg" style="margin-bottom:10px">
+            <label class="flabel" for="vstatus">Verification Status</label>
+            <select class="fselect vs-pending" id="vstatus" data-field="verificationStatus">
+              <option value="pending">Pending</option>
+              <option value="verified">Verified</option>
+              <option value="rejected">Rejected</option>
+              <option value="waitlisted">Waitlisted</option>
+              <option value="escalated">Escalated</option>
+            </select>
+          </div>
+
+          <div class="rejection-panel" id="rejectionPanel">
+            <div class="fgrid" style="gap:7px 10px; margin-bottom:0">
+              <div class="fg">
+                <label class="flabel" for="rejectionBucket">Bucket</label>
+                <select class="fselect" id="rejectionBucket" data-field="rejectionBucket">
+                  <option value="">— Select Bucket —</option>
+                  <option value="A">A · Document &amp; Submission</option>
+                  <option value="B">B · Identity &amp; Eligibility</option>
+                  <option value="C">C · Policy Standing</option>
+                  <option value="D">D · Product Scope</option>
+                  <option value="E">E · Coverage Adequacy</option>
+                  <option value="F">F · Waiting Periods</option>
+                  <option value="G">G · Verification Blockers</option>
+                  <option value="H">H · Risk &amp; Compliance</option>
                 </select>
               </div>
-
-              <div class="rejection-fields" id="rejectionFields">
-                <div class="grid-2">
-                  <div class="form-group">
-                    <label class="form-label" for="rejectionBucket">Rejection Bucket</label>
-                    <select class="form-select" id="rejectionBucket" data-field="rejectionBucket">
-                      <option value="">— Select Bucket —</option>
-                      <option value="A">A · Document &amp; Submission</option>
-                      <option value="B">B · Identity &amp; Eligibility</option>
-                      <option value="C">C · Policy Standing</option>
-                      <option value="D">D · Product Scope</option>
-                      <option value="E">E · Coverage Adequacy</option>
-                      <option value="F">F · Waiting Periods</option>
-                      <option value="G">G · Verification Blockers</option>
-                      <option value="H">H · Risk &amp; Compliance</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="rejectionCode">Rejection Code</label>
-                    <select class="form-select" id="rejectionCode" data-field="rejectionCode">
-                      <option value="">— Select Code —</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="reason-box" id="reasonBox"></div>
+              <div class="fg">
+                <label class="flabel" for="rejectionCode">Code</label>
+                <select class="fselect" id="rejectionCode" data-field="rejectionCode">
+                  <option value="">— Select Code —</option>
+                </select>
               </div>
-
-              <div class="decision-footer">
-                <div class="form-group" style="flex:1; min-width:180px">
-                  <label class="form-label" for="reviewedBy">Reviewed By</label>
-                  <input class="form-input" id="reviewedBy" type="text" placeholder="Your name" data-field="reviewedBy" />
-                </div>
-                <button class="btn-review" id="markReviewedBtn" type="button">Mark as Reviewed</button>
-              </div>
-              <div class="reviewed-at" id="reviewedAtDisplay" style="margin-top:8px"></div>
             </div>
+            <div class="reason-hint" id="reasonHint"></div>
           </div>
 
+          <div class="decision-row">
+            <div class="fg" style="flex:1; min-width:130px">
+              <label class="flabel" for="reviewedBy">Reviewed By</label>
+              <input class="finput" id="reviewedBy" type="text" placeholder="Your name" data-field="reviewedBy" />
+            </div>
+            <button class="btn-mark-reviewed" id="markReviewedBtn" type="button">Mark Reviewed</button>
+          </div>
+          <div class="reviewed-meta" id="reviewedMeta" style="margin-top:6px"></div>
         </div>
       </div>
 
-    </div>
+    </div><!-- /form-body -->
+  </div><!-- /form-pane -->
 
-    <script>
-      // ── DATA ──────────────────────────────────────────────────────────────────
+</div><!-- /main-split -->
 
-      const REJECTION_CODES = {
-        A: [
-          { code: 'HP-COI-A1', label: 'Illegible / unreadable', reason: 'Image blur, glare, cropped edges, or resolution below OCR threshold.' },
-          { code: 'HP-COI-A2', label: 'Wrong document type', reason: 'User uploaded premium receipt, proposal form, ID-card only, or marketing brochure instead of COI / policy schedule.' },
-          { code: 'HP-COI-A3', label: 'Incomplete document', reason: 'Schedule of benefits, member listing, or exclusions annex missing from upload.' },
-          { code: 'HP-COI-A4', label: 'Suspected tampering', reason: 'Font mismatch, edited fields, metadata anomalies, or hash collision with known forgery.' },
-          { code: 'HP-COI-A5', label: 'Unsupported language', reason: 'Policy in a language Even cannot parse and no certified translation attached.' },
-        ],
-        B: [
-          { code: 'HP-COI-B1', label: 'Name mismatch', reason: 'Insured name on COI does not match Even profile, and no supporting evidence attached.' },
-          { code: 'HP-COI-B2', label: 'DOB or gender mismatch', reason: 'DOB or gender on COI differs from Even profile beyond tolerance.' },
-          { code: 'HP-COI-B3', label: 'Policy belongs to someone else', reason: 'Named insured is not the Even user and no dependent/proposer relationship established.' },
-          { code: 'HP-COI-B4', label: 'Member not on policy', reason: 'Family member added to Even profile is not listed on the COI.' },
-        ],
-        C: [
-          { code: 'HP-COI-C1', label: 'Policy expired', reason: 'Policy end date has passed and no renewal COI uploaded.' },
-          { code: 'HP-COI-C2', label: 'Policy lapsed / not renewed', reason: 'Insurer confirms grace period elapsed without premium payment.' },
-          { code: 'HP-COI-C3', label: 'Policy cancelled', reason: 'Insurer confirms mid-term cancellation or free-look cancellation.' },
-          { code: 'HP-COI-C4', label: 'Policy not yet active', reason: 'Inception date is in the future; policy not yet in force.' },
-        ],
-        D: [
-          { code: 'HP-COI-D1', label: 'Wrong product class', reason: 'Policy is life, accident-only, OPD-only, or top-up without base — not a health-indemnity product.' },
-          { code: 'HP-COI-D2', label: 'Insurer not on partner list', reason: 'Insurer is not currently a partner and policy cannot be verified.' },
-          { code: 'HP-COI-D3', label: 'Corporate group policy — individual not identifiable', reason: 'Group master policy uploaded without individual member schedule.' },
-        ],
-        E: [
-          { code: 'HP-COI-E1', label: 'Sum insured below floor', reason: 'SI is below the minimum threshold required for Even Infinite eligibility.' },
-          { code: 'HP-COI-E2', label: 'Sub-limit makes coverage inadequate', reason: 'Room-rent, ICU, or disease-specific sub-limits render effective coverage below threshold.' },
-          { code: 'HP-COI-E3', label: 'Co-pay too high', reason: 'Co-pay percentage exceeds the maximum allowed under Even Infinite terms.' },
-          { code: 'HP-COI-E4', label: 'Critical exclusion present', reason: 'Policy excludes a category that Even Infinite explicitly covers (e.g., maternity, pre-existing diseases after waiting period).' },
-        ],
-        F: [
-          { code: 'HP-COI-F1', label: 'Initial waiting period active', reason: 'Standard 30-day initial waiting period has not yet elapsed.' },
-          { code: 'HP-COI-F2', label: 'Specific disease waiting period active', reason: 'Named-disease waiting period (typically 1–2 years) is still running.' },
-          { code: 'HP-COI-F3', label: 'PED waiting period active', reason: 'Pre-existing disease waiting period (typically 2–4 years) has not elapsed.' },
-          { code: 'HP-COI-F4', label: 'Maternity waiting period active', reason: 'Maternity benefit waiting period (typically 9–24 months) is still open.' },
-        ],
-        G: [
-          { code: 'HP-COI-G1', label: 'Insurer unreachable', reason: 'Verification call / portal attempt failed; insurer did not confirm within SLA.' },
-          { code: 'HP-COI-G2', label: 'TPA mismatch', reason: 'TPA on COI does not match insurer records; verification blocked pending resolution.' },
-          { code: 'HP-COI-G3', label: 'Policy not found in insurer system', reason: 'Insurer confirmed policy number does not exist or is not traceable.' },
-        ],
-        H: [
-          { code: 'HP-COI-H1', label: 'Confirmed fraud / forgery', reason: 'Risk team confirmed document is forged or policy is fraudulent.' },
-          { code: 'HP-COI-H2', label: 'Sanctions / compliance hold', reason: 'Applicant or policy flagged by compliance screening.' },
-          { code: 'HP-COI-H3', label: 'Duplicate application', reason: 'Same policy number already activated under a different Even account.' },
-        ],
-      };
+<div class="extract-toast" id="extractToast"></div>
 
-      // Flat map: code -> reason
-      const CODE_REASON = {};
-      Object.values(REJECTION_CODES).flat().forEach(c => { CODE_REASON[c.code] = c.reason; });
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════
 
-      // ── STATE ─────────────────────────────────────────────────────────────────
+const PED_OPTIONS = [
+  'Diabetes', 'Hypertension / High BP', 'Heart Disease / CAD',
+  'Asthma / Respiratory', 'Kidney Disease', 'Cancer / Tumor',
+  'Thyroid Disorder', 'Arthritis / Joint Pain', 'Neurological', 'Obesity / Metabolic'
+];
 
-      let selectedId = null;
-      let activeFilter = 'all';
-      let searchQuery = '';
-      let saveFlashTimer = null;
+const REJECTION_CODES = {
+  A: [
+    { code: 'HP-COI-A1', label: 'Illegible / unreadable', reason: 'Image blur, glare, cropped edges, or resolution below OCR threshold.' },
+    { code: 'HP-COI-A2', label: 'Wrong document type', reason: 'User uploaded premium receipt, proposal form, ID-card only, or marketing brochure instead of COI / policy schedule.' },
+    { code: 'HP-COI-A3', label: 'Incomplete document', reason: 'Schedule of benefits, member listing, or exclusions annex missing from upload.' },
+    { code: 'HP-COI-A4', label: 'Suspected tampering', reason: 'Font mismatch, edited fields, metadata anomalies, or hash collision with known forgery.' },
+    { code: 'HP-COI-A5', label: 'Unsupported language', reason: 'Policy in a language Even cannot parse and no certified translation attached.' },
+  ],
+  B: [
+    { code: 'HP-COI-B1', label: 'Name mismatch', reason: 'Insured name on COI does not match Even profile, and no supporting evidence attached.' },
+    { code: 'HP-COI-B2', label: 'DOB or gender mismatch', reason: 'DOB or gender on COI differs from Even profile beyond tolerance.' },
+    { code: 'HP-COI-B3', label: 'Policy belongs to someone else', reason: 'Named insured is not the Even user and no dependent/proposer relationship established.' },
+    { code: 'HP-COI-B4', label: 'Member not on policy', reason: 'Family member added to Even profile is not listed on the COI.' },
+  ],
+  C: [
+    { code: 'HP-COI-C1', label: 'Policy expired', reason: 'Policy end date has passed and no renewal COI uploaded.' },
+    { code: 'HP-COI-C2', label: 'Policy lapsed / not renewed', reason: 'Insurer confirms grace period elapsed without premium payment.' },
+    { code: 'HP-COI-C3', label: 'Policy cancelled', reason: 'Insurer confirms mid-term cancellation or free-look cancellation.' },
+    { code: 'HP-COI-C4', label: 'Policy not yet active', reason: 'Inception date is in the future; policy not yet in force.' },
+  ],
+  D: [
+    { code: 'HP-COI-D1', label: 'Wrong product class', reason: 'Policy is life, accident-only, OPD-only, or top-up without base — not a health-indemnity product.' },
+    { code: 'HP-COI-D2', label: 'Insurer not on partner list', reason: 'Insurer is not currently a partner and policy cannot be verified.' },
+    { code: 'HP-COI-D3', label: 'Corporate group — individual not identifiable', reason: 'Group master policy uploaded without individual member schedule.' },
+  ],
+  E: [
+    { code: 'HP-COI-E1', label: 'Sum insured below floor', reason: 'SI is below the minimum threshold required for Even Infinite eligibility.' },
+    { code: 'HP-COI-E2', label: 'Sub-limit makes coverage inadequate', reason: 'Room-rent, ICU, or disease-specific sub-limits render effective coverage below threshold.' },
+    { code: 'HP-COI-E3', label: 'Co-pay too high', reason: 'Co-pay percentage exceeds the maximum allowed under Even Infinite terms.' },
+    { code: 'HP-COI-E4', label: 'Critical exclusion present', reason: 'Policy excludes a category that Even Infinite explicitly covers.' },
+  ],
+  F: [
+    { code: 'HP-COI-F1', label: 'Initial waiting period active', reason: 'Standard 30-day initial waiting period has not yet elapsed.' },
+    { code: 'HP-COI-F2', label: 'Specific disease waiting period active', reason: 'Named-disease waiting period (typically 1–2 years) is still running.' },
+    { code: 'HP-COI-F3', label: 'PED waiting period active', reason: 'Pre-existing disease waiting period (typically 2–4 years) has not elapsed.' },
+    { code: 'HP-COI-F4', label: 'Maternity waiting period active', reason: 'Maternity benefit waiting period (typically 9–24 months) is still open.' },
+  ],
+  G: [
+    { code: 'HP-COI-G1', label: 'Insurer unreachable', reason: 'Verification call / portal attempt failed; insurer did not confirm within SLA.' },
+    { code: 'HP-COI-G2', label: 'TPA mismatch', reason: 'TPA on COI does not match insurer records; verification blocked pending resolution.' },
+    { code: 'HP-COI-G3', label: 'Policy not found in insurer system', reason: 'Insurer confirmed policy number does not exist or is not traceable.' },
+  ],
+  H: [
+    { code: 'HP-COI-H1', label: 'Confirmed fraud / forgery', reason: 'Risk team confirmed document is forged or policy is fraudulent.' },
+    { code: 'HP-COI-H2', label: 'Sanctions / compliance hold', reason: 'Applicant or policy flagged by compliance screening.' },
+    { code: 'HP-COI-H3', label: 'Duplicate application', reason: 'Same policy number already activated under a different Even account.' },
+  ],
+};
+const CODE_REASON = {};
+Object.values(REJECTION_CODES).flat().forEach(c => { CODE_REASON[c.code] = c.reason; });
 
-      // ── STORAGE HELPERS ───────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
 
-      function loadApps() {
-        try { return JSON.parse(localStorage.getItem('evenApplications') || '[]'); } catch { return []; }
+let selectedId = null;
+let activeFilter = 'all';
+let searchQ = '';
+let saveTimer = null;
+
+// ═══════════════════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════════════════
+
+function loadApps() {
+  try { return JSON.parse(localStorage.getItem('evenApplications') || '[]'); } catch { return []; }
+}
+function loadVerifs() {
+  try { return JSON.parse(localStorage.getItem('coiVerifications') || '{}'); } catch { return {}; }
+}
+function saveVerifs(v) { localStorage.setItem('coiVerifications', JSON.stringify(v)); }
+
+function getVerif(id) {
+  return loadVerifs()[id] || {
+    submissionId: id,
+    policyNumber: '', sumInsured: '', policyStartDate: '', policyEndDate: '',
+    coverageType: '', copayPercent: '', waitingPeriodActive: '', callStatus: '',
+    opsComments: '',
+    adultsOnPolicy: [], childrenOnPolicy: [],
+    preExistingConditions: [],
+    rejectionBucket: '', rejectionCode: '', rejectionReason: '',
+    verificationStatus: 'pending', reviewedBy: '', reviewedAt: ''
+  };
+}
+
+function persistVerif(id, data) {
+  const vmap = loadVerifs();
+  vmap[id] = { ...data, submissionId: id };
+  saveVerifs(vmap);
+  flashSaved();
+  updateStats();
+  renderQueue();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+function safeArr(v) { return Array.isArray(v) ? v : []; }
+function fmtDate(iso) {
+  if (!iso) return '—';
+  try { return new Date(iso).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }); } catch { return iso; }
+}
+function fmtMobile(m) {
+  if (!m) return '—';
+  const d = m.replace(/\D/g, '');
+  return d.length === 10 ? '+91 ' + d.slice(0,5) + ' ' + d.slice(5) : m;
+}
+function getInsurers(app) {
+  return [...safeArr(app.insurers), ...safeArr(app.customInsurers)].filter(Boolean);
+}
+function matchesSearch(app, q, vmap) {
+  if (!q) return true;
+  const lc = q.toLowerCase();
+  const v = vmap[app.id] || {};
+  return [app.name, app.mobile, app.city, ...getInsurers(app), v.policyNumber||'', v.reviewedBy||'']
+    .join(' ').toLowerCase().includes(lc);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FLASH / TOAST
+// ═══════════════════════════════════════════════════════════════
+
+let flashTimer = null;
+function flashSaved() {
+  const el = document.getElementById('saveFlash');
+  if (!el) return;
+  el.classList.add('show');
+  clearTimeout(flashTimer);
+  flashTimer = setTimeout(() => el.classList.remove('show'), 1600);
+}
+
+let toastTimer = null;
+function showToast(msg, duration = 3000) {
+  const el = document.getElementById('extractToast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), duration);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════════════════
+
+function updateStats() {
+  const apps = loadApps();
+  const vmap = loadVerifs();
+  const counts = { pending:0, verified:0, rejected:0, waitlisted:0, escalated:0 };
+  apps.forEach(app => {
+    const vs = (vmap[app.id]||{}).verificationStatus || 'pending';
+    counts[vs] = (counts[vs] || 0) + 1;
+  });
+  Object.keys(counts).forEach(k => {
+    const el = document.getElementById('cnt-' + k);
+    if (el) el.textContent = counts[k];
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// QUEUE RENDER
+// ═══════════════════════════════════════════════════════════════
+
+function renderQueue() {
+  const apps = loadApps().slice().reverse();
+  const vmap = loadVerifs();
+  const list = document.getElementById('queueList');
+
+  const filtered = apps.filter(app => {
+    if (activeFilter !== 'all') {
+      const vs = (vmap[app.id]||{}).verificationStatus || 'pending';
+      if (vs !== activeFilter) return false;
+    }
+    return matchesSearch(app, searchQ, vmap);
+  });
+
+  if (!filtered.length) {
+    list.innerHTML = `<div class="queue-empty"><strong>${apps.length ? 'No results' : 'No applications'}</strong>${apps.length ? 'Try different filters.' : 'Seed test data via /seed.html'}</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(app => {
+    const vs = (vmap[app.id]||{}).verificationStatus || 'pending';
+    const insurers = getInsurers(app);
+    const sel = app.id === selectedId;
+    return `
+      <div class="qcard ${sel ? 'selected' : ''} vs-${esc(vs)}" data-id="${esc(app.id)}">
+        <div class="qcard-name">${esc(app.name || '—')}</div>
+        <div class="qcard-meta">${esc(fmtMobile(app.mobile))}</div>
+        <div class="qcard-bottom">
+          <span class="qcard-insurer">${esc(insurers[0] || '—')}</span>
+          <span class="sbadge sb-${esc(vs)}">${esc(vs)}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('.qcard').forEach(c =>
+    c.addEventListener('click', () => selectApp(c.dataset.id))
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SELECT APP
+// ═══════════════════════════════════════════════════════════════
+
+function selectApp(id) {
+  selectedId = id;
+  renderQueue();
+  renderViewer();
+  renderForm();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// VIEWER
+// ═══════════════════════════════════════════════════════════════
+
+function renderViewer() {
+  const apps = loadApps();
+  const app = apps.find(a => a.id === selectedId);
+  const body = document.getElementById('viewerBody');
+  const empty = document.getElementById('viewerEmpty');
+  const extractBtn = document.getElementById('extractBtn');
+  const ocrBtn = document.getElementById('ocrBtn');
+  const openBtn = document.getElementById('openInTabBtn');
+  const titleEl = document.getElementById('viewerTitle');
+
+  if (!app || !app.coiDocument) {
+    body.innerHTML = '';
+    body.appendChild(empty);
+    empty.style.display = 'flex';
+    extractBtn.style.display = 'none';
+    ocrBtn.style.display = 'none';
+    openBtn.style.display = 'none';
+    titleEl.textContent = 'COI Document';
+    return;
+  }
+
+  const src = app.coiDocument;
+  const isImage = /\.(jpe?g|png|gif|webp|bmp)(\?|$)/i.test(src);
+  const isHtml = /\.html?(\?|$)/i.test(src);
+  const isPdf = /\.pdf(\?|$)/i.test(src);
+
+  titleEl.textContent = src.split('/').pop() || 'COI Document';
+  openBtn.href = src;
+  openBtn.style.display = 'inline-flex';
+  extractBtn.style.display = isHtml ? 'inline-flex' : 'none';
+  ocrBtn.style.display = isImage ? 'inline-flex' : 'none';
+
+  empty.style.display = 'none';
+
+  if (isImage) {
+    body.innerHTML = `<div style="overflow:auto;width:100%;height:100%;display:flex;align-items:flex-start;justify-content:center;padding:16px;background:#111320">
+      <img src="${esc(src)}" id="coiImg" style="max-width:100%;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,0.5)" alt="COI Document" />
+    </div>`;
+  } else if (isPdf) {
+    body.innerHTML = `<iframe id="coiFrame" src="${esc(src)}" style="width:100%;height:100%;border:none;background:#f5f5f5" title="COI Document" sandbox="allow-same-origin allow-scripts allow-popups"></iframe>`;
+  } else {
+    // HTML (default)
+    body.innerHTML = `<iframe id="coiFrame" src="${esc(src)}" style="width:100%;height:100%;border:none;background:#f5f5f5" title="COI Document" sandbox="allow-same-origin allow-scripts"></iframe>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SMART EXTRACT (reads same-origin iframe DOM)
+// ═══════════════════════════════════════════════════════════════
+
+function parseDate(str) {
+  if (!str) return '';
+  const months = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+  const m = str.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+  if (m) {
+    const mo = months[m[2].toLowerCase().slice(0,3)];
+    if (mo) return `${m[3]}-${String(mo).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`;
+  }
+  // Try DD-MM-YYYY
+  const m2 = str.match(/(\d{2})[\/\-](\d{2})[\/\-](\d{4})/);
+  if (m2) return `${m2[3]}-${m2[2]}-${m2[1]}`;
+  return '';
+}
+
+function trySmartExtract() {
+  const iframe = document.getElementById('coiFrame');
+  if (!iframe) { showToast('No document loaded'); return; }
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    if (!doc || !doc.body) { showToast('Cannot access document — cross-origin?'); return; }
+    const text = doc.body.innerText || '';
+    const filled = [];
+
+    // Helpers
+    function grab(patterns) {
+      for (const p of patterns) {
+        const m = text.match(p);
+        if (m && m[1]) return m[1].trim();
       }
+      return null;
+    }
 
-      function loadVerifications() {
-        try { return JSON.parse(localStorage.getItem('coiVerifications') || '{}'); } catch { return {}; }
-      }
+    // Valid date / end date
+    const validUpto = grab([/Valid Upto[:\s]+([^\n]+)/i, /Expiry[:\s]+([^\n]+)/i, /Valid Till[:\s]+([^\n]+)/i]);
+    if (validUpto) {
+      const d = parseDate(validUpto);
+      if (d) { document.getElementById('policyEndDate').value = d; filled.push('End Date'); }
+    }
 
-      function saveVerifications(vmap) {
-        localStorage.setItem('coiVerifications', JSON.stringify(vmap));
-      }
+    // Policy / certificate number
+    const polNo = grab([/Policy No[.:\s]+([A-Z0-9\/\-]+)/i, /Certificate No[.:\s]+([A-Z0-9\/\-]+)/i, /Policy Number[:\s]+([A-Z0-9\/\-]+)/i]);
+    if (polNo) { document.getElementById('policyNumber').value = polNo; filled.push('Policy Number'); }
 
-      function getVerification(id) {
-        const vmap = loadVerifications();
-        return vmap[id] || {
-          submissionId: id,
-          policyNumber: '', sumInsured: '', policyStartDate: '', policyEndDate: '',
-          coverageType: '', copayPercent: '', waitingPeriodActive: '', callStatus: '',
-          opsComments: '', rejectionBucket: '', rejectionCode: '', rejectionReason: '',
-          verificationStatus: 'pending', reviewedBy: '', reviewedAt: ''
-        };
-      }
+    // Sum insured
+    const si = grab([/Sum Insured[:\s₹\s]*([0-9,]+)/i, /SI[:\s₹\s]+([0-9,]+)/i]);
+    if (si) { document.getElementById('sumInsured').value = si.replace(/,/g,''); filled.push('Sum Insured'); }
 
-      function saveVerification(id, data) {
-        const vmap = loadVerifications();
-        vmap[id] = { ...data, submissionId: id };
-        saveVerifications(vmap);
-        flashSaved();
-        updateStats();
-        renderList();
-      }
+    if (filled.length) {
+      autoSave();
+      showToast(`Extracted: ${filled.join(', ')}`);
+    } else {
+      showToast('Nothing extractable — fill manually');
+    }
+  } catch (e) {
+    showToast('Cross-origin: cannot read document');
+  }
+}
 
-      // ── UTILS ─────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// OCR (Tesseract.js, lazy-loaded)
+// ═══════════════════════════════════════════════════════════════
 
-      function esc(s) {
-        return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
-      }
+let tesseractLoaded = false;
+let ocrRunning = false;
 
-      function safeArr(v) { return Array.isArray(v) ? v : []; }
+function runOcr() {
+  if (ocrRunning) return;
+  const img = document.getElementById('coiImg');
+  if (!img) { showToast('No image to OCR'); return; }
 
-      function fmtDate(iso) {
-        if (!iso) return '—';
-        try { return new Date(iso).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }); } catch { return iso; }
-      }
+  const ocrBtn = document.getElementById('ocrBtn');
+  ocrBtn.classList.add('ocr-active');
+  ocrBtn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/></svg> Running…`;
+  ocrRunning = true;
 
-      function fmtMobile(m) {
-        if (!m) return '—';
-        const d = m.replace(/\D/g, '');
-        if (d.length === 10) return '+91 ' + d.slice(0, 5) + ' ' + d.slice(5);
-        return m;
-      }
+  // Inject overlay
+  const body = document.getElementById('viewerBody');
+  const overlay = document.createElement('div');
+  overlay.className = 'ocr-overlay';
+  overlay.id = 'ocrOverlay';
+  overlay.innerHTML = `<div class="ocr-progress-wrap">
+    <div class="ocr-label" id="ocrStatus">Loading OCR engine…</div>
+    <div class="ocr-bar-bg"><div class="ocr-bar-fill" id="ocrBar"></div></div>
+  </div>`;
+  body.appendChild(overlay);
 
-      function getInsurers(app) {
-        return [...safeArr(app.insurers), ...safeArr(app.customInsurers)].filter(Boolean);
-      }
+  function loadTesseract(cb) {
+    if (tesseractLoaded && window.Tesseract) { cb(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/tesseract.js@5/dist/tesseract.min.js';
+    s.onload = () => { tesseractLoaded = true; cb(); };
+    s.onerror = () => {
+      body.removeChild(overlay);
+      ocrRunning = false;
+      ocrBtn.classList.remove('ocr-active');
+      ocrBtn.innerHTML = `Run OCR`;
+      showToast('Failed to load OCR engine');
+    };
+    document.head.appendChild(s);
+  }
 
-      function matchesSearch(app, q, vmap) {
-        if (!q) return true;
-        const lc = q.toLowerCase();
-        const v = vmap[app.id] || {};
-        const hay = [app.name, app.mobile, app.city, ...getInsurers(app),
-                     v.policyNumber || '', v.reviewedBy || '']
-          .join(' ').toLowerCase();
-        return hay.includes(lc);
-      }
-
-      // ── FLASH SAVE ────────────────────────────────────────────────────────────
-
-      function flashSaved() {
-        const el = document.getElementById('saveFlash');
-        if (!el) return;
-        el.classList.add('show');
-        clearTimeout(saveFlashTimer);
-        saveFlashTimer = setTimeout(() => el.classList.remove('show'), 1800);
-      }
-
-      // ── STATS ─────────────────────────────────────────────────────────────────
-
-      function updateStats() {
-        const apps = loadApps();
-        const vmap = loadVerifications();
-        const counts = { pending: 0, verified: 0, rejected: 0, waitlisted: 0, escalated: 0 };
-        apps.forEach(app => {
-          const vs = (vmap[app.id] || {}).verificationStatus || 'pending';
-          if (counts.hasOwnProperty(vs)) counts[vs]++;
-          else counts.pending++;
-        });
-        Object.keys(counts).forEach(k => {
-          const el = document.getElementById('cnt-' + k);
-          if (el) el.textContent = counts[k];
-        });
-      }
-
-      // ── LEFT LIST ─────────────────────────────────────────────────────────────
-
-      function renderList() {
-        const apps = loadApps().slice().reverse();
-        const vmap = loadVerifications();
-        const list = document.getElementById('appList');
-
-        let filtered = apps.filter(app => {
-          if (activeFilter !== 'all') {
-            const vs = (vmap[app.id] || {}).verificationStatus || 'pending';
-            if (vs !== activeFilter) return false;
+  loadTesseract(async () => {
+    try {
+      const worker = await Tesseract.createWorker('eng', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            const pct = Math.round((m.progress || 0) * 100);
+            const bar = document.getElementById('ocrBar');
+            const lbl = document.getElementById('ocrStatus');
+            if (bar) bar.style.width = pct + '%';
+            if (lbl) lbl.textContent = `Reading text… ${pct}%`;
           }
-          return matchesSearch(app, searchQuery, vmap);
-        });
-
-        if (!filtered.length) {
-          list.innerHTML = `<div class="left-empty"><strong>${apps.length ? 'No results' : 'No applications'}</strong>${apps.length ? 'Try a different search or filter.' : 'Applications submitted via the landing page will appear here.'}</div>`;
-          return;
-        }
-
-        list.innerHTML = filtered.map(app => {
-          const vs = (vmap[app.id] || {}).verificationStatus || 'pending';
-          const insurers = getInsurers(app);
-          const isSelected = app.id === selectedId;
-          const tagHtml = insurers.slice(0, 3).map(i => `<span class="tag">${esc(i)}</span>`).join('');
-          const extraTags = insurers.length > 3 ? `<span class="tag">+${insurers.length - 3}</span>` : '';
-          return `
-            <div class="app-card${isSelected ? ' selected' : ''}" data-id="${esc(app.id)}">
-              <div class="app-card-top">
-                <div>
-                  <div class="app-card-name">${esc(app.name || '—')}</div>
-                  <div class="app-card-phone">${esc(fmtMobile(app.mobile))}</div>
-                </div>
-                <span class="status-badge vstatus-${esc(vs)}">${esc(vs)}</span>
-              </div>
-              <div class="app-card-tags">${tagHtml}${extraTags}</div>
-              <div class="app-card-footer">
-                <span class="app-card-date">${fmtDate(app.timestamp)}</span>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        list.querySelectorAll('.app-card').forEach(card => {
-          card.addEventListener('click', () => selectApp(card.dataset.id));
-        });
-      }
-
-      // ── SELECT APP ────────────────────────────────────────────────────────────
-
-      function selectApp(id) {
-        selectedId = id;
-        renderList();
-        renderDetail();
-      }
-
-      // ── DETAIL PANEL ──────────────────────────────────────────────────────────
-
-      function renderDetail() {
-        const apps = loadApps();
-        const app = apps.find(a => a.id === selectedId);
-        const empty = document.getElementById('rightEmpty');
-        const detail = document.getElementById('detailWrap');
-
-        if (!app) {
-          empty.style.display = 'flex';
-          detail.style.display = 'none';
-          return;
-        }
-
-        empty.style.display = 'none';
-        detail.style.display = 'block';
-
-        // Header
-        document.getElementById('detailName').textContent = app.name || '—';
-        document.getElementById('detailSub').textContent =
-          fmtMobile(app.mobile) + (app.city ? ' · ' + app.city : '') + ' · ID: ' + (app.id || '');
-
-        // Submitted data grid
-        const insurers = getInsurers(app);
-        const sources = safeArr(app.insuranceSource).map(s =>
-          s === 'employer' ? 'Through employer' : s === 'individual' ? 'Bought myself' : s);
-        const members = safeArr(app.members);
-        const nonPrimary = members.filter(m => !m.primary);
-        let membersHtml;
-        if (!nonPrimary.length) {
-          membersHtml = '<span class="field-val muted">Just the applicant</span>';
-        } else {
-          membersHtml = `<div class="member-tags">${
-            nonPrimary.map(m => `<span class="member-tag">${esc(m.name || '?')} <span style="opacity:0.6">(${esc(m.relation || '?')})</span></span>`).join('')
-          }</div>`;
-        }
-
-        document.getElementById('submittedGrid').innerHTML = `
-          <div class="grid-field">
-            <label>Full Name</label>
-            <div class="field-val">${esc(app.name || '—')}</div>
-          </div>
-          <div class="grid-field">
-            <label>Phone Number</label>
-            <div class="field-val">${esc(fmtMobile(app.mobile))}</div>
-          </div>
-          <div class="grid-field">
-            <label>Insurer(s)</label>
-            <div class="field-val">${insurers.length ? insurers.map(i => `<span class="tag" style="font-size:12px">${esc(i)}</span>`).join('') : '<span class="field-val muted">—</span>'}</div>
-          </div>
-          <div class="grid-field">
-            <label>Policy Source</label>
-            <div class="field-val">${sources.length ? sources.join(', ') : '<span class="muted">—</span>'}</div>
-          </div>
-          <div class="grid-field">
-            <label>City</label>
-            <div class="field-val">${esc(app.city || '—')}</div>
-          </div>
-          <div class="grid-field">
-            <label>Submitted At</label>
-            <div class="field-val">${fmtDate(app.timestamp)}</div>
-          </div>
-          <div class="grid-field" style="grid-column:1/-1">
-            <label>Family Members</label>
-            ${membersHtml}
-          </div>
-        `;
-
-        // COI Document viewer
-        const coiInner = document.getElementById('coiViewerInner');
-        const coiLink = document.getElementById('coiOpenLink');
-        if (app.coiDocument) {
-          coiInner.innerHTML = `<iframe class="coi-viewer-frame" src="${esc(app.coiDocument)}" sandbox="allow-same-origin allow-scripts" title="COI Document"></iframe>`;
-          coiLink.href = app.coiDocument;
-          coiLink.style.display = 'inline-flex';
-        } else {
-          coiInner.innerHTML = `<div class="coi-viewer-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>No document attached</span></div>`;
-          coiLink.style.display = 'none';
-        }
-
-        // Load saved verification
-        const v = getVerification(app.id);
-        const fields = ['policyNumber','sumInsured','policyStartDate','policyEndDate',
-                        'coverageType','copayPercent','waitingPeriodActive','callStatus',
-                        'opsComments','verificationStatus','rejectionBucket',
-                        'rejectionCode','reviewedBy'];
-        fields.forEach(f => {
-          const el = document.getElementById(f === 'verificationStatus' ? 'vstatus' : f);
-          if (el) el.value = v[f] || '';
-        });
-
-        // Apply vstatus color
-        applyVstatusStyle(v.verificationStatus || 'pending');
-
-        // Rejection fields
-        toggleRejectionFields(v.verificationStatus === 'rejected');
-        if (v.rejectionBucket) populateCodeSelect(v.rejectionBucket, v.rejectionCode);
-        updateReasonBox(v.rejectionCode);
-
-        // Reviewed at
-        updateReviewedAtDisplay(v.reviewedAt);
-      }
-
-      function applyVstatusStyle(val) {
-        const el = document.getElementById('vstatus');
-        if (!el) return;
-        el.className = 'form-select vs-' + (val || 'pending');
-      }
-
-      function toggleRejectionFields(show) {
-        const rf = document.getElementById('rejectionFields');
-        if (rf) rf.classList.toggle('show', show);
-      }
-
-      function populateCodeSelect(bucket, selectedCode) {
-        const codeEl = document.getElementById('rejectionCode');
-        if (!codeEl) return;
-        const codes = REJECTION_CODES[bucket] || [];
-        codeEl.innerHTML = '<option value="">— Select Code —</option>' +
-          codes.map(c => `<option value="${esc(c.code)}"${c.code === selectedCode ? ' selected' : ''}>${esc(c.code)} · ${esc(c.label)}</option>`).join('');
-      }
-
-      function updateReasonBox(code) {
-        const box = document.getElementById('reasonBox');
-        if (!box) return;
-        const reason = CODE_REASON[code] || '';
-        if (reason) {
-          box.textContent = reason;
-          box.classList.add('show');
-        } else {
-          box.classList.remove('show');
-        }
-      }
-
-      function updateReviewedAtDisplay(ts) {
-        const el = document.getElementById('reviewedAtDisplay');
-        if (!el) return;
-        el.textContent = ts ? 'Reviewed at: ' + fmtDate(ts) : '';
-      }
-
-      // ── AUTO-SAVE ─────────────────────────────────────────────────────────────
-
-      function getCurrentFormData() {
-        const fields = ['policyNumber','sumInsured','policyStartDate','policyEndDate',
-                        'coverageType','copayPercent','waitingPeriodActive','callStatus',
-                        'opsComments','rejectionBucket','rejectionCode','reviewedBy'];
-        const data = {};
-        fields.forEach(f => {
-          const el = document.getElementById(f);
-          data[f] = el ? el.value : '';
-        });
-        data.verificationStatus = document.getElementById('vstatus')?.value || 'pending';
-        data.rejectionReason = CODE_REASON[data.rejectionCode] || '';
-        // preserve existing reviewedAt
-        const existing = getVerification(selectedId);
-        data.reviewedAt = existing.reviewedAt || '';
-        return data;
-      }
-
-      function autoSave() {
-        if (!selectedId) return;
-        const data = getCurrentFormData();
-        saveVerification(selectedId, data);
-      }
-
-      // ── SECTION COLLAPSIBLE ───────────────────────────────────────────────────
-
-      function setupToggle(btnId, bodyId) {
-        const btn = document.getElementById(btnId);
-        const body = document.getElementById(bodyId);
-        if (!btn || !body) return;
-        btn.addEventListener('click', () => {
-          const collapsed = body.classList.toggle('hidden');
-          btn.classList.toggle('collapsed', collapsed);
-        });
-      }
-
-      // ── EVENT WIRING ──────────────────────────────────────────────────────────
-
-      function wireFormEvents() {
-        // All form inputs auto-save
-        document.getElementById('detailWrap').querySelectorAll('[data-field]').forEach(el => {
-          el.addEventListener('input', autoSave);
-          el.addEventListener('change', autoSave);
-        });
-
-        // Vstatus special handling
-        document.getElementById('vstatus').addEventListener('change', function() {
-          applyVstatusStyle(this.value);
-          toggleRejectionFields(this.value === 'rejected');
-          autoSave();
-        });
-
-        // Rejection bucket cascades to code
-        document.getElementById('rejectionBucket').addEventListener('change', function() {
-          populateCodeSelect(this.value, '');
-          updateReasonBox('');
-          autoSave();
-        });
-
-        // Rejection code -> reason box
-        document.getElementById('rejectionCode').addEventListener('change', function() {
-          updateReasonBox(this.value);
-          autoSave();
-        });
-
-        // Mark as reviewed
-        document.getElementById('markReviewedBtn').addEventListener('click', () => {
-          if (!selectedId) return;
-          const data = getCurrentFormData();
-          data.reviewedAt = new Date().toISOString();
-          saveVerification(selectedId, data);
-          updateReviewedAtDisplay(data.reviewedAt);
-          // also update existing stored data
-          const vmap = loadVerifications();
-          if (vmap[selectedId]) vmap[selectedId].reviewedAt = data.reviewedAt;
-          saveVerifications(vmap);
-        });
-
-        // Section toggles
-        setupToggle('toggleSubmitted', 'bodySubmitted');
-        setupToggle('toggleCoiDoc', 'bodyCoiDoc');
-        setupToggle('togglePolicy', 'bodyPolicy');
-        setupToggle('toggleDecision', 'bodyDecision');
-      }
-
-      // ── FILTERS & SEARCH ──────────────────────────────────────────────────────
-
-      document.getElementById('filterPills').addEventListener('click', e => {
-        const pill = e.target.closest('[data-f]');
-        if (!pill) return;
-        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        activeFilter = pill.dataset.f;
-        renderList();
-      });
-
-      document.getElementById('searchInput').addEventListener('input', function() {
-        searchQuery = this.value.trim();
-        renderList();
-      });
-
-      // ── EXPORT CSV ────────────────────────────────────────────────────────────
-
-      document.getElementById('exportCsvBtn').addEventListener('click', () => {
-        const apps = loadApps();
-        const vmap = loadVerifications();
-
-        const headers = [
-          'Submission ID','Submitted At','Name','Phone','City','Insurer(s)',
-          'Policy Source','Members','Policy Number','Sum Insured','Policy Start',
-          'Policy End','Coverage Type','Co-pay %','Waiting Period Active',
-          'Call Status','Ops Comments','Verification Status','Rejection Bucket',
-          'Rejection Code','Rejection Reason','Reviewed By','Reviewed At'
-        ];
-
-        function csvCell(v) {
-          const s = String(v ?? '');
-          if (s.includes(',') || s.includes('"') || s.includes('\n')) {
-            return '"' + s.replace(/"/g, '""') + '"';
-          }
-          return s;
-        }
-
-        const rows = apps.map(app => {
-          const v = vmap[app.id] || {};
-          const insurers = getInsurers(app).join('; ');
-          const sources = safeArr(app.insuranceSource).join('; ');
-          const members = safeArr(app.members).map(m => m.name + (m.relation ? ' (' + m.relation + ')' : '')).join('; ');
-          return [
-            app.id, app.timestamp, app.name, app.mobile, app.city,
-            insurers, sources, members,
-            v.policyNumber, v.sumInsured, v.policyStartDate, v.policyEndDate,
-            v.coverageType, v.copayPercent, v.waitingPeriodActive, v.callStatus,
-            v.opsComments, v.verificationStatus || 'pending',
-            v.rejectionBucket, v.rejectionCode, v.rejectionReason,
-            v.reviewedBy, v.reviewedAt
-          ].map(csvCell).join(',');
-        });
-
-        const csv = [headers.map(csvCell).join(','), ...rows].join('\n');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-        a.href = url;
-        a.download = `even-coi-verifications-${stamp}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-      });
-
-      // ── INIT ──────────────────────────────────────────────────────────────────
-
-      wireFormEvents();
-      updateStats();
-      renderList();
-
-      // Keep fresh on storage changes from other tabs
-      window.addEventListener('storage', e => {
-        if (e.key === 'evenApplications' || e.key === 'coiVerifications') {
-          updateStats();
-          renderList();
-          if (selectedId) renderDetail();
         }
       });
-    </script>
+      const { data: { text } } = await worker.recognize(img.src);
+      await worker.terminate();
 
-    <!-- Vercel Web Analytics + Speed Insights -->
-    <script defer src="/_vercel/insights/script.js"></script>
-    <script defer src="/_vercel/speed-insights/script.js"></script>
-  </body>
+      // Parse extracted text
+      const filled = [];
+      function grab(patterns) {
+        for (const p of patterns) {
+          const m = text.match(p);
+          if (m && m[1]) return m[1].trim();
+        }
+        return null;
+      }
+      const validUpto = grab([/Valid Upto[:\s]+([^\n]+)/i, /Valid Till[:\s]+([^\n]+)/i, /Expiry[:\s]+([^\n]+)/i]);
+      if (validUpto) { const d = parseDate(validUpto); if (d) { document.getElementById('policyEndDate').value = d; filled.push('End Date'); } }
+      const polNo = grab([/Policy No[.:\s]+([A-Z0-9\/\-]+)/i, /Certificate No[.:\s]+([A-Z0-9\/\-]+)/i]);
+      if (polNo) { document.getElementById('policyNumber').value = polNo; filled.push('Policy Number'); }
+      const si = grab([/Sum Insured[:\s₹]*([0-9,]+)/i]);
+      if (si) { document.getElementById('sumInsured').value = si.replace(/,/g,''); filled.push('Sum Insured'); }
+
+      body.removeChild(overlay);
+      ocrRunning = false;
+      ocrBtn.classList.remove('ocr-active');
+      ocrBtn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg> Run OCR`;
+
+      if (filled.length) { autoSave(); showToast(`OCR filled: ${filled.join(', ')}`); }
+      else { showToast('OCR complete — nothing auto-filled, check manually'); }
+    } catch (err) {
+      body.removeChild(document.getElementById('ocrOverlay'));
+      ocrRunning = false;
+      ocrBtn.classList.remove('ocr-active');
+      ocrBtn.innerHTML = `Run OCR`;
+      showToast('OCR failed: ' + (err.message || 'unknown error'));
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FORM RENDER
+// ═══════════════════════════════════════════════════════════════
+
+function renderForm() {
+  const apps = loadApps();
+  const app = apps.find(a => a.id === selectedId);
+  const formEmpty = document.getElementById('formEmpty');
+  const formBody = document.getElementById('formBody');
+  const nameEl = document.getElementById('formPaneName');
+  const statusEl = document.getElementById('formPaneStatus');
+
+  if (!app) {
+    formEmpty.style.display = 'flex';
+    formBody.style.display = 'none';
+    nameEl.textContent = 'Select an application';
+    nameEl.classList.add('form-pane-placeholder');
+    statusEl.style.display = 'none';
+    return;
+  }
+
+  formEmpty.style.display = 'none';
+  formBody.style.display = 'block';
+  nameEl.textContent = app.name || '—';
+  nameEl.classList.remove('form-pane-placeholder');
+
+  const v = getVerif(app.id);
+  const vs = v.verificationStatus || 'pending';
+
+  statusEl.className = `sbadge sb-${vs}`;
+  statusEl.textContent = vs;
+  statusEl.style.display = 'inline-flex';
+
+  // — Submitted Info grid
+  const insurers = getInsurers(app);
+  const sources = safeArr(app.insuranceSource).map(s => s === 'employer' ? 'Through employer' : s === 'individual' ? 'Bought myself' : s);
+  const members = safeArr(app.members).filter(m => !m.primary);
+  document.getElementById('submittedGrid').innerHTML = `
+    <div class="fg"><span class="flabel">Name</span><span class="fval">${esc(app.name||'—')}</span></div>
+    <div class="fg"><span class="flabel">Phone</span><span class="fval">${esc(fmtMobile(app.mobile))}</span></div>
+    <div class="fg"><span class="flabel">Insurer(s)</span><span class="fval">${insurers.length ? insurers.map(i=>`<span class="mtag">${esc(i)}</span>`).join('') : '<span class="fval muted">—</span>'}</span></div>
+    <div class="fg"><span class="flabel">Source</span><span class="fval">${sources.join(', ')||'—'}</span></div>
+    <div class="fg"><span class="flabel">City</span><span class="fval">${esc(app.city||'—')}</span></div>
+    <div class="fg"><span class="flabel">Submitted</span><span class="fval" style="font-size:11.5px">${fmtDate(app.timestamp)}</span></div>
+    ${members.length ? `<div class="fg" style="grid-column:1/-1"><span class="flabel">Declared Family</span><div class="member-tags">${members.map(m=>`<span class="mtag">${esc(m.name||'?')} (${esc(m.relation||'?')})</span>`).join('')}</div></div>` : ''}
+  `;
+
+  // — Policy fields
+  const scalarFields = ['policyNumber','sumInsured','policyStartDate','policyEndDate','coverageType','copayPercent','waitingPeriodActive','callStatus','opsComments','rejectionBucket','rejectionCode','reviewedBy'];
+  scalarFields.forEach(f => {
+    const el = document.getElementById(f);
+    if (el) el.value = v[f] || '';
+  });
+  document.getElementById('vstatus').value = vs;
+  applyVstatusStyle(vs);
+  toggleRejectionPanel(vs === 'rejected');
+  if (v.rejectionBucket) populateCodeSelect(v.rejectionBucket, v.rejectionCode);
+  updateReasonHint(v.rejectionCode);
+  updateReviewedMeta(v.reviewedAt);
+
+  // — Members on Policy
+  renderMembersSection('adult', safeArr(v.adultsOnPolicy));
+  renderMembersSection('child', safeArr(v.childrenOnPolicy));
+
+  // — PED
+  renderPedTags(safeArr(v.preExistingConditions));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MEMBERS MANAGEMENT
+// ═══════════════════════════════════════════════════════════════
+
+function renderMembersSection(type, members) {
+  const containerId = type === 'adult' ? 'adultsContainer' : 'childrenContainer';
+  const hintId = type === 'adult' ? 'noAdultsHint' : 'noChildrenHint';
+  const container = document.getElementById(containerId);
+  const hint = document.getElementById(hintId);
+
+  // Remove existing rows (keep hint)
+  container.querySelectorAll('.member-row').forEach(r => r.remove());
+
+  if (!members.length) {
+    hint.style.display = 'block';
+    return;
+  }
+  hint.style.display = 'none';
+
+  members.forEach((m, i) => {
+    const row = buildMemberRow(type, i, m.name || '', m.dob || '');
+    container.appendChild(row);
+  });
+}
+
+function buildMemberRow(type, idx, name, dob) {
+  const row = document.createElement('div');
+  row.className = 'member-row';
+  row.dataset.type = type;
+  row.dataset.idx = idx;
+
+  const nameIn = document.createElement('input');
+  nameIn.className = 'finput name-in';
+  nameIn.type = 'text';
+  nameIn.placeholder = (type === 'adult' ? 'Adult' : 'Child') + ' ' + (idx + 1) + ' name (optional)';
+  nameIn.value = name;
+  nameIn.addEventListener('input', autoSave);
+
+  const dobIn = document.createElement('input');
+  dobIn.className = 'finput dob-in';
+  dobIn.type = 'date';
+  dobIn.title = 'DOB (optional)';
+  dobIn.value = dob;
+  dobIn.addEventListener('change', autoSave);
+
+  const rmBtn = document.createElement('button');
+  rmBtn.className = 'remove-member-btn';
+  rmBtn.type = 'button';
+  rmBtn.title = 'Remove';
+  rmBtn.innerHTML = '×';
+  rmBtn.addEventListener('click', () => removeMember(type, idx));
+
+  row.appendChild(nameIn);
+  row.appendChild(dobIn);
+  row.appendChild(rmBtn);
+  return row;
+}
+
+function addMember(type) {
+  if (!selectedId) return;
+  const v = getVerif(selectedId);
+  const key = type === 'adult' ? 'adultsOnPolicy' : 'childrenOnPolicy';
+  const arr = safeArr(v[key]);
+  arr.push({ name: '', dob: '' });
+  v[key] = arr;
+  persistVerif(selectedId, v);
+  renderMembersSection(type, arr);
+  // Focus the new row's name input
+  const container = document.getElementById(type === 'adult' ? 'adultsContainer' : 'childrenContainer');
+  const rows = container.querySelectorAll('.member-row');
+  if (rows.length) rows[rows.length - 1].querySelector('.name-in')?.focus();
+}
+
+function removeMember(type, idx) {
+  if (!selectedId) return;
+  const v = getVerif(selectedId);
+  const key = type === 'adult' ? 'adultsOnPolicy' : 'childrenOnPolicy';
+  const arr = safeArr(v[key]);
+  arr.splice(idx, 1);
+  v[key] = arr;
+  persistVerif(selectedId, v);
+  renderMembersSection(type, arr);
+}
+
+function readMembersFromDOM(type) {
+  const containerId = type === 'adult' ? 'adultsContainer' : 'childrenContainer';
+  const rows = document.getElementById(containerId).querySelectorAll('.member-row');
+  return Array.from(rows).map(row => ({
+    name: row.querySelector('.name-in')?.value || '',
+    dob: row.querySelector('.dob-in')?.value || ''
+  }));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PED TAGS
+// ═══════════════════════════════════════════════════════════════
+
+function renderPedTags(selected) {
+  const container = document.getElementById('pedTags');
+  container.innerHTML = PED_OPTIONS.map(label => {
+    const active = selected.includes(label) ? 'selected' : '';
+    return `<span class="ped-tag ${active}" data-ped="${esc(label)}">${esc(label)}</span>`;
+  }).join('');
+
+  container.querySelectorAll('.ped-tag').forEach(tag => {
+    tag.addEventListener('click', () => {
+      tag.classList.toggle('selected');
+      autoSave();
+    });
+  });
+}
+
+function readSelectedPed() {
+  return Array.from(document.querySelectorAll('.ped-tag.selected')).map(t => t.dataset.ped);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DECISION HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+function applyVstatusStyle(val) {
+  const el = document.getElementById('vstatus');
+  if (!el) return;
+  el.className = 'fselect vs-' + (val || 'pending');
+  // Update header badge
+  const badge = document.getElementById('formPaneStatus');
+  if (badge) { badge.className = `sbadge sb-${val||'pending'}`; badge.textContent = val||'pending'; }
+  // Update queue card color (no re-render needed, handled on next queue render)
+}
+
+function toggleRejectionPanel(show) {
+  document.getElementById('rejectionPanel')?.classList.toggle('show', show);
+}
+
+function populateCodeSelect(bucket, selectedCode) {
+  const codeEl = document.getElementById('rejectionCode');
+  if (!codeEl) return;
+  const codes = REJECTION_CODES[bucket] || [];
+  codeEl.innerHTML = '<option value="">— Select Code —</option>' +
+    codes.map(c => `<option value="${esc(c.code)}"${c.code === selectedCode ? ' selected' : ''}>${esc(c.code)} · ${esc(c.label)}</option>`).join('');
+}
+
+function updateReasonHint(code) {
+  const hint = document.getElementById('reasonHint');
+  if (!hint) return;
+  const r = CODE_REASON[code] || '';
+  if (r) { hint.textContent = r; hint.classList.add('show'); }
+  else { hint.classList.remove('show'); }
+}
+
+function updateReviewedMeta(ts) {
+  const el = document.getElementById('reviewedMeta');
+  if (!el) return;
+  el.textContent = ts ? 'Reviewed: ' + fmtDate(ts) : '';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AUTO-SAVE
+// ═══════════════════════════════════════════════════════════════
+
+function getCurrentData() {
+  const scalars = ['policyNumber','sumInsured','policyStartDate','policyEndDate','coverageType',
+                   'copayPercent','waitingPeriodActive','callStatus','opsComments','rejectionBucket',
+                   'rejectionCode','reviewedBy'];
+  const data = {};
+  scalars.forEach(f => { const el = document.getElementById(f); data[f] = el ? el.value : ''; });
+  data.verificationStatus = document.getElementById('vstatus')?.value || 'pending';
+  data.rejectionReason = CODE_REASON[data.rejectionCode] || '';
+  data.adultsOnPolicy = readMembersFromDOM('adult');
+  data.childrenOnPolicy = readMembersFromDOM('child');
+  data.preExistingConditions = readSelectedPed();
+  const existing = getVerif(selectedId);
+  data.reviewedAt = existing.reviewedAt || '';
+  return data;
+}
+
+function autoSave() {
+  if (!selectedId) return;
+  persistVerif(selectedId, getCurrentData());
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION TOGGLES
+// ═══════════════════════════════════════════════════════════════
+
+function setupToggle(togId, bodyId) {
+  const tog = document.getElementById(togId);
+  const body = document.getElementById(bodyId);
+  if (!tog || !body) return;
+  tog.addEventListener('click', () => {
+    const collapsed = body.classList.toggle('hidden');
+    tog.classList.toggle('collapsed', collapsed);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// WIRE FORM EVENTS
+// ═══════════════════════════════════════════════════════════════
+
+function wireFormEvents() {
+  // Auto-save on all data-field elements
+  document.getElementById('formBody').querySelectorAll('[data-field]').forEach(el => {
+    el.addEventListener('input', autoSave);
+    el.addEventListener('change', autoSave);
+  });
+
+  // vstatus: style + rejection panel
+  document.getElementById('vstatus').addEventListener('change', function() {
+    applyVstatusStyle(this.value);
+    toggleRejectionPanel(this.value === 'rejected');
+    autoSave();
+  });
+
+  // Rejection bucket -> code cascade
+  document.getElementById('rejectionBucket').addEventListener('change', function() {
+    populateCodeSelect(this.value, '');
+    updateReasonHint('');
+    autoSave();
+  });
+
+  // Rejection code -> hint
+  document.getElementById('rejectionCode').addEventListener('change', function() {
+    updateReasonHint(this.value);
+    autoSave();
+  });
+
+  // Mark reviewed
+  document.getElementById('markReviewedBtn').addEventListener('click', () => {
+    if (!selectedId) return;
+    const data = getCurrentData();
+    data.reviewedAt = new Date().toISOString();
+    persistVerif(selectedId, data);
+    updateReviewedMeta(data.reviewedAt);
+  });
+
+  // Add member buttons
+  document.getElementById('addAdultBtn').addEventListener('click', () => addMember('adult'));
+  document.getElementById('addChildBtn').addEventListener('click', () => addMember('child'));
+
+  // Section toggles
+  setupToggle('tog-submitted', 'body-submitted');
+  setupToggle('tog-policy', 'body-policy');
+  setupToggle('tog-members', 'body-members');
+  setupToggle('tog-ped', 'body-ped');
+  setupToggle('tog-decision', 'body-decision');
+
+  // Viewer actions
+  document.getElementById('extractBtn').addEventListener('click', trySmartExtract);
+  document.getElementById('ocrBtn').addEventListener('click', runOcr);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// QUEUE FILTERS & SEARCH
+// ═══════════════════════════════════════════════════════════════
+
+document.getElementById('qFilters').addEventListener('click', e => {
+  const pill = e.target.closest('[data-f]');
+  if (!pill) return;
+  document.querySelectorAll('.q-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  activeFilter = pill.dataset.f;
+  renderQueue();
+});
+
+document.getElementById('qSearch').addEventListener('input', function() {
+  searchQ = this.value.trim();
+  renderQueue();
+});
+
+// ═══════════════════════════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════════════════════════
+
+document.getElementById('exportCsvBtn').addEventListener('click', () => {
+  const apps = loadApps();
+  const vmap = loadVerifs();
+
+  const headers = [
+    'Submission ID','Submitted At','Name','Phone','City','Insurer(s)','Policy Source','Declared Members',
+    'Policy Number','Sum Insured','Policy Start','Policy End','Coverage Type','Co-pay %',
+    'Waiting Period','Call Status','Adults on Policy','Children on Policy',
+    'Pre-existing Conditions','Ops Comments',
+    'Verification Status','Rejection Bucket','Rejection Code','Rejection Reason',
+    'Reviewed By','Reviewed At'
+  ];
+
+  function cell(v) {
+    const s = String(v ?? '');
+    return (s.includes(',') || s.includes('"') || s.includes('\n')) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  const rows = apps.map(app => {
+    const v = vmap[app.id] || {};
+    const insurers = getInsurers(app).join('; ');
+    const sources = safeArr(app.insuranceSource).join('; ');
+    const declaredMembers = safeArr(app.members).map(m => m.name + (m.relation ? ' (' + m.relation + ')' : '')).join('; ');
+    const adults = safeArr(v.adultsOnPolicy).map((m,i) => (m.name || 'Adult '+(i+1)) + (m.dob ? ' ('+m.dob+')' : '')).join('; ');
+    const children = safeArr(v.childrenOnPolicy).map((m,i) => (m.name || 'Child '+(i+1)) + (m.dob ? ' ('+m.dob+')' : '')).join('; ');
+    const peds = safeArr(v.preExistingConditions).join('; ');
+    return [
+      app.id, app.timestamp, app.name, app.mobile, app.city,
+      insurers, sources, declaredMembers,
+      v.policyNumber, v.sumInsured, v.policyStartDate, v.policyEndDate,
+      v.coverageType, v.copayPercent, v.waitingPeriodActive, v.callStatus,
+      adults, children, peds, v.opsComments,
+      v.verificationStatus || 'pending',
+      v.rejectionBucket, v.rejectionCode, v.rejectionReason,
+      v.reviewedBy, v.reviewedAt
+    ].map(cell).join(',');
+  });
+
+  const csv = [headers.map(cell).join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `even-coi-verif-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// ═══════════════════════════════════════════════════════════════
+// PED INITIAL RENDER (empty state before app selection)
+// ═══════════════════════════════════════════════════════════════
+
+(function initPed() {
+  const container = document.getElementById('pedTags');
+  container.innerHTML = PED_OPTIONS.map(label =>
+    `<span class="ped-tag" data-ped="${esc(label)}">${esc(label)}</span>`
+  ).join('');
+  container.querySelectorAll('.ped-tag').forEach(tag => {
+    tag.addEventListener('click', () => { tag.classList.toggle('selected'); autoSave(); });
+  });
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+
+wireFormEvents();
+updateStats();
+renderQueue();
+
+window.addEventListener('storage', e => {
+  if (e.key === 'evenApplications' || e.key === 'coiVerifications') {
+    updateStats();
+    renderQueue();
+    if (selectedId) renderForm();
+  }
+});
+</script>
+
+<!-- Vercel Web Analytics + Speed Insights -->
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
 </html>
