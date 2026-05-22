@@ -240,7 +240,7 @@
     .q-search:focus { border-color: var(--accent); background: var(--surface); }
     .q-search::placeholder { color: var(--ink-3); }
 
-    .q-filters { display: flex; gap: 4px; flex-wrap: wrap; }
+    .q-filters { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
     .q-pill {
       background: transparent;
       border: 1px solid transparent;
@@ -252,9 +252,59 @@
       cursor: pointer;
       transition: all 0.14s cubic-bezier(0.32,0.72,0,1);
       letter-spacing: -0.005em;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
     .q-pill:hover { background: var(--surface-tint); color: var(--ink); }
     .q-pill.active { background: var(--ink); color: var(--surface); }
+    .q-pill .qp-count {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      opacity: 0.65;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
+    }
+    .q-pill.active .qp-count { opacity: 0.85; }
+
+    /* v5: queue sort dropdown */
+    .q-sort {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 22px 3px 9px;
+      background: transparent;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      color: var(--ink-2);
+      cursor: pointer;
+      letter-spacing: -0.005em;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' fill='none'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%238A8780' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
+    .q-sort:hover { background: var(--surface-tint); border-color: var(--hairline-strong); color: var(--ink); }
+
+    /* v5: queue PED chip */
+    .qcard-ped-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--st-ped-bg);
+      color: var(--st-ped-ink);
+      border: 1px solid var(--st-ped-edge);
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
+      flex-shrink: 0;
+    }
 
     .queue-list {
       flex: 1;
@@ -427,6 +477,13 @@
     }
     .v-btn:hover { background: var(--surface-tint); border-color: var(--hairline-strong); }
     .v-btn:active { transform: scale(0.97); }
+    .v-btn.primary {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--surface);
+      font-weight: 600;
+    }
+    .v-btn.primary:hover { background: var(--accent-soft); border-color: var(--accent-soft); }
     .v-btn.ocr-active { background: var(--st-waitlisted-bg); color: var(--st-waitlisted-ink); border-color: var(--st-waitlisted-edge); }
     .v-btn.extract-active { background: var(--st-verified-bg); color: var(--st-verified-ink); border-color: var(--st-verified-edge); }
 
@@ -514,13 +571,18 @@
     }
     .form-pane-header {
       flex-shrink: 0;
-      min-height: 46px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 8px 22px 9px;
+      border-bottom: 1px solid var(--hairline);
+      background: var(--surface);
+    }
+    .form-pane-header-top {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 9px 22px;
-      border-bottom: 1px solid var(--hairline);
-      background: var(--surface);
+      min-height: 32px;
     }
     .form-pane-name {
       font-size: 15.5px;
@@ -533,6 +595,33 @@
       letter-spacing: -0.015em;
     }
     .form-pane-placeholder { color: var(--ink-3); font-weight: 500; }
+    /* v5: pinned submitted facts (Name / Phone / City) — always visible */
+    .form-pane-subline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11.5px;
+      color: var(--ink-2);
+      letter-spacing: -0.005em;
+      flex-wrap: wrap;
+    }
+    .form-pane-subline:empty { display: none; }
+    .fps-item { display: inline-flex; align-items: center; gap: 5px; }
+    .fps-label {
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--ink-3);
+    }
+    .fps-val {
+      font-size: 12px;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+    }
+    .fps-val.copyable { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .fps-val.copyable:hover { color: var(--link); }
+    .fps-sep { color: var(--hairline-strong); }
 
     .form-body {
       flex: 1;
@@ -805,7 +894,7 @@
     .remove-member-btn:hover { background: var(--st-rejected-bg); color: var(--st-rejected-ink); }
     .no-members-hint { font-size: 12px; color: var(--ink-3); font-style: italic; padding: 4px 0; }
 
-    /* ═══ NEW 3-VERDICT PALETTE ═══════════════════════════════ */
+    /* ═══ v5: 3-VERDICT PALETTE + PED ROSE + Q SORT ══════════ */
     :root {
       --st-approved-bg:  #DDE9DC;
       --st-approved-ink: #2A5A3D;
@@ -813,10 +902,13 @@
       --st-hold-bg:     #F5EAD4;
       --st-hold-ink:    #8A6A2A;
       --st-hold-edge:   rgba(138,106,42,0.32);
-      /* discovery flag stays a hue accent on queue cards (not a verdict) */
       --st-discovery-bg:  #EDE6F2;
       --st-discovery-ink: #5C4581;
       --st-discovery-edge: rgba(92,69,129,0.3);
+      /* v5: PEDs in warm rose (risk signal, distinct from Hold ochre) */
+      --st-ped-bg:  #F4E0E5;
+      --st-ped-ink: #8A3E54;
+      --st-ped-edge: rgba(138,62,84,0.32);
     }
 
     .stat-chip.s-approved  { background: var(--st-approved-bg); color: var(--st-approved-ink); }
@@ -893,21 +985,29 @@
       margin-left: auto;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-    }
-    .summary-card .sc-apply {
-      font-size: 11.5px;
-      font-weight: 500;
-      padding: 3px 11px;
+      gap: 8px;
+      padding: 4px 6px 4px 12px;
       border-radius: 999px;
       background: var(--ink);
-      border: 1px solid var(--ink);
       color: var(--surface);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: -0.005em;
+    }
+    .summary-card .sc-suggest strong { color: var(--surface); font-weight: 700; }
+    .summary-card .sc-apply {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 0;
+      color: var(--ink);
       cursor: pointer;
       letter-spacing: -0.005em;
-      transition: background 0.14s, transform 0.12s;
+      transition: transform 0.12s;
     }
-    .summary-card .sc-apply:hover { background: var(--accent-soft); }
+    .summary-card .sc-apply:hover { background: var(--surface-tint); }
     .summary-card .sc-apply:active { transform: scale(0.96); }
     .summary-card .sc-sep { color: var(--ink-3); }
 
@@ -1019,6 +1119,35 @@
       border-color: var(--st-hold-ink);
     }
 
+    /* v5: Confirm-all-discoveries button */
+    .confirm-all-disc {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      padding: 7px 12px;
+      background: var(--st-discovery-bg);
+      border: 1px solid var(--st-discovery-edge);
+      border-radius: var(--radius-sm);
+      font-size: 11.5px;
+      color: var(--st-discovery-ink);
+      letter-spacing: -0.005em;
+    }
+    .confirm-all-disc.show { display: flex; }
+    .confirm-all-disc .cad-msg { flex: 1; }
+    .confirm-all-disc button {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: var(--st-discovery-ink);
+      border: 1px solid var(--st-discovery-ink);
+      color: var(--surface);
+      cursor: pointer;
+      letter-spacing: -0.005em;
+    }
+    .confirm-all-disc button:hover { background: #4A3868; }
+
     /* ═══ COVERAGE SUMMARY (top of Members section body) ══════ */
     .coverage-summary {
       display: flex;
@@ -1110,31 +1239,26 @@
     .member-row .pstatus-toggle:hover { filter: brightness(0.98); }
     .member-row .pstatus-toggle:active { transform: scale(0.96); }
 
-    /* Relation quick chips above the dropdown */
-    .rel-chips {
-      display: inline-flex;
-      gap: 3px;
-      align-items: center;
-      margin-right: 3px;
-    }
-    .rel-chip {
-      font-size: 11px;
+    /* v5: single relation chip — click to cycle through common values */
+    .rel-cycle {
+      font-size: 11.5px;
       font-weight: 500;
-      padding: 3px 10px;
+      padding: 5px 12px;
       border-radius: 999px;
-      background: transparent;
+      background: var(--surface);
       border: 1px solid var(--hairline);
       color: var(--ink-2);
       cursor: pointer;
       letter-spacing: -0.005em;
-      transition: all 0.14s;
+      transition: all 0.14s cubic-bezier(0.32,0.72,0,1);
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-width: 70px;
+      text-align: center;
     }
-    .rel-chip:hover { background: var(--surface-tint); border-color: var(--hairline-strong); color: var(--ink); }
-    .rel-chip.active {
-      background: var(--ink);
-      border-color: var(--ink);
-      color: var(--surface);
-    }
+    .rel-cycle:hover { background: var(--surface-tint); border-color: var(--hairline-strong); }
+    .rel-cycle:active { transform: scale(0.96); }
+    .rel-cycle.has-value { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 
     /* ═══ PER-MEMBER CONDITIONS TOGGLE + PANEL ═══════════════ */
     .conditions-toggle {
@@ -1167,13 +1291,13 @@
       text-align: center;
     }
     .conditions-toggle.has-conditions {
-      background: var(--st-waitlisted-bg);
-      border-color: var(--st-waitlisted-edge);
-      color: var(--st-waitlisted-ink);
+      background: var(--st-ped-bg);
+      border-color: var(--st-ped-edge);
+      color: var(--st-ped-ink);
     }
     .conditions-toggle.has-conditions .cond-count {
-      background: var(--st-waitlisted-ink);
-      color: var(--st-waitlisted-bg);
+      background: var(--st-ped-ink);
+      color: var(--st-ped-bg);
     }
     .conditions-toggle .chev-mini {
       font-size: 9px;
@@ -1186,8 +1310,8 @@
       display: none;
       margin-top: 6px;
       padding: 8px 10px;
-      background: rgba(138,106,42,0.05);
-      border: 1px solid rgba(138,106,42,0.14);
+      background: rgba(138,62,84,0.05);
+      border: 1px solid var(--st-ped-edge);
       border-radius: var(--radius-sm);
     }
     .conditions-panel.open { display: block; }
@@ -1202,7 +1326,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: var(--st-waitlisted-ink);
+      color: var(--st-ped-ink);
     }
     .conditions-panel .cp-actions {
       display: flex;
@@ -1223,8 +1347,8 @@
     }
     .conditions-panel .cp-action:hover { background: var(--surface); border-color: var(--hairline-strong); color: var(--ink); }
     .conditions-panel .cp-action:active { transform: scale(0.96); }
-    .conditions-panel .cp-all { color: var(--st-waitlisted-ink); border-color: var(--st-waitlisted-edge); }
-    .conditions-panel .cp-all:hover { background: var(--st-waitlisted-bg); }
+    .conditions-panel .cp-all { color: var(--st-ped-ink); border-color: var(--st-ped-edge); }
+    .conditions-panel .cp-all:hover { background: var(--st-ped-bg); }
     .conditions-panel .ped-tags { gap: 5px; }
     .conditions-panel .ped-tag { font-size: 11.5px; padding: 4px 10px 4px 9px; }
     .conditions-panel .ped-tag::before { width: 10px; height: 10px; border-width: 1.2px; }
@@ -1361,14 +1485,14 @@
     }
     .ped-tag:hover { background: var(--surface-tint); color: var(--ink); border-color: var(--hairline-strong); }
     .ped-tag.selected {
-      background: var(--st-waitlisted-bg);
-      border-color: var(--st-waitlisted-edge);
-      color: var(--st-waitlisted-ink);
+      background: var(--st-ped-bg);
+      border-color: var(--st-ped-edge);
+      color: var(--st-ped-ink);
     }
     .ped-tag.selected::before {
-      background: var(--st-waitlisted-ink);
-      border-color: var(--st-waitlisted-ink);
-      box-shadow: inset 0 0 0 2.5px var(--st-waitlisted-bg);
+      background: var(--st-ped-ink);
+      border-color: var(--st-ped-ink);
+      box-shadow: inset 0 0 0 2.5px var(--st-ped-bg);
     }
     .ped-tag:active { transform: scale(0.97); }
     .ped-note { font-size: 11px; color: var(--ink-3); margin-top: 9px; font-style: italic; line-height: 1.55; }
@@ -1404,10 +1528,20 @@
     }
     .audit-meta {
       font-size: 10.5px;
-      color: var(--ink-3);
+      color: var(--ink-2);
       font-family: var(--font-mono);
-      margin-top: 8px;
+      letter-spacing: -0.005em;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      background: var(--surface-tint);
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      white-space: nowrap;
     }
+    .audit-meta:empty { display: none; }
+    .audit-meta svg { width: 10px; height: 10px; opacity: 0.7; }
 
     /* ═══ TOAST ═══════════════════════════════════════════════ */
     .extract-toast {
@@ -1550,16 +1684,16 @@
       display: none;
       align-items: center;
       gap: 8px;
-      padding: 10px 14px;
-      background: var(--ink);
-      border-bottom: 1px solid var(--ink);
+      padding: 9px 12px;
+      background: var(--st-approved-bg);
+      border-bottom: 1px solid var(--st-approved-edge);
       flex-shrink: 0;
     }
     .bulk-bar.show { display: flex; }
     .bulk-count {
       font-size: 11.5px;
       font-weight: 600;
-      color: var(--surface);
+      color: var(--st-approved-ink);
       margin-right: auto;
       letter-spacing: -0.005em;
     }
@@ -1568,13 +1702,19 @@
       font-weight: 500;
       padding: 5px 12px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.22);
-      color: var(--surface);
+      background: var(--surface);
+      border: 1px solid var(--st-approved-edge);
+      color: var(--st-approved-ink);
       cursor: pointer;
       letter-spacing: -0.005em;
     }
-    .bulk-bar button:hover { background: rgba(255,255,255,0.2); }
+    .bulk-bar button:hover { background: var(--st-approved-bg); }
+    .bulk-bar button.primary {
+      background: var(--st-approved-ink);
+      border-color: var(--st-approved-ink);
+      color: var(--surface);
+    }
+    .bulk-bar button.primary:hover { background: #1F4530; }
 
     /* ═══ MODAL ════════════════════════════════════════════════ */
     .modal-back {
@@ -1688,7 +1828,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">simplified verdicts · v4.1 (viewer fix)</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5 audit · 18 fixes</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -1704,7 +1844,7 @@
     <div class="views-menu" id="viewsMenu">
       <button class="views-trigger" id="viewsTrigger" type="button">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        Views
+        Saved filters
       </button>
       <div class="views-popover" id="viewsPopover"></div>
     </div>
@@ -1736,11 +1876,16 @@
     <div class="queue-header">
       <input class="q-search" id="qSearch" type="search" placeholder="Search name, phone…" autocomplete="off" />
       <div class="q-filters" id="qFilters">
-        <button class="q-pill active" data-f="all">All</button>
-        <button class="q-pill" data-f="pending">Pending</button>
-        <button class="q-pill" data-f="approved">Approved</button>
-        <button class="q-pill" data-f="hold">Hold</button>
-        <button class="q-pill" data-f="rejected">Rejected</button>
+        <button class="q-pill active" data-f="all">All <span class="qp-count" data-c="all">0</span></button>
+        <button class="q-pill" data-f="pending">Pending <span class="qp-count" data-c="pending">0</span></button>
+        <button class="q-pill" data-f="approved">Approved <span class="qp-count" data-c="approved">0</span></button>
+        <button class="q-pill" data-f="hold">Hold <span class="qp-count" data-c="hold">0</span></button>
+        <button class="q-pill" data-f="rejected">Rejected <span class="qp-count" data-c="rejected">0</span></button>
+        <select class="q-sort" id="qSort" title="Sort queue">
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="pending_first">Pending first</option>
+        </select>
       </div>
     </div>
     <div class="queue-list" id="queueList"></div>
@@ -1751,7 +1896,7 @@
     <div class="viewer-header">
       <span class="viewer-title" id="viewerTitle">COI Document</span>
       <div class="viewer-actions">
-        <button class="v-btn" id="extractBtn" type="button" style="display:none"
+        <button class="v-btn primary" id="extractBtn" type="button" style="display:none"
           title="Auto-fill fields from this document">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           Smart Extract
@@ -1778,9 +1923,12 @@
   <!-- ═══ FORM PANE ═══ -->
   <div class="form-pane">
     <div class="form-pane-header">
-      <span class="form-pane-name form-pane-placeholder" id="formPaneName">Select an application</span>
-      <span class="audit-meta" id="auditMeta" style="margin-left:auto"></span>
-      <span class="sbadge sb-pending" id="formPaneStatus" style="display:none">Pending</span>
+      <div class="form-pane-header-top">
+        <span class="form-pane-name form-pane-placeholder" id="formPaneName">Select an application</span>
+        <span class="audit-meta" id="auditMeta"></span>
+        <span class="sbadge sb-pending" id="formPaneStatus" style="display:none">Pending</span>
+      </div>
+      <div class="form-pane-subline" id="formPaneSubline"></div>
     </div>
 
     <!-- Quick Verdict bar — sticky, one-click status change -->
@@ -1794,7 +1942,7 @@
 
     <div class="form-empty" id="formEmpty">
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      <p><strong>Verification form</strong>Pick from the queue, or press <span class="mono" style="background:rgba(157,188,255,0.1);padding:1px 6px;border-radius:4px">J</span> / <span class="mono" style="background:rgba(157,188,255,0.1);padding:1px 6px;border-radius:4px">K</span> to navigate, <span class="mono" style="background:rgba(157,188,255,0.1);padding:1px 6px;border-radius:4px">1</span>–<span class="mono" style="background:rgba(157,188,255,0.1);padding:1px 6px;border-radius:4px">5</span> to set status.</p>
+      <p><strong>Verification form</strong>Pick from the queue, or press <span class="mono" style="background:var(--surface-tint);padding:1px 6px;border-radius:4px">J</span> / <span class="mono" style="background:var(--surface-tint);padding:1px 6px;border-radius:4px">K</span> to navigate, <span class="mono" style="background:var(--surface-tint);padding:1px 6px;border-radius:4px">1</span>–<span class="mono" style="background:var(--surface-tint);padding:1px 6px;border-radius:4px">4</span> to set status.</p>
     </div>
 
     <div class="form-body" id="formBody" style="display:none">
@@ -1872,6 +2020,10 @@
           </div>
 
           <div class="sub-heading">Members on policy</div>
+          <div class="confirm-all-disc" id="confirmAllDisc">
+            <span class="cad-msg" id="cadMsg">Discovered members awaiting confirmation</span>
+            <button type="button" id="cadBtn">Confirm all</button>
+          </div>
           <div class="member-group">
             <div class="member-group-label">
               Adults
@@ -2047,6 +2199,7 @@ let saveTimer = null;
 let bulkSelected = new Set();
 let bulkMode = false;
 let undoSnapshot = null; // { id, prevStatus, timeoutId }
+let queueSort = (() => { try { return localStorage.getItem('coiQueueSort') || 'newest'; } catch { return 'newest'; } })();
 
 // ═══════════════════════════════════════════════════════════════
 // STORAGE
@@ -2070,10 +2223,17 @@ function defaultVerif(id) {
     preExistingConditions: [],
     rejectionBucket: '', rejectionCode: '', rejectionReason: '',
     verificationStatus: 'pending',
-    holdReason: '',
+    holdReasons: [],          // v5: multi-select array
     reviewedAt: '',
     lastEditedAt: ''
   };
+}
+
+// Backwards-compat: turn legacy holdReason (string) into holdReasons (array)
+function normaliseHoldReasons(v) {
+  if (Array.isArray(v.holdReasons)) return v.holdReasons;
+  if (v.holdReason) return [v.holdReason];
+  return [];
 }
 
 // Map legacy verdicts onto the new 3-verdict taxonomy
@@ -2087,14 +2247,19 @@ function migrateVerdict(v) {
     escalated: 'hold'
   };
   if (map[v.verificationStatus]) {
-    if (!v.holdReason) {
-      v.holdReason = ({
-        discovery_pending: 'awaiting_user',
-        waitlisted: 'partial_coverage',
-        escalated: 'senior_review'
-      })[v.verificationStatus] || '';
-    }
+    const inferred = ({
+      discovery_pending: 'awaiting_user',
+      waitlisted: 'partial_coverage',
+      escalated: 'senior_review'
+    })[v.verificationStatus];
+    if (!Array.isArray(v.holdReasons)) v.holdReasons = v.holdReason ? [v.holdReason] : [];
+    if (inferred && !v.holdReasons.includes(inferred)) v.holdReasons.push(inferred);
+    delete v.holdReason;
     v.verificationStatus = map[v.verificationStatus];
+  }
+  if (v.holdReason && !v.holdReasons) {
+    v.holdReasons = [v.holdReason];
+    delete v.holdReason;
   }
   return v;
 }
@@ -2241,9 +2406,8 @@ function persistVerif(id, data) {
 function updateAuditDisplay(v) {
   const el = document.getElementById('auditMeta');
   if (!el) return;
-  const parts = [];
-  if (v?.lastEditedAt) parts.push('Last edited ' + fmtDate(v.lastEditedAt));
-  el.textContent = parts.join(' · ');
+  if (!v?.lastEditedAt) { el.innerHTML = ''; return; }
+  el.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5" stroke-linecap="round"/></svg>${esc(fmtDate(v.lastEditedAt))}`;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2326,9 +2490,35 @@ function updateStats() {
 // ═══════════════════════════════════════════════════════════════
 
 function renderQueue() {
-  const apps = loadApps().slice().reverse();
+  const allApps = loadApps();
   const vmap = loadVerifs();
   const list = document.getElementById('queueList');
+
+  // Sort
+  let apps;
+  if (queueSort === 'oldest') {
+    apps = allApps.slice().sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+  } else if (queueSort === 'pending_first') {
+    apps = allApps.slice().sort((a,b) => {
+      const av = (vmap[a.id]||{}).verificationStatus === 'pending' ? 0 : 1;
+      const bv = (vmap[b.id]||{}).verificationStatus === 'pending' ? 0 : 1;
+      if (av !== bv) return av - bv;
+      return new Date(a.timestamp) - new Date(b.timestamp);
+    });
+  } else {
+    apps = allApps.slice().reverse(); // newest
+  }
+
+  // Filter pill counts
+  const counts = { all: allApps.length, pending: 0, approved: 0, hold: 0, rejected: 0 };
+  allApps.forEach(a => {
+    const vs = (vmap[a.id]||{}).verificationStatus || 'pending';
+    if (counts.hasOwnProperty(vs)) counts[vs]++;
+  });
+  document.querySelectorAll('.qp-count').forEach(el => {
+    const k = el.dataset.c;
+    el.textContent = counts[k] ?? 0;
+  });
 
   const filtered = apps.filter(app => {
     if (activeFilter !== 'all') {
@@ -2352,8 +2542,12 @@ function renderQueue() {
     const t = timeSince(app.timestamp);
     const staleClass = isStale(app.timestamp) && vs === 'pending' ? 'stale' : '';
     const stats = aggregateMemberStats(v);
-    const awaiting = stats.consentNotRequested + stats.consentPending;
+    const awaiting = stats.discoveredAwaiting;
     const discoveryChip = awaiting > 0 ? `<span class="qcard-discovery-chip" title="${awaiting} discovered member${awaiting === 1 ? '' : 's'} awaiting consent">+${awaiting}</span>` : '';
+    // PEDs across all members
+    const pedCount = [...safeArr(v.adultsOnPolicy), ...safeArr(v.childrenOnPolicy)]
+      .reduce((acc, m) => acc + safeArr(normaliseMember(m).preExistingConditions).length, 0);
+    const pedChip = pedCount > 0 ? `<span class="qcard-ped-chip" title="${pedCount} pre-existing condition${pedCount === 1 ? '' : 's'} flagged">PED·${pedCount}</span>` : '';
     return `
       <div class="qcard ${sel ? 'selected' : ''} vs-${esc(vs)}" data-id="${esc(app.id)}">
         <span class="qcard-check ${checked}" data-bulkid="${esc(app.id)}" aria-label="Select for bulk"></span>
@@ -2362,6 +2556,7 @@ function renderQueue() {
           <div class="qcard-meta">${fmtMobileLink(app.mobile)}</div>
           <div class="qcard-bottom">
             <span class="qcard-insurer">${esc(insurers[0] || '—')}</span>
+            ${pedChip}
             ${discoveryChip}
             <span class="qcard-time ${staleClass}">${t}</span>
             <span class="sbadge sb-${esc(vs)}">${esc(vs).replace(/_/g, ' ')}</span>
@@ -2773,12 +2968,61 @@ function renderForm() {
   // — Hold reason panel + rejection typeahead initial state
   toggleHoldPanel(vs === 'hold');
   toggleRejectionPanel(vs === 'rejected');
-  syncHoldReason(v.holdReason || '');
+  syncHoldReasons(normaliseHoldReasons(v));
   if (v.rejectionCode) showRejectionCode(v.rejectionCode);
+
+  // Confirm-all-discoveries banner
+  const cad = document.getElementById('confirmAllDisc');
+  const stats = aggregateMemberStats(v);
+  if (stats.discoveredAwaiting > 0) {
+    cad.classList.add('show');
+    document.getElementById('cadMsg').textContent =
+      `${stats.discoveredAwaiting} discovered member${stats.discoveredAwaiting === 1 ? '' : 's'} awaiting confirmation`;
+  } else {
+    cad.classList.remove('show');
+  }
+
+  // Pinned subline with submitted facts (Name / Phone / City)
+  renderFormSubline(app);
 }
 
-function syncHoldReason(reason) {
-  document.querySelectorAll('.hp-reason').forEach(b => b.classList.toggle('active', b.dataset.hr === reason));
+function renderFormSubline(app) {
+  const el = document.getElementById('formPaneSubline');
+  if (!el) return;
+  const mobile = (app.mobile || '').replace(/\D/g, '');
+  const formattedPhone = mobile.length === 10 ? '+91 ' + mobile.slice(0,5) + ' ' + mobile.slice(5) : (app.mobile || '—');
+  el.innerHTML = `
+    <span class="fps-item"><span class="fps-label">Name</span><span class="fps-val">${esc(app.name || '—')}</span></span>
+    <span class="fps-sep">·</span>
+    <span class="fps-item"><span class="fps-label">Phone</span><span class="fps-val copyable mono" data-copy="${esc(mobile)}" title="Click to copy">${esc(formattedPhone)}</span></span>
+    <span class="fps-sep">·</span>
+    <span class="fps-item"><span class="fps-label">City</span><span class="fps-val">${esc(app.city || '—')}</span></span>
+  `;
+}
+
+function syncHoldReasons(reasons) {
+  const set = new Set(safeArr(reasons));
+  document.querySelectorAll('.hp-reason').forEach(b => b.classList.toggle('active', set.has(b.dataset.hr)));
+}
+
+// Confirm all discovered members' consent in one click
+function confirmAllDiscoveries() {
+  if (!selectedId) return;
+  const v = getVerif(selectedId);
+  const now = new Date().toISOString();
+  ['adultsOnPolicy', 'childrenOnPolicy'].forEach(key => {
+    v[key] = safeArr(v[key]).map(m => {
+      const n = normaliseMember(m);
+      if (n.source === 'discovered' && !n.consent.confirmed) {
+        n.consent.confirmed = true;
+        if (!n.consent.confirmedAt) n.consent.confirmedAt = now;
+      }
+      return n;
+    });
+  });
+  persistVerif(selectedId, v);
+  renderForm();
+  showToast('All discoveries confirmed (audit-logged locally)');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2837,48 +3081,36 @@ function buildMemberRow(type, idx, member) {
   tag.textContent = 'Discovered';
   tag.title = 'Added by agent — wasn\'t in user submission';
 
-  // Relation: quick chips (Spouse/Parent/Sibling) + dropdown for less common
-  const relWrap = document.createElement('span');
-  relWrap.style.display = 'inline-flex';
-  relWrap.style.alignItems = 'center';
-  relWrap.style.gap = '4px';
-
+  // v5: single compact relation chip — click to cycle through values, hidden select for value
+  const relOpts = type === 'adult'
+    ? ['', 'Self', 'Spouse', 'Parent', 'In-law', 'Sibling', 'Other']
+    : ['', 'Child', 'Stepchild', 'Other'];
   const relIn = document.createElement('select');
-  relIn.className = 'fselect rel-in';
-  relIn.title = 'Relation';
-  const relOpts = type === 'adult' ? RELATION_OPTIONS : ['Child', 'Stepchild', 'Other'];
-  relIn.innerHTML = '<option value="">Relation</option>' + relOpts.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
-  if (m.relation) relIn.value = m.relation;
-  relIn.addEventListener('change', () => {
-    syncRelChips();
+  relIn.className = 'rel-in';
+  relIn.style.display = 'none';
+  relIn.innerHTML = relOpts.map(o => `<option value="${esc(o)}">${esc(o || 'Relation')}</option>`).join('');
+  relIn.value = m.relation || '';
+
+  const relCycle = document.createElement('button');
+  relCycle.type = 'button';
+  relCycle.className = 'rel-cycle';
+  const setRelLabel = () => {
+    relCycle.textContent = relIn.value || 'Relation';
+    relCycle.classList.toggle('has-value', !!relIn.value);
+  };
+  setRelLabel();
+  relCycle.title = 'Click to cycle relation';
+  relCycle.addEventListener('click', () => {
+    const idx = relOpts.indexOf(relIn.value);
+    relIn.value = relOpts[(idx + 1) % relOpts.length];
+    setRelLabel();
     autoSave();
   });
 
-  function syncRelChips() {
-    relWrap.querySelectorAll('.rel-chip').forEach(c => c.classList.toggle('active', c.dataset.rel === relIn.value));
-  }
-
-  // Quick chips only for adult rows
-  if (type === 'adult') {
-    const chipsWrap = document.createElement('span');
-    chipsWrap.className = 'rel-chips';
-    RELATION_QUICK.forEach(label => {
-      const c = document.createElement('button');
-      c.type = 'button';
-      c.className = 'rel-chip';
-      c.dataset.rel = label;
-      c.textContent = label;
-      c.addEventListener('click', () => {
-        relIn.value = (relIn.value === label) ? '' : label;
-        syncRelChips();
-        autoSave();
-      });
-      chipsWrap.appendChild(c);
-    });
-    relWrap.appendChild(chipsWrap);
-  }
-  relWrap.appendChild(relIn);
-  syncRelChips();
+  const relWrap = document.createElement('span');
+  relWrap.style.display = 'inline-flex';
+  relWrap.style.alignItems = 'center';
+  relWrap.append(relIn, relCycle);
 
   const dobIn = document.createElement('input');
   dobIn.className = 'finput dob-in mono';
@@ -3240,8 +3472,8 @@ function getCurrentData() {
   const existing = getVerif(selectedId);
   data.verificationStatus = existing.verificationStatus || 'pending';
   data.rejectionReason = CODE_REASON[data.rejectionCode] || '';
-  // Hold reason from active pill
-  data.holdReason = document.querySelector('.hp-reason.active')?.dataset.hr || '';
+  // Hold reasons (multi-select)
+  data.holdReasons = Array.from(document.querySelectorAll('.hp-reason.active')).map(b => b.dataset.hr);
   data.adultsOnPolicy = readMembersFromDOM('adult');
   data.childrenOnPolicy = readMembersFromDOM('child');
   // PEDs are per-member now; this field stays in the schema for backwards-compat
@@ -3370,7 +3602,7 @@ function updateSummaryCard() {
   const current = v.verificationStatus || 'pending';
   const showSuggest = suggested && suggested !== current;
   const suggestHtml = showSuggest
-    ? `<span class="sc-suggest"><span class="sc-sep">→</span> Suggest <strong>${STATUS_LABEL[suggested]}</strong> · ${suggestReason(s)} <button class="sc-apply" id="scApply">Apply</button></span>`
+    ? `<span class="sc-suggest">Suggest <strong>${STATUS_LABEL[suggested]}</strong> <button class="sc-apply" id="scApply">Apply</button></span>`
     : '';
 
   el.classList.remove('empty');
@@ -3586,14 +3818,18 @@ function updateBulkUI() {
 function applyBulkStatus() {
   const status = document.getElementById('bulkStatus').value;
   if (!status || !bulkSelected.size) { showToast('Pick a status first'); return; }
+  // v5: confirmation step for destructive bulk apply
+  const count = bulkSelected.size;
+  if (!confirm(`Set ${count} application${count === 1 ? '' : 's'} to "${STATUS_LABEL[status] || status}"?`)) return;
   const vmap = loadVerifs();
   bulkSelected.forEach(id => {
     if (!vmap[id]) vmap[id] = defaultVerif(id);
     vmap[id].verificationStatus = status;
     vmap[id].lastEditedAt = new Date().toISOString();
+    if (status !== 'pending' && !vmap[id].reviewedAt) vmap[id].reviewedAt = new Date().toISOString();
   });
   saveVerifs(vmap);
-  showToast(`Set ${bulkSelected.size} → ${status}`);
+  showToast(`Set ${count} → ${STATUS_LABEL[status] || status}`);
   bulkSelected.clear();
   bulkMode = false;
   document.body.classList.remove('bulk-mode');
@@ -3727,12 +3963,22 @@ function wireFormEvents() {
   // (Mark Reviewed removed — setting a non-Pending verdict IS the review; reviewedAt
   //  is stamped automatically inside setVerdictFromPills)
 
-  // Hold reason buttons
+  // Hold reason buttons (v5: multi-select)
   document.getElementById('holdReasons').addEventListener('click', e => {
     const btn = e.target.closest('.hp-reason');
     if (!btn) return;
-    document.querySelectorAll('.hp-reason').forEach(b => b.classList.toggle('active', b === btn));
+    btn.classList.toggle('active');
     autoSave();
+  });
+
+  // Confirm all discoveries
+  document.getElementById('cadBtn').addEventListener('click', confirmAllDiscoveries);
+
+  // Sort
+  document.getElementById('qSort').addEventListener('change', function() {
+    queueSort = this.value;
+    try { localStorage.setItem('coiQueueSort', queueSort); } catch {}
+    renderQueue();
   });
 
   // Rejection typeahead
@@ -3861,7 +4107,7 @@ function doExportCsv(scope) {
       v.reviewedAt, v.lastEditedAt,
       memberStats.declared, memberStats.discovered, memberStats.verified,
       memberStats.notOnPolicy,
-      v.holdReason || '',
+      normaliseHoldReasons(v).join('; '),
       memberStats.discoveredAwaiting,
       memberStats.discoveredConfirmed,
       memberStats.discoveredNames.join('; '),
@@ -3875,7 +4121,11 @@ function doExportCsv(scope) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `even-coi-verif-${new Date().toISOString().slice(0,10)}.csv`;
+  const stamp = new Date().toISOString().slice(0,10);
+  const scopeTag = scope === 'all' ? 'all'
+    : scope === 'selected' ? `selected-${bulkSelected.size || 0}`
+    : `filter-${(activeFilter !== 'all' ? activeFilter : '') + (searchQ ? '-' + searchQ.replace(/[^a-zA-Z0-9]+/g, '_').slice(0, 24) : '')}`.replace(/^-+|-+$/g, '') || 'filter';
+  a.download = `even-coi-verif-${scopeTag}-${stamp}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -3886,6 +4136,25 @@ function doExportCsv(scope) {
 
 // (PED tags are now rendered inside each member row; handlers are
 // attached per-row in buildMemberRow.)
+
+// ═══════════════════════════════════════════════════════════════
+// CLICK-TO-COPY: any element with [data-copy]
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-copy]');
+  if (!t) return;
+  const val = t.dataset.copy;
+  if (!val) return;
+  e.preventDefault();
+  const display = val.length === 10 ? '+91 ' + val.slice(0,5) + ' ' + val.slice(5) : val;
+  (navigator.clipboard?.writeText(val) || Promise.reject()).then(
+    () => showToast(`Copied · ${display}`),
+    () => {
+      try { const ta = document.createElement('textarea'); ta.value = val; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast('Copied'); }
+      catch { showToast('Copy failed'); }
+    }
+  );
+});
 
 // ═══════════════════════════════════════════════════════════════
 // ONE-TIME MIGRATION: fix all stale verifications on page load
@@ -3945,6 +4214,9 @@ function doExportCsv(scope) {
 // ═══════════════════════════════════════════════════════════════
 
 wireFormEvents();
+// Restore sort dropdown to persisted value
+const sortEl = document.getElementById('qSort');
+if (sortEl) sortEl.value = queueSort;
 updateStats();
 renderQueue();
 
