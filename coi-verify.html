@@ -810,6 +810,245 @@
     .remove-member-btn:hover { background: var(--st-rejected-bg); color: var(--st-rejected-ink); }
     .no-members-hint { font-size: 12px; color: var(--ink-3); font-style: italic; padding: 4px 0; }
 
+    /* ═══ DISCOVERY FLOW — colors ═════════════════════════════ */
+    :root {
+      --st-discovery-bg:  #EDE6F2;
+      --st-discovery-ink: #5C4581;
+      --st-discovery-edge: rgba(92,69,129,0.3);
+      --st-expanded-bg:  #DDE9DC;
+      --st-expanded-ink: #2A5A3D;
+      --st-expanded-edge: rgba(42,90,61,0.36);
+    }
+
+    .stat-chip.s-discovery_pending  { background: var(--st-discovery-bg); color: var(--st-discovery-ink); }
+    .stat-chip.s-discovery_pending  .sv { color: var(--st-discovery-ink); }
+    .stat-chip.s-verified_expanded  { background: var(--st-expanded-bg); color: var(--st-expanded-ink); }
+    .stat-chip.s-verified_expanded  .sv { color: var(--st-expanded-ink); }
+
+    .sb-discovery_pending {
+      background: var(--st-discovery-bg);
+      color: var(--st-discovery-ink);
+      border-color: var(--st-discovery-edge);
+    }
+    .sb-verified_expanded {
+      background: var(--st-expanded-bg);
+      color: var(--st-expanded-ink);
+      border-color: var(--st-expanded-edge);
+    }
+    /* + icon prefix on verified_expanded badges */
+    .sb-verified_expanded::before {
+      content: '+';
+      display: inline-block;
+      margin-right: 3px;
+      font-weight: 700;
+    }
+
+    .qcard.vs-discovery_pending  { box-shadow: inset 2px 0 0 var(--st-discovery-edge); }
+    .qcard.vs-verified_expanded  { box-shadow: inset 2px 0 0 var(--st-expanded-edge); }
+    .qcard.selected.vs-discovery_pending  { box-shadow: inset 2px 0 0 var(--st-discovery-edge), var(--shadow-soft); }
+    .qcard.selected.vs-verified_expanded  { box-shadow: inset 2px 0 0 var(--st-expanded-edge), var(--shadow-soft); }
+
+    /* ── Queue card discovery +N chip ── */
+    .qcard-discovery-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--st-discovery-bg);
+      color: var(--st-discovery-ink);
+      border: 1px solid var(--st-discovery-edge);
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
+      flex-shrink: 0;
+    }
+
+    /* ── Verdict bar discovery + expanded pills ── */
+    .verdict-pill.active.vp-discovery_pending  { background: var(--st-discovery-bg); color: var(--st-discovery-ink); border-color: var(--st-discovery-edge); font-weight: 600; }
+    .verdict-pill.active.vp-verified_expanded  { background: var(--st-expanded-bg);  color: var(--st-expanded-ink);  border-color: var(--st-expanded-edge); font-weight: 600; }
+
+    /* ── vstatus dropdown new color states ── */
+    #vstatus.vs-discovery_pending  { background-color: var(--st-discovery-bg); border-color: var(--st-discovery-edge); color: var(--st-discovery-ink); }
+    #vstatus.vs-verified_expanded  { background-color: var(--st-expanded-bg);  border-color: var(--st-expanded-edge);  color: var(--st-expanded-ink); }
+
+    /* ═══ COVERAGE SUMMARY (top of Members section body) ══════ */
+    .coverage-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+      padding: 9px 12px;
+      margin: 0 0 12px;
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-sm);
+      font-size: 11.5px;
+      color: var(--ink-2);
+      letter-spacing: -0.005em;
+    }
+    .cov-num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+    .cov-sep { color: var(--ink-3); }
+    .cov-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+    }
+    .cov-pill.discovery { background: var(--st-discovery-bg); color: var(--st-discovery-ink); }
+    .cov-pill.verified  { background: var(--st-verified-bg);  color: var(--st-verified-ink); }
+    .cov-pill.pending   { background: var(--st-pending-bg);   color: var(--st-pending-ink); }
+    .cov-pill.notonpolicy { background: var(--st-waitlisted-bg); color: var(--st-waitlisted-ink); }
+
+    /* ═══ MEMBER ROW 2-LINE LAYOUT ════════════════════════════ */
+    .member-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: 1px solid transparent;
+      transition: background 0.14s, border-color 0.14s;
+    }
+    .member-row.is-discovered {
+      background: rgba(92,69,129,0.05);
+      border-color: var(--st-discovery-edge);
+    }
+    .member-row .row-line-1 { display: flex; align-items: center; gap: 6px; }
+    .member-row .row-line-2 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .member-row .source-tag {
+      display: none;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1.5px 7px;
+      border-radius: 999px;
+      background: var(--st-discovery-bg);
+      color: var(--st-discovery-ink);
+      flex-shrink: 0;
+    }
+    .member-row.is-discovered .source-tag { display: inline-flex; }
+
+    .member-row .pstatus-in,
+    .member-row .verifiedby-in {
+      font-size: 11.5px;
+      padding: 4px 22px 4px 9px;
+      cursor: pointer;
+    }
+    .member-row .pstatus-in { min-width: 110px; }
+    .member-row .verifiedby-in { min-width: 120px; }
+
+    /* member status pill colors (using same fselect baseline but tinted) */
+    .pstatus-in[data-pstatus="verified"] {
+      background-color: var(--st-verified-bg);
+      border-color: var(--st-verified-edge);
+      color: var(--st-verified-ink);
+    }
+    .pstatus-in[data-pstatus="not-on-policy"] {
+      background-color: var(--st-waitlisted-bg);
+      border-color: var(--st-waitlisted-edge);
+      color: var(--st-waitlisted-ink);
+    }
+    .pstatus-in[data-pstatus="pending"] {
+      background-color: var(--surface);
+      border-color: var(--hairline);
+      color: var(--ink-2);
+    }
+
+    /* ═══ CONSENT ROW ═════════════════════════════════════════ */
+    .consent-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 9px;
+      margin-top: 2px;
+      border-radius: var(--radius-sm);
+      background: rgba(92,69,129,0.06);
+      border: 1px solid rgba(92,69,129,0.12);
+      font-size: 11px;
+      flex-wrap: wrap;
+    }
+    .consent-row .c-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--st-discovery-ink);
+    }
+    .consent-row .c-state {
+      font-size: 11px;
+      color: var(--ink-2);
+      letter-spacing: -0.005em;
+    }
+    .consent-row .c-timestamp {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-3);
+      letter-spacing: 0;
+    }
+    .consent-row .c-state.s-accepted { color: var(--st-verified-ink); font-weight: 600; }
+    .consent-row .c-state.s-declined { color: var(--st-rejected-ink); font-weight: 500; }
+    .consent-row .c-state.s-pending  { color: var(--st-discovery-ink); font-weight: 500; }
+    .consent-row .c-actions { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+    .c-btn {
+      font-size: 10.5px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: transparent;
+      border: 1px solid var(--hairline-strong);
+      color: var(--ink);
+      cursor: pointer;
+      letter-spacing: -0.005em;
+      transition: all 0.14s;
+    }
+    .c-btn:hover { background: var(--surface); }
+    .c-btn:active { transform: scale(0.96); }
+    .c-btn.primary {
+      background: var(--st-discovery-ink);
+      border-color: var(--st-discovery-ink);
+      color: var(--surface);
+    }
+    .c-btn.primary:hover { background: #4A3868; border-color: #4A3868; }
+    .c-btn.accept { color: var(--st-verified-ink); border-color: var(--st-verified-edge); }
+    .c-btn.accept:hover { background: var(--st-verified-bg); }
+    .c-btn.decline { color: var(--st-rejected-ink); border-color: rgba(140,67,47,0.2); }
+    .c-btn.decline:hover { background: var(--st-rejected-bg); }
+
+    /* ═══ SUGGESTED VERDICT HINT ═════════════════════════════ */
+    .verdict-suggest {
+      padding: 7px 22px;
+      font-size: 11px;
+      color: var(--ink-3);
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--hairline);
+      letter-spacing: -0.005em;
+    }
+    .verdict-suggest.empty { display: none; }
+    .verdict-suggest strong { color: var(--ink-2); font-weight: 600; }
+    .verdict-suggest .vsg-link {
+      color: var(--link);
+      cursor: pointer;
+      font-weight: 500;
+      margin-left: 4px;
+    }
+    .verdict-suggest .vsg-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
     /* ═══ PED TAGS ════════════════════════════════════════════ */
     .ped-toolbar {
       display: flex;
@@ -1196,11 +1435,13 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">preview · tally-light</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">discovery flow · v2</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
     <span class="stat-chip s-verified">Verified <span class="sv" id="cnt-verified">0</span></span>
+    <span class="stat-chip s-verified_expanded">+ Expanded <span class="sv" id="cnt-verified_expanded">0</span></span>
+    <span class="stat-chip s-discovery_pending">Discovery <span class="sv" id="cnt-discovery_pending">0</span></span>
     <span class="stat-chip s-rejected">Rejected <span class="sv" id="cnt-rejected">0</span></span>
     <span class="stat-chip s-waitlisted">Waitlisted <span class="sv" id="cnt-waitlisted">0</span></span>
     <span class="stat-chip s-escalated">Escalated <span class="sv" id="cnt-escalated">0</span></span>
@@ -1247,6 +1488,7 @@
         <button class="q-pill active" data-f="all">All</button>
         <button class="q-pill" data-f="pending">Pending</button>
         <button class="q-pill" data-f="verified">Verified</button>
+        <button class="q-pill" data-f="discovery_pending">Discovery</button>
         <button class="q-pill" data-f="rejected">Rejected</button>
         <button class="q-pill" data-f="waitlisted">Waitlisted</button>
         <button class="q-pill" data-f="escalated">Escalated</button>
@@ -1295,10 +1537,13 @@
     <div class="verdict-bar" id="verdictBar" style="display:none">
       <button type="button" class="verdict-pill vp-pending"    data-vs="pending"    title="Set Pending (1)">Pending</button>
       <button type="button" class="verdict-pill vp-verified"   data-vs="verified"   title="Set Verified (2)">Verified</button>
+      <button type="button" class="verdict-pill vp-verified_expanded" data-vs="verified_expanded" title="Verified + Expanded (6)">+ Expanded</button>
+      <button type="button" class="verdict-pill vp-discovery_pending" data-vs="discovery_pending" title="Pending discovery confirmation (7)">Discovery</button>
       <button type="button" class="verdict-pill vp-rejected"   data-vs="rejected"   title="Set Rejected (3)">Rejected</button>
       <button type="button" class="verdict-pill vp-waitlisted" data-vs="waitlisted" title="Set Waitlisted (4)">Waitlisted</button>
       <button type="button" class="verdict-pill vp-escalated"  data-vs="escalated"  title="Set Escalated (5)">Escalated</button>
     </div>
+    <div class="verdict-suggest empty" id="verdictSuggest"></div>
 
     <div class="form-empty" id="formEmpty">
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
@@ -1386,6 +1631,7 @@
           Members on Policy <span class="chev">▼</span>
         </button>
         <div class="fsec-body" id="body-members">
+          <div class="coverage-summary" id="coverageSummary"></div>
           <div class="member-group">
             <div class="member-group-label">
               Adults
@@ -1443,6 +1689,8 @@
             <select class="fselect vs-pending" id="vstatus" data-field="verificationStatus">
               <option value="pending">Pending</option>
               <option value="verified">Verified</option>
+              <option value="verified_expanded">Verified + Expanded</option>
+              <option value="discovery_pending">Pending discovery confirmation</option>
               <option value="rejected">Rejected</option>
               <option value="waitlisted">Waitlisted</option>
               <option value="escalated">Escalated</option>
@@ -1620,21 +1868,51 @@ function getVerif(id) { return loadVerifs()[id] || defaultVerif(id); }
 
 // Build a fresh verification record, prefilling adults/children from the
 // applicant's declared family members.
+// Defaults for the new per-member axes
+function newMember(overrides) {
+  return Object.assign({
+    name: '',
+    relation: '',
+    dob: '',
+    source: 'declared',             // 'declared' (from user form) or 'discovered' (added by agent)
+    policyStatus: 'pending',        // 'pending' | 'verified' | 'not-on-policy'
+    verifiedBy: '',                 // free-text or 'Employer COI' / 'Personal COI' / 'Other'
+    consent: {
+      state: 'not-required',        // 'not-required' | 'not-requested' | 'pending' | 'accepted' | 'declined'
+      requestedAt: '',
+      respondedAt: ''
+    }
+  }, overrides || {});
+}
+
+// Backfill member entry with new fields when reading legacy records
+function normaliseMember(m) {
+  if (!m) return newMember();
+  const filled = newMember(m);
+  filled.consent = Object.assign({ state: filled.source === 'discovered' ? 'not-requested' : 'not-required', requestedAt: '', respondedAt: '' }, m.consent || {});
+  return filled;
+}
+
 function buildPrefilledVerif(app) {
   const v = defaultVerif(app.id);
   const members = safeArr(app.members);
-  // Map declared relation onto our taxonomy
   const relMap = { self: 'Self', spouse: 'Spouse', parent: 'Parent', 'in-law': 'In-law', sibling: 'Sibling' };
   members.forEach(m => {
     if (!m) return;
     const rel = (m.relation || '').toLowerCase();
     const taxonomy = relMap[rel] || 'Other';
-    const entry = { name: m.name || '', dob: '', relation: taxonomy };
+    const entry = newMember({
+      name: m.name || '',
+      dob: '',
+      relation: taxonomy,
+      source: 'declared',
+      consent: { state: 'not-required', requestedAt: '', respondedAt: '' }
+    });
     if (rel === 'child') v.childrenOnPolicy.push(entry);
     else v.adultsOnPolicy.push(entry);
   });
   if (!v.adultsOnPolicy.length && !v.childrenOnPolicy.length && app.name) {
-    v.adultsOnPolicy.push({ name: app.name, dob: '', relation: 'Self' });
+    v.adultsOnPolicy.push(newMember({ name: app.name, relation: 'Self', source: 'declared' }));
   }
   return v;
 }
@@ -1783,7 +2061,7 @@ function showToast(msg, duration = 3000) {
 function updateStats() {
   const apps = loadApps();
   const vmap = loadVerifs();
-  const counts = { pending:0, verified:0, rejected:0, waitlisted:0, escalated:0 };
+  const counts = { pending:0, verified:0, verified_expanded:0, discovery_pending:0, rejected:0, waitlisted:0, escalated:0 };
   apps.forEach(app => {
     const vs = (vmap[app.id]||{}).verificationStatus || 'pending';
     counts[vs] = (counts[vs] || 0) + 1;
@@ -1817,12 +2095,16 @@ function renderQueue() {
   }
 
   list.innerHTML = filtered.map(app => {
-    const vs = (vmap[app.id]||{}).verificationStatus || 'pending';
+    const v = vmap[app.id] || {};
+    const vs = v.verificationStatus || 'pending';
     const insurers = getInsurers(app);
     const sel = app.id === selectedId;
     const checked = bulkSelected.has(app.id) ? 'checked' : '';
     const t = timeSince(app.timestamp);
     const staleClass = isStale(app.timestamp) && vs === 'pending' ? 'stale' : '';
+    const stats = aggregateMemberStats(v);
+    const awaiting = stats.consentNotRequested + stats.consentPending;
+    const discoveryChip = awaiting > 0 ? `<span class="qcard-discovery-chip" title="${awaiting} discovered member${awaiting === 1 ? '' : 's'} awaiting consent">+${awaiting}</span>` : '';
     return `
       <div class="qcard ${sel ? 'selected' : ''} vs-${esc(vs)}" data-id="${esc(app.id)}">
         <span class="qcard-check ${checked}" data-bulkid="${esc(app.id)}" aria-label="Select for bulk"></span>
@@ -1831,8 +2113,9 @@ function renderQueue() {
           <div class="qcard-meta">${fmtMobileLink(app.mobile)}</div>
           <div class="qcard-bottom">
             <span class="qcard-insurer">${esc(insurers[0] || '—')}</span>
+            ${discoveryChip}
             <span class="qcard-time ${staleClass}">${t}</span>
-            <span class="sbadge sb-${esc(vs)}">${esc(vs)}</span>
+            <span class="sbadge sb-${esc(vs)}">${esc(vs).replace(/_/g, ' ')}</span>
           </div>
         </div>
       </div>`;
@@ -2202,18 +2485,29 @@ function renderForm() {
   const insurers = getInsurers(app);
   const sources = safeArr(app.insuranceSource).map(s => s === 'employer' ? 'Through employer' : s === 'individual' ? 'Bought myself' : s);
   const members = safeArr(app.members).filter(m => !m.primary);
-  // Reconciliation indicators: compare declared (app) vs verified data (v)
-  const declaredMemberCount = safeArr(app.members).length;
-  const verifiedMemberCount = safeArr(v.adultsOnPolicy).length + safeArr(v.childrenOnPolicy).length;
-  const memberRecon = !verifiedMemberCount ? 'pending'
-                    : declaredMemberCount === verifiedMemberCount ? 'match' : 'mismatch';
+  // Reconciliation indicators: declared vs verified per the COI
+  const stats = aggregateMemberStats(v);
+  const declaredCount = safeArr(app.members).length;
+  let memberRecon = 'pending', memberMsg = '';
+  if (!stats.total) {
+    memberRecon = 'pending'; memberMsg = `Declared ${declaredCount} · No members verified yet`;
+  } else if (stats.verified === stats.total && stats.discovered === 0) {
+    memberRecon = 'match'; memberMsg = `All ${stats.verified} members verified on policy`;
+  } else if (stats.discovered > 0) {
+    memberRecon = 'mismatch'; memberMsg = `Declared ${declaredCount} · ${stats.discovered} discovered on policy${stats.consentAccepted ? ` · ${stats.consentAccepted} confirmed` : ''}`;
+  } else if (stats.notOnPolicy > 0) {
+    memberRecon = 'mismatch'; memberMsg = `${stats.notOnPolicy} of ${stats.total} declared not found on policy`;
+  } else {
+    memberRecon = 'pending'; memberMsg = `${stats.verified}/${stats.total} members verified so far`;
+  }
+
   const reconHtml = `
-    <div class="fg fcol-full" style="background:rgba(157,188,255,0.04);border:1px solid rgba(157,188,255,0.1);border-radius:7px;padding:8px 10px;margin-bottom:4px">
-      <div class="flabel" style="margin-bottom:4px">Reconciliation</div>
+    <div class="fg fcol-full" style="background:var(--bg);border:1px solid var(--hairline);border-radius:7px;padding:9px 11px;margin-bottom:4px">
+      <div class="flabel" style="margin-bottom:5px">Reconciliation</div>
       <div class="recon-row">
         <span class="recon-dot ${memberRecon}"></span>
         <span class="recon-label">Members</span>
-        <span class="recon-val">Declared ${declaredMemberCount} · On policy ${verifiedMemberCount}</span>
+        <span class="recon-val">${esc(memberMsg)}</span>
       </div>
       ${v.policyEndDate ? `<div class="recon-row"><span class="recon-dot match"></span><span class="recon-label">Coverage</span><span class="recon-val">valid until ${displayDate(v.policyEndDate)}</span></div>` : ''}
     </div>
@@ -2249,6 +2543,10 @@ function renderForm() {
   // — PED
   renderPedTags(safeArr(v.preExistingConditions));
 
+  // — Coverage summary + suggested verdict
+  renderCoverageSummary(v);
+  renderSuggestedVerdict(v);
+
   // — Verdict pill sync + Sum Insured live format + audit meta
   syncVerdictPills(vs);
   updateSumInsuredFormatted();
@@ -2275,51 +2573,68 @@ function renderMembersSection(type, members) {
   hint.style.display = 'none';
 
   members.forEach((m, i) => {
-    const row = buildMemberRow(type, i, m.name || '', m.dob || '', m.relation || '');
+    const row = buildMemberRow(type, i, m);
     container.appendChild(row);
   });
 }
 
-function buildMemberRow(type, idx, name, dob, relation) {
+const POLICY_STATUS_OPTIONS = [
+  { v: 'pending',        l: 'Pending check' },
+  { v: 'verified',       l: 'Verified ✓' },
+  { v: 'not-on-policy',  l: 'Not on policy' }
+];
+const VERIFIED_BY_OPTIONS = [
+  { v: '',              l: '— Source —' },
+  { v: 'Employer COI',  l: 'Employer COI' },
+  { v: 'Personal COI',  l: 'Personal COI' },
+  { v: 'Other',         l: 'Other doc' }
+];
+
+function buildMemberRow(type, idx, member) {
+  const m = normaliseMember(member);
   const row = document.createElement('div');
-  row.className = 'member-row';
+  row.className = 'member-row' + (m.source === 'discovered' ? ' is-discovered' : '');
   row.dataset.type = type;
   row.dataset.idx = idx;
+  row.dataset.source = m.source;
+
+  // ── Line 1: name / source-tag / relation / dob / remove ──
+  const line1 = document.createElement('div');
+  line1.className = 'row-line-1';
 
   const nameIn = document.createElement('input');
   nameIn.className = 'finput name-in';
   nameIn.type = 'text';
   nameIn.placeholder = (type === 'adult' ? 'Adult' : 'Child') + ' ' + (idx + 1) + ' name';
-  nameIn.value = name || '';
+  nameIn.value = m.name || '';
   nameIn.addEventListener('input', autoSave);
+
+  const tag = document.createElement('span');
+  tag.className = 'source-tag';
+  tag.textContent = 'Discovered';
+  tag.title = 'Added by agent — wasn\'t in user submission';
 
   const relIn = document.createElement('select');
   relIn.className = 'fselect rel-in';
   relIn.title = 'Relation';
-  const options = type === 'adult' ? RELATION_OPTIONS : ['Child', 'Stepchild', 'Other'];
-  relIn.innerHTML = '<option value="">Relation</option>' + options.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
-  if (relation) relIn.value = relation;
+  const relOpts = type === 'adult' ? RELATION_OPTIONS : ['Child', 'Stepchild', 'Other'];
+  relIn.innerHTML = '<option value="">Relation</option>' + relOpts.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
+  if (m.relation) relIn.value = m.relation;
   relIn.addEventListener('change', autoSave);
 
-  // Smart DOB: text input that accepts multiple formats, stores ISO internally
   const dobIn = document.createElement('input');
   dobIn.className = 'finput dob-in mono';
   dobIn.type = 'text';
   dobIn.title = 'DOB — optional. Accepts 21 May 1996, 21/05/1996, 1996-05-21';
   dobIn.placeholder = 'DOB';
-  dobIn.dataset.iso = dob || '';
-  dobIn.value = dob ? displayDate(dob) : '';
+  dobIn.dataset.iso = m.dob || '';
+  dobIn.value = m.dob ? displayDate(m.dob) : '';
   dobIn.addEventListener('blur', () => {
     const raw = dobIn.value.trim();
     if (!raw) { dobIn.dataset.iso = ''; autoSave(); return; }
     const iso = smartParseDate(raw);
-    if (iso) {
-      dobIn.dataset.iso = iso;
-      dobIn.value = displayDate(iso);
-      dobIn.style.borderColor = '';
-    } else {
-      dobIn.style.borderColor = 'rgba(255,80,80,0.5)';
-    }
+    if (iso) { dobIn.dataset.iso = iso; dobIn.value = displayDate(iso); dobIn.style.borderColor = ''; }
+    else { dobIn.style.borderColor = 'rgba(255,80,80,0.5)'; }
     autoSave();
   });
 
@@ -2330,11 +2645,151 @@ function buildMemberRow(type, idx, name, dob, relation) {
   rmBtn.innerHTML = '×';
   rmBtn.addEventListener('click', () => removeMember(type, idx));
 
-  row.appendChild(nameIn);
-  row.appendChild(relIn);
-  row.appendChild(dobIn);
-  row.appendChild(rmBtn);
+  line1.append(nameIn, tag, relIn, dobIn, rmBtn);
+
+  // ── Line 2: policy status / verified by ──
+  const line2 = document.createElement('div');
+  line2.className = 'row-line-2';
+
+  const pstatusIn = document.createElement('select');
+  pstatusIn.className = 'fselect pstatus-in';
+  pstatusIn.dataset.pstatus = m.policyStatus;
+  pstatusIn.title = 'Policy status — is this member on the document?';
+  pstatusIn.innerHTML = POLICY_STATUS_OPTIONS.map(o => `<option value="${esc(o.v)}"${o.v === m.policyStatus ? ' selected' : ''}>${esc(o.l)}</option>`).join('');
+  pstatusIn.addEventListener('change', () => {
+    pstatusIn.dataset.pstatus = pstatusIn.value;
+    autoSave();
+    if (selectedId) renderForm(); // re-render so coverage summary stays accurate
+  });
+
+  const verifiedByIn = document.createElement('select');
+  verifiedByIn.className = 'fselect verifiedby-in';
+  verifiedByIn.title = 'Which document confirmed this member?';
+  verifiedByIn.innerHTML = VERIFIED_BY_OPTIONS.map(o => `<option value="${esc(o.v)}"${o.v === (m.verifiedBy || '') ? ' selected' : ''}>${esc(o.l)}</option>`).join('');
+  verifiedByIn.addEventListener('change', autoSave);
+
+  line2.append(pstatusIn, verifiedByIn);
+
+  row.append(line1, line2);
+
+  // ── Line 3: consent UI (only for discovered) ──
+  if (m.source === 'discovered') {
+    const consent = m.consent || { state: 'not-requested', requestedAt: '', respondedAt: '' };
+    const consentRow = buildConsentRow(type, idx, consent);
+    row.appendChild(consentRow);
+  }
+
   return row;
+}
+
+function buildConsentRow(type, idx, consent) {
+  const wrap = document.createElement('div');
+  wrap.className = 'consent-row';
+  wrap.dataset.type = type;
+  wrap.dataset.idx = idx;
+  wrap.dataset.cstate = consent.state;
+
+  const label = document.createElement('span');
+  label.className = 'c-label';
+  label.textContent = 'Consent';
+
+  const state = document.createElement('span');
+  state.className = 'c-state s-' + consent.state;
+
+  const actions = document.createElement('div');
+  actions.className = 'c-actions';
+
+  if (consent.state === 'not-requested') {
+    state.textContent = 'Not yet requested from user';
+    const btn = document.createElement('button');
+    btn.className = 'c-btn primary';
+    btn.type = 'button';
+    btn.textContent = 'Request confirmation';
+    btn.addEventListener('click', () => requestConsent(type, idx));
+    actions.appendChild(btn);
+  } else if (consent.state === 'pending') {
+    state.textContent = 'Awaiting user response';
+    if (consent.requestedAt) {
+      const ts = document.createElement('span');
+      ts.className = 'c-timestamp';
+      ts.textContent = '· sent ' + fmtDate(consent.requestedAt);
+      state.appendChild(ts);
+    }
+    const acc = document.createElement('button');
+    acc.className = 'c-btn accept'; acc.type = 'button'; acc.textContent = 'Mark accepted';
+    acc.addEventListener('click', () => respondConsent(type, idx, 'accepted'));
+    const dec = document.createElement('button');
+    dec.className = 'c-btn decline'; dec.type = 'button'; dec.textContent = 'Mark declined';
+    dec.addEventListener('click', () => respondConsent(type, idx, 'declined'));
+    actions.append(acc, dec);
+  } else if (consent.state === 'accepted') {
+    state.textContent = 'Accepted by user';
+    if (consent.respondedAt) {
+      const ts = document.createElement('span');
+      ts.className = 'c-timestamp';
+      ts.textContent = '· ' + fmtDate(consent.respondedAt);
+      state.appendChild(ts);
+    }
+    const reset = document.createElement('button');
+    reset.className = 'c-btn'; reset.type = 'button'; reset.textContent = 'Reset';
+    reset.addEventListener('click', () => resetConsent(type, idx));
+    actions.appendChild(reset);
+  } else if (consent.state === 'declined') {
+    state.textContent = 'Declined by user';
+    if (consent.respondedAt) {
+      const ts = document.createElement('span');
+      ts.className = 'c-timestamp';
+      ts.textContent = '· ' + fmtDate(consent.respondedAt);
+      state.appendChild(ts);
+    }
+    const reset = document.createElement('button');
+    reset.className = 'c-btn'; reset.type = 'button'; reset.textContent = 'Reset';
+    reset.addEventListener('click', () => resetConsent(type, idx));
+    actions.appendChild(reset);
+  }
+
+  wrap.append(label, state, actions);
+  return wrap;
+}
+
+// ── Consent action functions (local-only — no real SMS) ──
+function mutateMember(type, idx, fn) {
+  if (!selectedId) return;
+  const v = getVerif(selectedId);
+  const key = type === 'adult' ? 'adultsOnPolicy' : 'childrenOnPolicy';
+  const arr = safeArr(v[key]).slice();
+  if (!arr[idx]) return;
+  arr[idx] = fn(normaliseMember(arr[idx]));
+  v[key] = arr;
+  persistVerif(selectedId, v);
+  renderForm(); // re-render so coverage + suggested verdict update
+}
+
+function requestConsent(type, idx) {
+  mutateMember(type, idx, m => {
+    m.consent = { state: 'pending', requestedAt: new Date().toISOString(), respondedAt: '' };
+    return m;
+  });
+  showToast('Consent request recorded (local only — no SMS sent)');
+}
+
+function respondConsent(type, idx, result) {
+  mutateMember(type, idx, m => {
+    const prev = m.consent || {};
+    m.consent = {
+      state: result,
+      requestedAt: prev.requestedAt || new Date().toISOString(),
+      respondedAt: new Date().toISOString()
+    };
+    return m;
+  });
+}
+
+function resetConsent(type, idx) {
+  mutateMember(type, idx, m => {
+    m.consent = { state: 'not-requested', requestedAt: '', respondedAt: '' };
+    return m;
+  });
 }
 
 function addMember(type) {
@@ -2342,11 +2797,15 @@ function addMember(type) {
   const v = getVerif(selectedId);
   const key = type === 'adult' ? 'adultsOnPolicy' : 'childrenOnPolicy';
   const arr = safeArr(v[key]);
-  arr.push({ name: '', dob: '' });
+  // New rows added by agent = 'discovered' by definition (they weren't in user's submission)
+  arr.push(newMember({
+    source: 'discovered',
+    policyStatus: 'verified',  // agent is presumably adding because they SAW it on the COI
+    consent: { state: 'not-requested', requestedAt: '', respondedAt: '' }
+  }));
   v[key] = arr;
   persistVerif(selectedId, v);
   renderMembersSection(type, arr);
-  // Focus the new row's name input
   const container = document.getElementById(type === 'adult' ? 'adultsContainer' : 'childrenContainer');
   const rows = container.querySelectorAll('.member-row');
   if (rows.length) rows[rows.length - 1].querySelector('.name-in')?.focus();
@@ -2365,12 +2824,21 @@ function removeMember(type, idx) {
 
 function readMembersFromDOM(type) {
   const containerId = type === 'adult' ? 'adultsContainer' : 'childrenContainer';
-  const rows = document.getElementById(containerId).querySelectorAll('.member-row');
-  return Array.from(rows).map(row => ({
-    name: row.querySelector('.name-in')?.value || '',
-    dob: row.querySelector('.dob-in')?.dataset.iso || '',
-    relation: row.querySelector('.rel-in')?.value || ''
-  }));
+  const containerRows = document.getElementById(containerId).querySelectorAll('.member-row');
+  // We can't fully reconstruct consent from DOM (no inputs for it), so we
+  // fall back to the stored values for source/consent and only overwrite the
+  // fields the form actually exposes (name/dob/relation/policyStatus/verifiedBy).
+  const stored = safeArr(getVerif(selectedId)[type === 'adult' ? 'adultsOnPolicy' : 'childrenOnPolicy']);
+  return Array.from(containerRows).map((row, i) => {
+    const prev = normaliseMember(stored[i]);
+    return Object.assign(prev, {
+      name: row.querySelector('.name-in')?.value || '',
+      dob: row.querySelector('.dob-in')?.dataset.iso || '',
+      relation: row.querySelector('.rel-in')?.value || '',
+      policyStatus: row.querySelector('.pstatus-in')?.value || 'pending',
+      verifiedBy: row.querySelector('.verifiedby-in')?.value || ''
+    });
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2469,6 +2937,119 @@ function setupToggle(togId, bodyId) {
   tog.addEventListener('click', () => {
     const collapsed = body.classList.toggle('hidden');
     tog.classList.toggle('collapsed', collapsed);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MEMBER STATE AGGREGATION (coverage summary + suggested verdict)
+// ═══════════════════════════════════════════════════════════════
+
+function getAllMembers(v) {
+  return [...safeArr(v.adultsOnPolicy), ...safeArr(v.childrenOnPolicy)].map(normaliseMember);
+}
+
+function aggregateMemberStats(v) {
+  const all = getAllMembers(v);
+  const stats = {
+    total: all.length,
+    declared: 0, discovered: 0,
+    verified: 0, pending: 0, notOnPolicy: 0,
+    consentNotRequested: 0, consentPending: 0,
+    consentAccepted: 0, consentDeclined: 0,
+    discoveredNames: []
+  };
+  all.forEach(m => {
+    if (m.source === 'discovered') {
+      stats.discovered++;
+      if (m.name) stats.discoveredNames.push(m.name);
+    } else stats.declared++;
+    if (m.policyStatus === 'verified') stats.verified++;
+    else if (m.policyStatus === 'not-on-policy') stats.notOnPolicy++;
+    else stats.pending++;
+    if (m.source === 'discovered') {
+      const cs = (m.consent && m.consent.state) || 'not-requested';
+      if (cs === 'not-requested') stats.consentNotRequested++;
+      else if (cs === 'pending') stats.consentPending++;
+      else if (cs === 'accepted') stats.consentAccepted++;
+      else if (cs === 'declined') stats.consentDeclined++;
+    }
+  });
+  return stats;
+}
+
+// Suggested verdict — pure function of member stats
+function suggestVerdict(stats) {
+  if (!stats.total) return null;
+
+  // Any discovered member awaiting user response → discovery_pending
+  if (stats.consentNotRequested + stats.consentPending > 0) return 'discovery_pending';
+
+  // Some declared members not on policy → waitlisted (partial)
+  if (stats.notOnPolicy > 0) return 'waitlisted';
+
+  // Any verified members beyond what was declared (accepted-via-discovery) → verified_expanded
+  if (stats.consentAccepted > 0 && stats.verified === stats.total - stats.consentDeclined) {
+    return 'verified_expanded';
+  }
+
+  // Every member verified (and no discoveries in flight) → verified
+  if (stats.verified > 0 && stats.verified === stats.total - stats.consentDeclined) {
+    return 'verified';
+  }
+
+  return 'pending';
+}
+
+function renderCoverageSummary(v) {
+  const s = aggregateMemberStats(v);
+  const el = document.getElementById('coverageSummary');
+  if (!el) return;
+  if (!s.total) {
+    el.innerHTML = '<span style="color:var(--ink-3);font-style:italic">No members added yet</span>';
+    return;
+  }
+  el.innerHTML = `
+    <span><span class="cov-num">${s.total}</span> on policy</span>
+    <span class="cov-sep">·</span>
+    <span><span class="cov-num">${s.declared}</span> declared</span>
+    ${s.discovered ? `<span class="cov-sep">·</span><span class="cov-pill discovery">${s.discovered} discovered</span>` : ''}
+    ${s.verified ? `<span class="cov-sep">·</span><span class="cov-pill verified">${s.verified} verified</span>` : ''}
+    ${s.pending ? `<span class="cov-sep">·</span><span class="cov-pill pending">${s.pending} unchecked</span>` : ''}
+    ${s.notOnPolicy ? `<span class="cov-sep">·</span><span class="cov-pill notonpolicy">${s.notOnPolicy} not on policy</span>` : ''}
+    ${s.consentPending + s.consentNotRequested ? `<span class="cov-sep">·</span><span class="cov-pill discovery">${s.consentPending + s.consentNotRequested} awaiting consent</span>` : ''}
+  `;
+}
+
+const STATUS_LABEL = {
+  pending: 'Pending',
+  verified: 'Verified',
+  verified_expanded: 'Verified + Expanded',
+  discovery_pending: 'Pending discovery confirmation',
+  rejected: 'Rejected',
+  waitlisted: 'Waitlisted',
+  escalated: 'Escalated'
+};
+
+function renderSuggestedVerdict(v) {
+  const el = document.getElementById('verdictSuggest');
+  if (!el) return;
+  const stats = aggregateMemberStats(v);
+  const suggested = suggestVerdict(stats);
+  const current = v.verificationStatus || 'pending';
+  if (!suggested || suggested === current) {
+    el.classList.add('empty');
+    el.innerHTML = '';
+    return;
+  }
+  el.classList.remove('empty');
+  let reason = '';
+  if (suggested === 'discovery_pending') reason = `${stats.consentNotRequested + stats.consentPending} discovered member${stats.consentNotRequested + stats.consentPending === 1 ? '' : 's'} awaiting consent`;
+  else if (suggested === 'verified_expanded') reason = `${stats.consentAccepted} member${stats.consentAccepted === 1 ? '' : 's'} added via discovery, all verified`;
+  else if (suggested === 'verified') reason = 'all members verified';
+  else if (suggested === 'waitlisted') reason = `${stats.notOnPolicy} declared member${stats.notOnPolicy === 1 ? '' : 's'} not on policy`;
+  el.innerHTML = `Suggested: <strong>${STATUS_LABEL[suggested]}</strong> — ${reason} <span class="vsg-link" id="vsgApply">Apply →</span>`;
+  document.getElementById('vsgApply').addEventListener('click', () => {
+    setVerdictFromPills(suggested);
   });
 }
 
@@ -2905,7 +3486,9 @@ function doExportCsv(scope) {
     'Waiting Period','Call Status','Adults on Policy','Children on Policy',
     'Pre-existing Conditions','Ops Comments',
     'Verification Status','Rejection Bucket','Rejection Code','Rejection Reason',
-    'Reviewed At','Last Edited At'
+    'Reviewed At','Last Edited At',
+    'Members Declared','Members Discovered','Members Verified','Not On Policy',
+    'Awaiting Consent','Discovery Accepted','Discovery Declined','Discovered Names'
   ];
 
   function cell(v) {
@@ -2918,18 +3501,20 @@ function doExportCsv(scope) {
     const insurers = getInsurers(app).join('; ');
     const sources = safeArr(app.insuranceSource).join('; ');
     const declaredMembers = safeArr(app.members).map(m => m.name + (m.relation ? ' (' + m.relation + ')' : '')).join('; ');
-    const adults = safeArr(v.adultsOnPolicy).map((m,i) => {
-      const parts = [m.name || 'Adult '+(i+1)];
-      if (m.relation) parts.push(m.relation);
-      if (m.dob) parts.push(m.dob);
+    const serialiseMember = (m, i, kind) => {
+      const n = normaliseMember(m);
+      const parts = [n.name || kind + ' ' + (i+1)];
+      if (n.relation) parts.push(n.relation);
+      if (n.dob) parts.push(n.dob);
+      parts.push(n.source);
+      parts.push(n.policyStatus);
+      if (n.verifiedBy) parts.push('via ' + n.verifiedBy);
+      if (n.source === 'discovered' && n.consent) parts.push('consent:' + (n.consent.state || 'not-requested'));
       return parts.join(' | ');
-    }).join('; ');
-    const children = safeArr(v.childrenOnPolicy).map((m,i) => {
-      const parts = [m.name || 'Child '+(i+1)];
-      if (m.relation) parts.push(m.relation);
-      if (m.dob) parts.push(m.dob);
-      return parts.join(' | ');
-    }).join('; ');
+    };
+    const adults = safeArr(v.adultsOnPolicy).map((m,i) => serialiseMember(m, i, 'Adult')).join('; ');
+    const children = safeArr(v.childrenOnPolicy).map((m,i) => serialiseMember(m, i, 'Child')).join('; ');
+    const memberStats = aggregateMemberStats(v);
     const peds = safeArr(v.preExistingConditions).join('; ');
     return [
       app.id, app.timestamp, app.name, app.mobile, app.city,
@@ -2939,7 +3524,12 @@ function doExportCsv(scope) {
       adults, children, peds, v.opsComments,
       v.verificationStatus || 'pending',
       v.rejectionBucket, v.rejectionCode, v.rejectionReason,
-      v.reviewedAt, v.lastEditedAt
+      v.reviewedAt, v.lastEditedAt,
+      memberStats.declared, memberStats.discovered, memberStats.verified,
+      memberStats.notOnPolicy,
+      memberStats.consentNotRequested + memberStats.consentPending,
+      memberStats.consentAccepted, memberStats.consentDeclined,
+      memberStats.discoveredNames.join('; ')
     ].map(cell).join(',');
   });
 
