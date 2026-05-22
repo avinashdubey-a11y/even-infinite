@@ -1828,7 +1828,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5.4 · FIX duplicate const</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5.5 · render fix</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -3027,9 +3027,7 @@ function renderForm() {
     if (el) el.value = v[f] || '';
   });
   applyVstatusStyle(vs);
-  toggleRejectionPanel(vs === 'rejected');
-  if (v.rejectionBucket) populateCodeSelect(v.rejectionBucket, v.rejectionCode);
-  updateReasonHint(v.rejectionCode);
+  // (rejection bucket+code dropdowns retired — typeahead handled below via showRejectionCode)
   updateReviewedMeta(v.reviewedAt);
 
   // — Members on Policy
