@@ -1828,7 +1828,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5.1 · load demo inline</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5.2 · demo button in topbar</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -1848,6 +1848,10 @@
       </button>
       <div class="views-popover" id="viewsPopover"></div>
     </div>
+    <button class="tb-btn" id="loadDemoTopBtn" type="button" title="Populate 6 sample applicants" style="display:none">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      Demo data
+    </button>
     <button class="tb-btn" id="bulkToggleBtn" type="button" title="Toggle bulk-edit mode">
       Bulk <span class="mono" id="bulkTopbarCount" style="margin-left:4px;display:none;font-size:11px;color:var(--st-discovery-ink)"></span>
     </button>
@@ -2246,10 +2250,11 @@ const DEMO_APPS = [
 
 function loadDemoData() {
   const now = Date.now();
-  const fresh = DEMO_APPS.map(a => ({
-    ...a,
-    timestamp: new Date(now - a.hoursAgo * 3600 * 1000).toISOString()
-  }));
+  const fresh = DEMO_APPS.map(a => {
+    const out = { ...a, timestamp: new Date(now - a.hoursAgo * 3600 * 1000).toISOString() };
+    delete out.hoursAgo;
+    return out;
+  });
   let existing = [];
   try { existing = JSON.parse(localStorage.getItem('evenApplications') || '[]'); } catch {}
   const seedIds = new Set(fresh.map(a => a.id));
@@ -2258,6 +2263,14 @@ function loadDemoData() {
   showToast('Demo data loaded · 6 applications');
   updateStats();
   renderQueue();
+  updateDemoButtonVisibility();
+}
+
+function updateDemoButtonVisibility() {
+  const btn = document.getElementById('loadDemoTopBtn');
+  if (!btn) return;
+  const apps = loadApps();
+  btn.style.display = apps.length === 0 ? 'inline-flex' : 'none';
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -4285,6 +4298,9 @@ wireFormEvents();
 // Restore sort dropdown to persisted value
 const sortEl = document.getElementById('qSort');
 if (sortEl) sortEl.value = queueSort;
+// Wire the topbar demo button
+document.getElementById('loadDemoTopBtn').addEventListener('click', loadDemoData);
+updateDemoButtonVisibility();
 updateStats();
 renderQueue();
 
