@@ -134,10 +134,7 @@
     .stat-chip.s-verified  .sv { color: var(--st-verified-ink); }
     .stat-chip.s-rejected  { background: var(--st-rejected-bg); color: var(--st-rejected-ink); }
     .stat-chip.s-rejected  .sv { color: var(--st-rejected-ink); }
-    .stat-chip.s-waitlisted { background: var(--st-waitlisted-bg); color: var(--st-waitlisted-ink); }
-    .stat-chip.s-waitlisted .sv { color: var(--st-waitlisted-ink); }
-    .stat-chip.s-escalated { background: var(--st-escalated-bg); color: var(--st-escalated-ink); }
-    .stat-chip.s-escalated .sv { color: var(--st-escalated-ink); }
+    /* (waitlisted/escalated retired — collapsed into Hold) */
 
     .topbar-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
     .tb-btn {
@@ -306,12 +303,8 @@
     /* status accent on the left edge — subtle */
     .qcard.vs-verified  { box-shadow: inset 2px 0 0 var(--st-verified-edge); }
     .qcard.vs-rejected  { box-shadow: inset 2px 0 0 var(--st-rejected-edge); }
-    .qcard.vs-waitlisted { box-shadow: inset 2px 0 0 var(--st-waitlisted-edge); }
-    .qcard.vs-escalated { box-shadow: inset 2px 0 0 var(--st-escalated-edge); }
     .qcard.selected.vs-verified  { box-shadow: inset 2px 0 0 var(--st-verified-edge), var(--shadow-soft); }
     .qcard.selected.vs-rejected  { box-shadow: inset 2px 0 0 var(--st-rejected-edge), var(--shadow-soft); }
-    .qcard.selected.vs-waitlisted { box-shadow: inset 2px 0 0 var(--st-waitlisted-edge), var(--shadow-soft); }
-    .qcard.selected.vs-escalated { box-shadow: inset 2px 0 0 var(--st-escalated-edge), var(--shadow-soft); }
 
     .qcard-check {
       width: 16px;
@@ -594,6 +587,15 @@
     .fsec-toggle.collapsed .chev { transform: rotate(-90deg); }
     .fsec-body { padding: 16px; }
     .fsec-body.hidden { display: none; }
+    .sub-heading {
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-3);
+      margin: 18px 0 10px;
+    }
+    .sub-heading:first-child { margin-top: 0; }
 
     /* ═══ FORM FIELDS ══════════════════════════════════════════ */
     .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
@@ -691,21 +693,7 @@
     .verdict-pill.active.vp-pending    { background: var(--st-pending-bg);    color: var(--st-pending-ink);    border-color: var(--st-pending-edge); font-weight: 600; }
     .verdict-pill.active.vp-verified   { background: var(--st-verified-bg);   color: var(--st-verified-ink);   border-color: var(--st-verified-edge); font-weight: 600; }
     .verdict-pill.active.vp-rejected   { background: var(--st-rejected-bg);   color: var(--st-rejected-ink);   border-color: var(--st-rejected-edge); font-weight: 600; }
-    .verdict-pill.active.vp-waitlisted { background: var(--st-waitlisted-bg); color: var(--st-waitlisted-ink); border-color: var(--st-waitlisted-edge); font-weight: 600; }
-    .verdict-pill.active.vp-escalated  { background: var(--st-escalated-bg);  color: var(--st-escalated-ink);  border-color: var(--st-escalated-edge); font-weight: 600; }
-
-    /* ═══ MAIN STATUS SELECT ═══════════════════════════════════ */
-    #vstatus {
-      font-size: 14px;
-      font-weight: 500;
-      padding: 9px 32px 9px 14px;
-      letter-spacing: -0.005em;
-    }
-    #vstatus.vs-pending    { background-color: var(--st-pending-bg); border-color: var(--st-pending-edge); color: var(--st-pending-ink); }
-    #vstatus.vs-verified   { background-color: var(--st-verified-bg);   border-color: var(--st-verified-edge);  color: var(--st-verified-ink); }
-    #vstatus.vs-rejected   { background-color: var(--st-rejected-bg);   border-color: var(--st-rejected-edge);  color: var(--st-rejected-ink); }
-    #vstatus.vs-waitlisted { background-color: var(--st-waitlisted-bg); border-color: var(--st-waitlisted-edge); color: var(--st-waitlisted-ink); }
-    #vstatus.vs-escalated  { background-color: var(--st-escalated-bg);  border-color: var(--st-escalated-edge);  color: var(--st-escalated-ink); }
+    /* (vp-waitlisted, vp-escalated, #vstatus styles retired — collapsed verdicts and dropped dropdown) */
 
     /* Smooth rejection reveal */
     .rejection-panel {
@@ -810,45 +798,34 @@
     .remove-member-btn:hover { background: var(--st-rejected-bg); color: var(--st-rejected-ink); }
     .no-members-hint { font-size: 12px; color: var(--ink-3); font-style: italic; padding: 4px 0; }
 
-    /* ═══ DISCOVERY FLOW — colors ═════════════════════════════ */
+    /* ═══ NEW 3-VERDICT PALETTE ═══════════════════════════════ */
     :root {
+      --st-approved-bg:  #DDE9DC;
+      --st-approved-ink: #2A5A3D;
+      --st-approved-edge: rgba(42,90,61,0.36);
+      --st-hold-bg:     #F5EAD4;
+      --st-hold-ink:    #8A6A2A;
+      --st-hold-edge:   rgba(138,106,42,0.32);
+      /* discovery flag stays a hue accent on queue cards (not a verdict) */
       --st-discovery-bg:  #EDE6F2;
       --st-discovery-ink: #5C4581;
       --st-discovery-edge: rgba(92,69,129,0.3);
-      --st-expanded-bg:  #DDE9DC;
-      --st-expanded-ink: #2A5A3D;
-      --st-expanded-edge: rgba(42,90,61,0.36);
     }
 
-    .stat-chip.s-discovery_pending  { background: var(--st-discovery-bg); color: var(--st-discovery-ink); }
-    .stat-chip.s-discovery_pending  .sv { color: var(--st-discovery-ink); }
-    .stat-chip.s-verified_expanded  { background: var(--st-expanded-bg); color: var(--st-expanded-ink); }
-    .stat-chip.s-verified_expanded  .sv { color: var(--st-expanded-ink); }
+    .stat-chip.s-approved  { background: var(--st-approved-bg); color: var(--st-approved-ink); }
+    .stat-chip.s-approved  .sv { color: var(--st-approved-ink); }
+    .stat-chip.s-hold      { background: var(--st-hold-bg); color: var(--st-hold-ink); }
+    .stat-chip.s-hold      .sv { color: var(--st-hold-ink); }
 
-    .sb-discovery_pending {
-      background: var(--st-discovery-bg);
-      color: var(--st-discovery-ink);
-      border-color: var(--st-discovery-edge);
-    }
-    .sb-verified_expanded {
-      background: var(--st-expanded-bg);
-      color: var(--st-expanded-ink);
-      border-color: var(--st-expanded-edge);
-    }
-    /* + icon prefix on verified_expanded badges */
-    .sb-verified_expanded::before {
-      content: '+';
-      display: inline-block;
-      margin-right: 3px;
-      font-weight: 700;
-    }
+    .sb-approved { background: var(--st-approved-bg); color: var(--st-approved-ink); border-color: var(--st-approved-edge); }
+    .sb-hold     { background: var(--st-hold-bg);     color: var(--st-hold-ink);     border-color: var(--st-hold-edge); }
 
-    .qcard.vs-discovery_pending  { box-shadow: inset 2px 0 0 var(--st-discovery-edge); }
-    .qcard.vs-verified_expanded  { box-shadow: inset 2px 0 0 var(--st-expanded-edge); }
-    .qcard.selected.vs-discovery_pending  { box-shadow: inset 2px 0 0 var(--st-discovery-edge), var(--shadow-soft); }
-    .qcard.selected.vs-verified_expanded  { box-shadow: inset 2px 0 0 var(--st-expanded-edge), var(--shadow-soft); }
+    .qcard.vs-approved { box-shadow: inset 2px 0 0 var(--st-approved-edge); }
+    .qcard.vs-hold     { box-shadow: inset 2px 0 0 var(--st-hold-edge); }
+    .qcard.selected.vs-approved { box-shadow: inset 2px 0 0 var(--st-approved-edge), var(--shadow-soft); }
+    .qcard.selected.vs-hold     { box-shadow: inset 2px 0 0 var(--st-hold-edge), var(--shadow-soft); }
 
-    /* ── Queue card discovery +N chip ── */
+    /* Queue card discovery +N chip — used for ANY hold-with-discovery, retains warm violet hue */
     .qcard-discovery-chip {
       display: inline-flex;
       align-items: center;
@@ -866,13 +843,174 @@
       flex-shrink: 0;
     }
 
-    /* ── Verdict bar discovery + expanded pills ── */
-    .verdict-pill.active.vp-discovery_pending  { background: var(--st-discovery-bg); color: var(--st-discovery-ink); border-color: var(--st-discovery-edge); font-weight: 600; }
-    .verdict-pill.active.vp-verified_expanded  { background: var(--st-expanded-bg);  color: var(--st-expanded-ink);  border-color: var(--st-expanded-edge); font-weight: 600; }
+    .verdict-pill.active.vp-approved { background: var(--st-approved-bg); color: var(--st-approved-ink); border-color: var(--st-approved-edge); font-weight: 600; }
+    .verdict-pill.active.vp-hold     { background: var(--st-hold-bg);     color: var(--st-hold-ink);     border-color: var(--st-hold-edge); font-weight: 600; }
 
-    /* ── vstatus dropdown new color states ── */
-    #vstatus.vs-discovery_pending  { background-color: var(--st-discovery-bg); border-color: var(--st-discovery-edge); color: var(--st-discovery-ink); }
-    #vstatus.vs-verified_expanded  { background-color: var(--st-expanded-bg);  border-color: var(--st-expanded-edge);  color: var(--st-expanded-ink); }
+    /* ═══ SUMMARY CARD ═════════════════════════════════════════ */
+    .summary-card {
+      padding: 10px 22px;
+      border-bottom: 1px solid var(--hairline);
+      background: var(--bg-soft);
+      font-size: 12px;
+      color: var(--ink-2);
+      letter-spacing: -0.005em;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .summary-card.empty { display: none; }
+    .summary-card .sc-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--ink-3);
+      flex-shrink: 0;
+    }
+    .summary-card .sc-dot.match    { background: var(--st-approved-ink); }
+    .summary-card .sc-dot.mismatch { background: var(--st-hold-ink); }
+    .summary-card .sc-num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+    .summary-card .sc-pill {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 1.5px 8px;
+      border-radius: 999px;
+    }
+    .summary-card .sc-pill.discovery { background: var(--st-discovery-bg); color: var(--st-discovery-ink); }
+    .summary-card .sc-suggest {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .summary-card .sc-apply {
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 3px 11px;
+      border-radius: 999px;
+      background: var(--ink);
+      border: 1px solid var(--ink);
+      color: var(--surface);
+      cursor: pointer;
+      letter-spacing: -0.005em;
+      transition: background 0.14s, transform 0.12s;
+    }
+    .summary-card .sc-apply:hover { background: var(--accent-soft); }
+    .summary-card .sc-apply:active { transform: scale(0.96); }
+    .summary-card .sc-sep { color: var(--ink-3); }
+
+    /* ═══ TYPEAHEAD ═══════════════════════════════════════════ */
+    .typeahead-wrap { position: relative; }
+    .typeahead-results {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      max-height: 240px;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-pop);
+      z-index: 50;
+      display: none;
+    }
+    .typeahead-results.show { display: block; }
+    .typeahead-item {
+      padding: 8px 12px;
+      font-size: 12.5px;
+      color: var(--ink);
+      cursor: pointer;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      letter-spacing: -0.005em;
+      border-bottom: 1px solid var(--hairline-soft);
+    }
+    .typeahead-item:last-child { border-bottom: 0; }
+    .typeahead-item:hover, .typeahead-item.highlight { background: var(--surface-tint); }
+    .typeahead-item .ti-code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-3);
+      letter-spacing: 0;
+      flex-shrink: 0;
+    }
+    .typeahead-item .ti-label { color: var(--ink); }
+    .typeahead-item .ti-bucket { font-size: 10.5px; color: var(--ink-3); margin-left: auto; }
+    .typeahead-selected {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: var(--st-rejected-bg);
+      color: var(--st-rejected-ink);
+      border: 1px solid var(--st-rejected-edge);
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 6px;
+    }
+    .typeahead-selected .ts-clear {
+      cursor: pointer;
+      opacity: 0.65;
+      font-size: 14px;
+      line-height: 1;
+    }
+    .typeahead-selected .ts-clear:hover { opacity: 1; }
+
+    /* ═══ HOLD REASON PANEL ═══════════════════════════════════ */
+    .hold-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.32s cubic-bezier(0.32,0.72,0,1), margin-top 0.32s cubic-bezier(0.32,0.72,0,1);
+      margin-top: 0;
+      background: var(--st-hold-bg);
+      border: 1px solid var(--st-hold-edge);
+      border-radius: var(--radius-sm);
+      padding: 0;
+    }
+    .hold-panel.show {
+      grid-template-rows: 1fr;
+      margin-top: 10px;
+      padding: 10px 12px;
+    }
+    .hold-panel > .hp-inner { min-height: 0; overflow: hidden; }
+    .hold-panel .hp-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--st-hold-ink);
+      margin-bottom: 6px;
+    }
+    .hold-panel .hp-reasons {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .hp-reason {
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: transparent;
+      border: 1px solid rgba(138,106,42,0.32);
+      color: var(--st-hold-ink);
+      cursor: pointer;
+      letter-spacing: -0.005em;
+      transition: all 0.14s cubic-bezier(0.32,0.72,0,1);
+    }
+    .hp-reason:hover { background: rgba(255,255,255,0.6); }
+    .hp-reason.active {
+      background: var(--st-hold-ink);
+      color: var(--st-hold-bg);
+      border-color: var(--st-hold-ink);
+    }
 
     /* ═══ COVERAGE SUMMARY (top of Members section body) ══════ */
     .coverage-summary {
@@ -944,30 +1082,51 @@
     }
     .member-row.is-discovered .source-tag { display: inline-flex; }
 
-    .member-row .pstatus-in,
-    .member-row .verifiedby-in {
+    /* 2-state policy toggle — single button, click to flip */
+    .member-row .pstatus-toggle {
       font-size: 11.5px;
-      padding: 4px 22px 4px 9px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--st-approved-bg);
+      color: var(--st-approved-ink);
+      border: 1px solid var(--st-approved-edge);
       cursor: pointer;
+      letter-spacing: -0.005em;
+      transition: all 0.14s cubic-bezier(0.32,0.72,0,1);
     }
-    .member-row .pstatus-in { min-width: 110px; }
-    .member-row .verifiedby-in { min-width: 120px; }
+    .member-row .pstatus-toggle[data-pstatus="not-on-policy"] {
+      background: var(--st-rejected-bg);
+      color: var(--st-rejected-ink);
+      border-color: var(--st-rejected-edge);
+    }
+    .member-row .pstatus-toggle:hover { filter: brightness(0.98); }
+    .member-row .pstatus-toggle:active { transform: scale(0.96); }
 
-    /* member status pill colors (using same fselect baseline but tinted) */
-    .pstatus-in[data-pstatus="verified"] {
-      background-color: var(--st-verified-bg);
-      border-color: var(--st-verified-edge);
-      color: var(--st-verified-ink);
+    /* Relation quick chips above the dropdown */
+    .rel-chips {
+      display: inline-flex;
+      gap: 3px;
+      align-items: center;
+      margin-right: 3px;
     }
-    .pstatus-in[data-pstatus="not-on-policy"] {
-      background-color: var(--st-waitlisted-bg);
-      border-color: var(--st-waitlisted-edge);
-      color: var(--st-waitlisted-ink);
-    }
-    .pstatus-in[data-pstatus="pending"] {
-      background-color: var(--surface);
-      border-color: var(--hairline);
+    .rel-chip {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: transparent;
+      border: 1px solid var(--hairline);
       color: var(--ink-2);
+      cursor: pointer;
+      letter-spacing: -0.005em;
+      transition: all 0.14s;
+    }
+    .rel-chip:hover { background: var(--surface-tint); border-color: var(--hairline-strong); color: var(--ink); }
+    .rel-chip.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--surface);
     }
 
     /* ═══ PER-MEMBER CONDITIONS TOGGLE + PANEL ═══════════════ */
@@ -1063,45 +1222,48 @@
     .conditions-panel .ped-tag { font-size: 11.5px; padding: 4px 10px 4px 9px; }
     .conditions-panel .ped-tag::before { width: 10px; height: 10px; border-width: 1.2px; }
 
-    /* ═══ CONSENT ROW ═════════════════════════════════════════ */
+    /* ═══ SIMPLIFIED CONSENT ROW (single checkbox + audit) ════ */
     .consent-row {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 9px;
-      margin-top: 2px;
+      gap: 9px;
+      padding: 7px 10px;
+      margin-top: 4px;
       border-radius: var(--radius-sm);
       background: rgba(92,69,129,0.06);
-      border: 1px solid rgba(92,69,129,0.12);
-      font-size: 11px;
+      border: 1px solid rgba(92,69,129,0.14);
+      font-size: 11.5px;
       flex-wrap: wrap;
     }
     .consent-row .c-label {
       font-size: 9.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       color: var(--st-discovery-ink);
     }
-    .consent-row .c-state {
-      font-size: 11px;
-      color: var(--ink-2);
+    .consent-row .c-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--ink);
+      cursor: pointer;
+      user-select: none;
       letter-spacing: -0.005em;
     }
+    .consent-row .c-check input { accent-color: var(--st-discovery-ink); cursor: pointer; }
     .consent-row .c-timestamp {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 10.5px;
       color: var(--ink-3);
       letter-spacing: 0;
     }
-    .consent-row .c-state.s-accepted { color: var(--st-verified-ink); font-weight: 600; }
-    .consent-row .c-state.s-declined { color: var(--st-rejected-ink); font-weight: 500; }
-    .consent-row .c-state.s-pending  { color: var(--st-discovery-ink); font-weight: 500; }
-    .consent-row .c-actions { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+    .consent-row .c-actions { display: flex; gap: 4px; margin-left: auto; }
     .c-btn {
       font-size: 10.5px;
       font-weight: 500;
-      padding: 3px 10px;
+      padding: 3px 11px;
       border-radius: 999px;
       background: transparent;
       border: 1px solid var(--hairline-strong);
@@ -1112,16 +1274,6 @@
     }
     .c-btn:hover { background: var(--surface); }
     .c-btn:active { transform: scale(0.96); }
-    .c-btn.primary {
-      background: var(--st-discovery-ink);
-      border-color: var(--st-discovery-ink);
-      color: var(--surface);
-    }
-    .c-btn.primary:hover { background: #4A3868; border-color: #4A3868; }
-    .c-btn.accept { color: var(--st-verified-ink); border-color: var(--st-verified-edge); }
-    .c-btn.accept:hover { background: var(--st-verified-bg); }
-    .c-btn.decline { color: var(--st-rejected-ink); border-color: rgba(140,67,47,0.2); }
-    .c-btn.decline:hover { background: var(--st-rejected-bg); }
 
     /* ═══ SUGGESTED VERDICT HINT ═════════════════════════════ */
     .verdict-suggest {
@@ -1528,16 +1680,13 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">per-member PED + select all · v3.1</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">simplified verdicts · v4</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
-    <span class="stat-chip s-verified">Verified <span class="sv" id="cnt-verified">0</span></span>
-    <span class="stat-chip s-verified_expanded">+ Expanded <span class="sv" id="cnt-verified_expanded">0</span></span>
-    <span class="stat-chip s-discovery_pending">Discovery <span class="sv" id="cnt-discovery_pending">0</span></span>
+    <span class="stat-chip s-approved">Approved <span class="sv" id="cnt-approved">0</span></span>
+    <span class="stat-chip s-hold">Hold <span class="sv" id="cnt-hold">0</span></span>
     <span class="stat-chip s-rejected">Rejected <span class="sv" id="cnt-rejected">0</span></span>
-    <span class="stat-chip s-waitlisted">Waitlisted <span class="sv" id="cnt-waitlisted">0</span></span>
-    <span class="stat-chip s-escalated">Escalated <span class="sv" id="cnt-escalated">0</span></span>
   </div>
   <span class="save-flash" id="saveFlash">
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 5"/></svg>
@@ -1551,7 +1700,9 @@
       </button>
       <div class="views-popover" id="viewsPopover"></div>
     </div>
-    <button class="tb-btn" id="bulkToggleBtn" type="button" title="Toggle bulk-edit mode">Bulk</button>
+    <button class="tb-btn" id="bulkToggleBtn" type="button" title="Toggle bulk-edit mode">
+      Bulk <span class="mono" id="bulkTopbarCount" style="margin-left:4px;display:none;font-size:11px;color:var(--st-discovery-ink)"></span>
+    </button>
     <a class="tb-btn" href="admin.html">← Applications</a>
     <button class="tb-btn primary" id="exportCsvBtn" type="button">Export CSV</button>
   </div>
@@ -1566,10 +1717,9 @@
       <span class="bulk-count" id="bulkCount">0 selected</span>
       <select id="bulkStatus">
         <option value="">Set status…</option>
-        <option value="verified">Verified</option>
+        <option value="approved">Approved</option>
+        <option value="hold">Hold</option>
         <option value="rejected">Rejected</option>
-        <option value="waitlisted">Waitlisted</option>
-        <option value="escalated">Escalated</option>
         <option value="pending">Pending</option>
       </select>
       <button id="bulkApplyBtn" type="button">Apply</button>
@@ -1580,11 +1730,9 @@
       <div class="q-filters" id="qFilters">
         <button class="q-pill active" data-f="all">All</button>
         <button class="q-pill" data-f="pending">Pending</button>
-        <button class="q-pill" data-f="verified">Verified</button>
-        <button class="q-pill" data-f="discovery_pending">Discovery</button>
+        <button class="q-pill" data-f="approved">Approved</button>
+        <button class="q-pill" data-f="hold">Hold</button>
         <button class="q-pill" data-f="rejected">Rejected</button>
-        <button class="q-pill" data-f="waitlisted">Waitlisted</button>
-        <button class="q-pill" data-f="escalated">Escalated</button>
       </div>
     </div>
     <div class="queue-list" id="queueList"></div>
@@ -1623,20 +1771,18 @@
   <div class="form-pane">
     <div class="form-pane-header">
       <span class="form-pane-name form-pane-placeholder" id="formPaneName">Select an application</span>
-      <span class="sbadge sb-pending" id="formPaneStatus" style="display:none">pending</span>
+      <span class="audit-meta" id="auditMeta" style="margin-left:auto"></span>
+      <span class="sbadge sb-pending" id="formPaneStatus" style="display:none">Pending</span>
     </div>
 
     <!-- Quick Verdict bar — sticky, one-click status change -->
     <div class="verdict-bar" id="verdictBar" style="display:none">
-      <button type="button" class="verdict-pill vp-pending"    data-vs="pending"    title="Set Pending (1)">Pending</button>
-      <button type="button" class="verdict-pill vp-verified"   data-vs="verified"   title="Set Verified (2)">Verified</button>
-      <button type="button" class="verdict-pill vp-verified_expanded" data-vs="verified_expanded" title="Verified + Expanded (6)">+ Expanded</button>
-      <button type="button" class="verdict-pill vp-discovery_pending" data-vs="discovery_pending" title="Pending discovery confirmation (7)">Discovery</button>
-      <button type="button" class="verdict-pill vp-rejected"   data-vs="rejected"   title="Set Rejected (3)">Rejected</button>
-      <button type="button" class="verdict-pill vp-waitlisted" data-vs="waitlisted" title="Set Waitlisted (4)">Waitlisted</button>
-      <button type="button" class="verdict-pill vp-escalated"  data-vs="escalated"  title="Set Escalated (5)">Escalated</button>
+      <button type="button" class="verdict-pill vp-pending"  data-vs="pending"  title="Pending (1)">Pending</button>
+      <button type="button" class="verdict-pill vp-approved" data-vs="approved" title="Approved (2)">Approved</button>
+      <button type="button" class="verdict-pill vp-hold"     data-vs="hold"     title="Hold (3)">Hold</button>
+      <button type="button" class="verdict-pill vp-rejected" data-vs="rejected" title="Rejected (4)">Rejected</button>
     </div>
-    <div class="verdict-suggest empty" id="verdictSuggest"></div>
+    <div class="summary-card empty" id="summaryCard"></div>
 
     <div class="form-empty" id="formEmpty">
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
@@ -1655,12 +1801,13 @@
         </div>
       </div>
 
-      <!-- 2. Policy Details -->
+      <!-- Policy (Details + Members merged) -->
       <div class="fsec">
         <button type="button" class="fsec-toggle" id="tog-policy">
-          Policy Details <span class="chev">▼</span>
+          Policy <span class="chev">▼</span>
         </button>
         <div class="fsec-body" id="body-policy">
+          <div class="sub-heading">Document details</div>
           <div class="fgrid">
             <div class="fg">
               <label class="flabel" for="policyNumber">Policy Number</label>
@@ -1668,7 +1815,7 @@
             </div>
             <div class="fg">
               <label class="flabel" for="sumInsured">Sum Insured ₹ <span class="si-formatted mono" id="sumInsuredFormatted"></span></label>
-              <input class="finput" id="sumInsured" type="number" placeholder="475000" data-field="sumInsured" />
+              <input class="finput" id="sumInsured" type="text" inputmode="numeric" placeholder="475000" data-field="sumInsured" />
             </div>
             <div class="fg">
               <label class="flabel" for="policyStartDate">Start Date</label>
@@ -1715,16 +1862,8 @@
               <textarea class="ftextarea" id="opsComments" rows="3" placeholder="Red flags, context, clarifications…" data-field="opsComments"></textarea>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- 3. Members on Policy -->
-      <div class="fsec">
-        <button type="button" class="fsec-toggle" id="tog-members">
-          Members on Policy <span class="chev">▼</span>
-        </button>
-        <div class="fsec-body" id="body-members">
-          <div class="coverage-summary" id="coverageSummary"></div>
+          <div class="sub-heading">Members on policy</div>
           <div class="member-group">
             <div class="member-group-label">
               Adults
@@ -1733,7 +1872,6 @@
                 Add Adult
               </button>
             </div>
-            <div class="ped-note" style="margin:0 0 6px">Name and DOB are both optional — agents may leave blank when unknown.</div>
             <div id="adultsContainer">
               <div class="no-members-hint" id="noAdultsHint">No adults added yet</div>
             </div>
@@ -1756,58 +1894,44 @@
       <!-- Pre-existing Conditions now live per-member inside the Members section. -->
 
 
-      <!-- 5. Decision -->
+      <!-- Decision section -->
       <div class="fsec">
         <button type="button" class="fsec-toggle" id="tog-decision">
           Decision <span class="chev">▼</span>
         </button>
         <div class="fsec-body" id="body-decision">
-          <div class="fg" style="margin-bottom:10px">
-            <label class="flabel" for="vstatus">Verification Status</label>
-            <select class="fselect vs-pending" id="vstatus" data-field="verificationStatus">
-              <option value="pending">Pending</option>
-              <option value="verified">Verified</option>
-              <option value="verified_expanded">Verified + Expanded</option>
-              <option value="discovery_pending">Pending discovery confirmation</option>
-              <option value="rejected">Rejected</option>
-              <option value="waitlisted">Waitlisted</option>
-              <option value="escalated">Escalated</option>
-            </select>
+
+          <!-- Hold reasons (shown when verdict is Hold) -->
+          <div class="hold-panel" id="holdPanel">
+            <div class="hp-inner">
+              <div class="hp-label">Hold reason</div>
+              <div class="hp-reasons" id="holdReasons">
+                <button class="hp-reason" type="button" data-hr="awaiting_user">Waiting on user</button>
+                <button class="hp-reason" type="button" data-hr="awaiting_insurer">Waiting on insurer</button>
+                <button class="hp-reason" type="button" data-hr="partial_coverage">Partial coverage</button>
+                <button class="hp-reason" type="button" data-hr="city_not_live">City not live</button>
+                <button class="hp-reason" type="button" data-hr="senior_review">Senior review needed</button>
+                <button class="hp-reason" type="button" data-hr="other">Other</button>
+              </div>
+            </div>
           </div>
 
+          <!-- Rejection: searchable typeahead -->
           <div class="rejection-panel" id="rejectionPanel">
             <div class="rj-inner">
-              <div class="fgrid" style="gap:7px 10px; margin-bottom:0">
-                <div class="fg">
-                  <label class="flabel" for="rejectionBucket">Bucket</label>
-                  <select class="fselect" id="rejectionBucket" data-field="rejectionBucket">
-                    <option value="">— Select Bucket —</option>
-                    <option value="A">A · Document &amp; Submission</option>
-                    <option value="B">B · Identity &amp; Eligibility</option>
-                    <option value="C">C · Policy Standing</option>
-                    <option value="D">D · Product Scope</option>
-                    <option value="E">E · Coverage Adequacy</option>
-                    <option value="F">F · Waiting Periods</option>
-                    <option value="G">G · Verification Blockers</option>
-                    <option value="H">H · Risk &amp; Compliance</option>
-                  </select>
-                </div>
-                <div class="fg">
-                  <label class="flabel" for="rejectionCode">Code</label>
-                  <select class="fselect" id="rejectionCode" data-field="rejectionCode">
-                    <option value="">— Select Code —</option>
-                  </select>
+              <div class="fg">
+                <label class="flabel" for="rejectionSearch">Rejection code</label>
+                <div class="typeahead-wrap">
+                  <input class="finput typeahead-input" id="rejectionSearch" type="text" placeholder="Type a code (e.g. expir, mismatch, fraud)…" autocomplete="off" />
+                  <input type="hidden" id="rejectionCode" data-field="rejectionCode" />
+                  <input type="hidden" id="rejectionBucket" data-field="rejectionBucket" />
+                  <div class="typeahead-results" id="rejectionResults"></div>
                 </div>
               </div>
               <div class="reason-hint" id="reasonHint"></div>
             </div>
           </div>
 
-          <div class="decision-row" style="justify-content:flex-end">
-            <button class="btn-mark-reviewed" id="markReviewedBtn" type="button">Mark Reviewed</button>
-          </div>
-          <div class="reviewed-meta" id="reviewedMeta" style="margin-top:6px"></div>
-          <div class="audit-meta" id="auditMeta"></div>
         </div>
       </div>
 
@@ -1937,9 +2061,34 @@ function defaultVerif(id) {
     adultsOnPolicy: [], childrenOnPolicy: [],
     preExistingConditions: [],
     rejectionBucket: '', rejectionCode: '', rejectionReason: '',
-    verificationStatus: 'pending', reviewedAt: '',
+    verificationStatus: 'pending',
+    holdReason: '',
+    reviewedAt: '',
     lastEditedAt: ''
   };
+}
+
+// Map legacy verdicts onto the new 3-verdict taxonomy
+function migrateVerdict(v) {
+  if (!v || !v.verificationStatus) return v;
+  const map = {
+    verified: 'approved',
+    verified_expanded: 'approved',
+    discovery_pending: 'hold',
+    waitlisted: 'hold',
+    escalated: 'hold'
+  };
+  if (map[v.verificationStatus]) {
+    if (!v.holdReason) {
+      v.holdReason = ({
+        discovery_pending: 'awaiting_user',
+        waitlisted: 'partial_coverage',
+        escalated: 'senior_review'
+      })[v.verificationStatus] || '';
+    }
+    v.verificationStatus = map[v.verificationStatus];
+  }
+  return v;
 }
 
 function getVerif(id) { return loadVerifs()[id] || defaultVerif(id); }
@@ -1953,18 +2102,35 @@ function newMember(overrides) {
     relation: '',
     dob: '',
     source: 'declared',
-    policyStatus: 'pending',
-    verifiedBy: '',
-    preExistingConditions: [],     // per-member PED list
-    consent: { state: 'not-required', requestedAt: '', respondedAt: '' }
+    // Simplified 2-state policyStatus: 'verified' (on policy, default) or 'not-on-policy'
+    policyStatus: 'verified',
+    preExistingConditions: [],
+    // Simplified consent: single confirmed flag + audit timestamps
+    consent: { confirmed: false, requestedAt: '', confirmedAt: '' }
   }, overrides || {});
 }
 
 function normaliseMember(m) {
   if (!m) return newMember();
   const filled = newMember(m);
-  filled.consent = Object.assign({ state: filled.source === 'discovered' ? 'not-requested' : 'not-required', requestedAt: '', respondedAt: '' }, m.consent || {});
   filled.preExistingConditions = safeArr(m.preExistingConditions);
+  // Migrate legacy consent state machine to confirmed boolean
+  const legacy = m.consent || {};
+  if (typeof legacy.confirmed === 'boolean') {
+    filled.consent = {
+      confirmed: legacy.confirmed,
+      requestedAt: legacy.requestedAt || '',
+      confirmedAt: legacy.confirmedAt || ''
+    };
+  } else {
+    filled.consent = {
+      confirmed: legacy.state === 'accepted',
+      requestedAt: legacy.requestedAt || '',
+      confirmedAt: legacy.state === 'accepted' ? (legacy.respondedAt || '') : ''
+    };
+  }
+  // Migrate legacy policyStatus 'pending' → 'verified' (default to on-policy)
+  if (m.policyStatus === 'pending') filled.policyStatus = 'verified';
   return filled;
 }
 
@@ -2136,10 +2302,10 @@ function showToast(msg, duration = 3000) {
 function updateStats() {
   const apps = loadApps();
   const vmap = loadVerifs();
-  const counts = { pending:0, verified:0, verified_expanded:0, discovery_pending:0, rejected:0, waitlisted:0, escalated:0 };
+  const counts = { pending:0, approved:0, hold:0, rejected:0 };
   apps.forEach(app => {
     const vs = (vmap[app.id]||{}).verificationStatus || 'pending';
-    counts[vs] = (counts[vs] || 0) + 1;
+    if (counts.hasOwnProperty(vs)) counts[vs]++;
   });
   Object.keys(counts).forEach(k => {
     const el = document.getElementById('cnt-' + k);
@@ -2560,35 +2726,8 @@ function renderForm() {
   const insurers = getInsurers(app);
   const sources = safeArr(app.insuranceSource).map(s => s === 'employer' ? 'Through employer' : s === 'individual' ? 'Bought myself' : s);
   const members = safeArr(app.members).filter(m => !m.primary);
-  // Reconciliation indicators: declared vs verified per the COI
-  const stats = aggregateMemberStats(v);
-  const declaredCount = safeArr(app.members).length;
-  let memberRecon = 'pending', memberMsg = '';
-  if (!stats.total) {
-    memberRecon = 'pending'; memberMsg = `Declared ${declaredCount} · No members verified yet`;
-  } else if (stats.verified === stats.total && stats.discovered === 0) {
-    memberRecon = 'match'; memberMsg = `All ${stats.verified} members verified on policy`;
-  } else if (stats.discovered > 0) {
-    memberRecon = 'mismatch'; memberMsg = `Declared ${declaredCount} · ${stats.discovered} discovered on policy${stats.consentAccepted ? ` · ${stats.consentAccepted} confirmed` : ''}`;
-  } else if (stats.notOnPolicy > 0) {
-    memberRecon = 'mismatch'; memberMsg = `${stats.notOnPolicy} of ${stats.total} declared not found on policy`;
-  } else {
-    memberRecon = 'pending'; memberMsg = `${stats.verified}/${stats.total} members verified so far`;
-  }
-
-  const reconHtml = `
-    <div class="fg fcol-full" style="background:var(--bg);border:1px solid var(--hairline);border-radius:7px;padding:9px 11px;margin-bottom:4px">
-      <div class="flabel" style="margin-bottom:5px">Reconciliation</div>
-      <div class="recon-row">
-        <span class="recon-dot ${memberRecon}"></span>
-        <span class="recon-label">Members</span>
-        <span class="recon-val">${esc(memberMsg)}</span>
-      </div>
-      ${v.policyEndDate ? `<div class="recon-row"><span class="recon-dot match"></span><span class="recon-label">Coverage</span><span class="recon-val">valid until ${displayDate(v.policyEndDate)}</span></div>` : ''}
-    </div>
-  `;
+  // (Reconciliation row moved into the pinned Summary card above the form.)
   document.getElementById('submittedGrid').innerHTML = `
-    ${reconHtml}
     <div class="fg"><span class="flabel">Name</span><span class="fval">${esc(app.name||'—')}</span></div>
     <div class="fg"><span class="flabel">Phone</span><span class="fval">${fmtMobileLink(app.mobile)}</span></div>
     <div class="fg"><span class="flabel">Insurer(s)</span><span class="fval">${insurers.length ? insurers.map(i=>`<span class="mtag">${esc(i)}</span>`).join('') : '<span class="fval muted">—</span>'}</span></div>
@@ -2604,7 +2743,6 @@ function renderForm() {
     const el = document.getElementById(f);
     if (el) el.value = v[f] || '';
   });
-  document.getElementById('vstatus').value = vs;
   applyVstatusStyle(vs);
   toggleRejectionPanel(vs === 'rejected');
   if (v.rejectionBucket) populateCodeSelect(v.rejectionBucket, v.rejectionCode);
@@ -2617,14 +2755,23 @@ function renderForm() {
 
   // (PEDs are rendered inside each member row by renderMembersSection above.)
 
-  // — Coverage summary + suggested verdict
-  renderCoverageSummary(v);
-  renderSuggestedVerdict(v);
+  // — Pinned Summary card (replaces reconciliation + coverage summary + suggested verdict)
+  updateSummaryCard();
 
-  // — Verdict pill sync + Sum Insured live format + audit meta
+  // — Verdict pill sync + Sum Insured live format + audit (now in header)
   syncVerdictPills(vs);
   updateSumInsuredFormatted();
   updateAuditDisplay(v);
+
+  // — Hold reason panel + rejection typeahead initial state
+  toggleHoldPanel(vs === 'hold');
+  toggleRejectionPanel(vs === 'rejected');
+  syncHoldReason(v.holdReason || '');
+  if (v.rejectionCode) showRejectionCode(v.rejectionCode);
+}
+
+function syncHoldReason(reason) {
+  document.querySelectorAll('.hp-reason').forEach(b => b.classList.toggle('active', b.dataset.hr === reason));
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2652,17 +2799,12 @@ function renderMembersSection(type, members) {
   });
 }
 
+// 2-state per-member policy toggle now ('On policy' is the default)
 const POLICY_STATUS_OPTIONS = [
-  { v: 'pending',        l: 'Pending check' },
-  { v: 'verified',       l: 'Verified ✓' },
+  { v: 'verified',       l: 'On policy ✓' },
   { v: 'not-on-policy',  l: 'Not on policy' }
 ];
-const VERIFIED_BY_OPTIONS = [
-  { v: '',              l: '— Source —' },
-  { v: 'Employer COI',  l: 'Employer COI' },
-  { v: 'Personal COI',  l: 'Personal COI' },
-  { v: 'Other',         l: 'Other doc' }
-];
+const RELATION_QUICK = ['Spouse', 'Parent', 'Sibling']; // chips above the dropdown
 
 function buildMemberRow(type, idx, member) {
   const m = normaliseMember(member);
@@ -2688,13 +2830,48 @@ function buildMemberRow(type, idx, member) {
   tag.textContent = 'Discovered';
   tag.title = 'Added by agent — wasn\'t in user submission';
 
+  // Relation: quick chips (Spouse/Parent/Sibling) + dropdown for less common
+  const relWrap = document.createElement('span');
+  relWrap.style.display = 'inline-flex';
+  relWrap.style.alignItems = 'center';
+  relWrap.style.gap = '4px';
+
   const relIn = document.createElement('select');
   relIn.className = 'fselect rel-in';
   relIn.title = 'Relation';
   const relOpts = type === 'adult' ? RELATION_OPTIONS : ['Child', 'Stepchild', 'Other'];
   relIn.innerHTML = '<option value="">Relation</option>' + relOpts.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
   if (m.relation) relIn.value = m.relation;
-  relIn.addEventListener('change', autoSave);
+  relIn.addEventListener('change', () => {
+    syncRelChips();
+    autoSave();
+  });
+
+  function syncRelChips() {
+    relWrap.querySelectorAll('.rel-chip').forEach(c => c.classList.toggle('active', c.dataset.rel === relIn.value));
+  }
+
+  // Quick chips only for adult rows
+  if (type === 'adult') {
+    const chipsWrap = document.createElement('span');
+    chipsWrap.className = 'rel-chips';
+    RELATION_QUICK.forEach(label => {
+      const c = document.createElement('button');
+      c.type = 'button';
+      c.className = 'rel-chip';
+      c.dataset.rel = label;
+      c.textContent = label;
+      c.addEventListener('click', () => {
+        relIn.value = (relIn.value === label) ? '' : label;
+        syncRelChips();
+        autoSave();
+      });
+      chipsWrap.appendChild(c);
+    });
+    relWrap.appendChild(chipsWrap);
+  }
+  relWrap.appendChild(relIn);
+  syncRelChips();
 
   const dobIn = document.createElement('input');
   dobIn.className = 'finput dob-in mono';
@@ -2703,13 +2880,17 @@ function buildMemberRow(type, idx, member) {
   dobIn.placeholder = 'DOB';
   dobIn.dataset.iso = m.dob || '';
   dobIn.value = m.dob ? displayDate(m.dob) : '';
-  dobIn.addEventListener('blur', () => {
+  const parseDobNow = () => {
     const raw = dobIn.value.trim();
-    if (!raw) { dobIn.dataset.iso = ''; autoSave(); return; }
+    if (!raw) { dobIn.dataset.iso = ''; dobIn.style.borderColor = ''; autoSave(); return; }
     const iso = smartParseDate(raw);
     if (iso) { dobIn.dataset.iso = iso; dobIn.value = displayDate(iso); dobIn.style.borderColor = ''; }
-    else { dobIn.style.borderColor = 'rgba(255,80,80,0.5)'; }
+    else { dobIn.style.borderColor = 'rgba(140,67,47,0.5)'; }
     autoSave();
+  };
+  dobIn.addEventListener('blur', parseDobNow);
+  dobIn.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); dobIn.blur(); }
   });
 
   const rmBtn = document.createElement('button');
@@ -2719,28 +2900,28 @@ function buildMemberRow(type, idx, member) {
   rmBtn.innerHTML = '×';
   rmBtn.addEventListener('click', () => removeMember(type, idx));
 
-  line1.append(nameIn, tag, relIn, dobIn, rmBtn);
+  line1.append(nameIn, tag, relWrap, dobIn, rmBtn);
 
   // ── Line 2: policy status / verified by ──
   const line2 = document.createElement('div');
   line2.className = 'row-line-2';
 
-  const pstatusIn = document.createElement('select');
-  pstatusIn.className = 'fselect pstatus-in';
+  // Policy status toggle — 2 states: On policy ✓ / Not on policy
+  const pstatusIn = document.createElement('button');
+  pstatusIn.className = 'pstatus-toggle';
+  pstatusIn.type = 'button';
   pstatusIn.dataset.pstatus = m.policyStatus;
-  pstatusIn.title = 'Policy status — is this member on the document?';
-  pstatusIn.innerHTML = POLICY_STATUS_OPTIONS.map(o => `<option value="${esc(o.v)}"${o.v === m.policyStatus ? ' selected' : ''}>${esc(o.l)}</option>`).join('');
-  pstatusIn.addEventListener('change', () => {
-    pstatusIn.dataset.pstatus = pstatusIn.value;
+  const setPstatusLabel = () => {
+    pstatusIn.textContent = pstatusIn.dataset.pstatus === 'verified' ? 'On policy ✓' : 'Not on policy';
+  };
+  setPstatusLabel();
+  pstatusIn.title = 'Click to toggle policy coverage';
+  pstatusIn.addEventListener('click', () => {
+    pstatusIn.dataset.pstatus = pstatusIn.dataset.pstatus === 'verified' ? 'not-on-policy' : 'verified';
+    setPstatusLabel();
     autoSave();
-    if (selectedId) renderForm(); // re-render so coverage summary stays accurate
+    if (selectedId) updateSummaryCard(); // recompute counts inline
   });
-
-  const verifiedByIn = document.createElement('select');
-  verifiedByIn.className = 'fselect verifiedby-in';
-  verifiedByIn.title = 'Which document confirmed this member?';
-  verifiedByIn.innerHTML = VERIFIED_BY_OPTIONS.map(o => `<option value="${esc(o.v)}"${o.v === (m.verifiedBy || '') ? ' selected' : ''}>${esc(o.l)}</option>`).join('');
-  verifiedByIn.addEventListener('change', autoSave);
 
   // Conditions toggle (count badge + expand)
   const condToggle = document.createElement('button');
@@ -2751,7 +2932,7 @@ function buildMemberRow(type, idx, member) {
   condToggle.innerHTML = `Conditions <span class="cond-count">${condCount}</span> <span class="chev-mini">▾</span>`;
   condToggle.title = condCount > 0 ? condCount + ' condition' + (condCount === 1 ? '' : 's') + ' selected' : 'No pre-existing conditions';
 
-  line2.append(pstatusIn, verifiedByIn, condToggle);
+  line2.append(pstatusIn, condToggle);
 
   // Conditions panel (expandable)
   const condPanel = document.createElement('div');
@@ -2814,77 +2995,53 @@ function buildMemberRow(type, idx, member) {
   return row;
 }
 
+// Simplified consent UI: one checkbox + audit timestamps
 function buildConsentRow(type, idx, consent) {
   const wrap = document.createElement('div');
   wrap.className = 'consent-row';
   wrap.dataset.type = type;
   wrap.dataset.idx = idx;
-  wrap.dataset.cstate = consent.state;
 
   const label = document.createElement('span');
   label.className = 'c-label';
   label.textContent = 'Consent';
 
-  const state = document.createElement('span');
-  state.className = 'c-state s-' + consent.state;
+  const checkLabel = document.createElement('label');
+  checkLabel.className = 'c-check';
+  const check = document.createElement('input');
+  check.type = 'checkbox';
+  check.checked = !!consent.confirmed;
+  check.addEventListener('change', () => toggleConsent(type, idx, check.checked));
+  const checkText = document.createElement('span');
+  checkText.textContent = 'Confirmed by user';
+  checkLabel.append(check, checkText);
+
+  const meta = document.createElement('span');
+  meta.className = 'c-timestamp';
+  if (consent.confirmed && consent.confirmedAt) {
+    meta.textContent = '· confirmed ' + fmtDate(consent.confirmedAt);
+  } else if (consent.requestedAt) {
+    meta.textContent = '· requested ' + fmtDate(consent.requestedAt);
+  } else {
+    meta.textContent = '· not yet requested';
+  }
 
   const actions = document.createElement('div');
   actions.className = 'c-actions';
-
-  if (consent.state === 'not-requested') {
-    state.textContent = 'Not yet requested from user';
-    const btn = document.createElement('button');
-    btn.className = 'c-btn primary';
-    btn.type = 'button';
-    btn.textContent = 'Request confirmation';
-    btn.addEventListener('click', () => requestConsent(type, idx));
-    actions.appendChild(btn);
-  } else if (consent.state === 'pending') {
-    state.textContent = 'Awaiting user response';
-    if (consent.requestedAt) {
-      const ts = document.createElement('span');
-      ts.className = 'c-timestamp';
-      ts.textContent = '· sent ' + fmtDate(consent.requestedAt);
-      state.appendChild(ts);
-    }
-    const acc = document.createElement('button');
-    acc.className = 'c-btn accept'; acc.type = 'button'; acc.textContent = 'Mark accepted';
-    acc.addEventListener('click', () => respondConsent(type, idx, 'accepted'));
-    const dec = document.createElement('button');
-    dec.className = 'c-btn decline'; dec.type = 'button'; dec.textContent = 'Mark declined';
-    dec.addEventListener('click', () => respondConsent(type, idx, 'declined'));
-    actions.append(acc, dec);
-  } else if (consent.state === 'accepted') {
-    state.textContent = 'Accepted by user';
-    if (consent.respondedAt) {
-      const ts = document.createElement('span');
-      ts.className = 'c-timestamp';
-      ts.textContent = '· ' + fmtDate(consent.respondedAt);
-      state.appendChild(ts);
-    }
-    const reset = document.createElement('button');
-    reset.className = 'c-btn'; reset.type = 'button'; reset.textContent = 'Reset';
-    reset.addEventListener('click', () => resetConsent(type, idx));
-    actions.appendChild(reset);
-  } else if (consent.state === 'declined') {
-    state.textContent = 'Declined by user';
-    if (consent.respondedAt) {
-      const ts = document.createElement('span');
-      ts.className = 'c-timestamp';
-      ts.textContent = '· ' + fmtDate(consent.respondedAt);
-      state.appendChild(ts);
-    }
-    const reset = document.createElement('button');
-    reset.className = 'c-btn'; reset.type = 'button'; reset.textContent = 'Reset';
-    reset.addEventListener('click', () => resetConsent(type, idx));
-    actions.appendChild(reset);
+  if (!consent.confirmed && !consent.requestedAt) {
+    const reqBtn = document.createElement('button');
+    reqBtn.className = 'c-btn';
+    reqBtn.type = 'button';
+    reqBtn.textContent = 'Record request sent';
+    reqBtn.title = 'Stamps the audit timestamp — no real SMS goes out';
+    reqBtn.addEventListener('click', () => recordConsentRequest(type, idx));
+    actions.appendChild(reqBtn);
   }
 
-  wrap.append(label, state, actions);
+  wrap.append(label, checkLabel, meta, actions);
   return wrap;
 }
 
-// ── Consent action functions (local-only — no real SMS) ──
 function mutateMember(type, idx, fn) {
   if (!selectedId) return;
   const v = getVerif(selectedId);
@@ -2894,34 +3051,26 @@ function mutateMember(type, idx, fn) {
   arr[idx] = fn(normaliseMember(arr[idx]));
   v[key] = arr;
   persistVerif(selectedId, v);
-  renderForm(); // re-render so coverage + suggested verdict update
+  renderForm();
 }
 
-function requestConsent(type, idx) {
+function toggleConsent(type, idx, confirmed) {
   mutateMember(type, idx, m => {
-    m.consent = { state: 'pending', requestedAt: new Date().toISOString(), respondedAt: '' };
-    return m;
-  });
-  showToast('Consent request recorded (local only — no SMS sent)');
-}
-
-function respondConsent(type, idx, result) {
-  mutateMember(type, idx, m => {
-    const prev = m.consent || {};
-    m.consent = {
-      state: result,
-      requestedAt: prev.requestedAt || new Date().toISOString(),
-      respondedAt: new Date().toISOString()
-    };
+    m.consent = m.consent || { confirmed: false, requestedAt: '', confirmedAt: '' };
+    m.consent.confirmed = confirmed;
+    if (confirmed && !m.consent.confirmedAt) m.consent.confirmedAt = new Date().toISOString();
+    if (!confirmed) m.consent.confirmedAt = '';
     return m;
   });
 }
 
-function resetConsent(type, idx) {
+function recordConsentRequest(type, idx) {
   mutateMember(type, idx, m => {
-    m.consent = { state: 'not-requested', requestedAt: '', respondedAt: '' };
+    m.consent = m.consent || { confirmed: false, requestedAt: '', confirmedAt: '' };
+    if (!m.consent.requestedAt) m.consent.requestedAt = new Date().toISOString();
     return m;
   });
+  showToast('Request timestamp recorded (no SMS — local only)');
 }
 
 function addMember(type) {
@@ -2968,8 +3117,7 @@ function readMembersFromDOM(type) {
       name: row.querySelector('.name-in')?.value || '',
       dob: row.querySelector('.dob-in')?.dataset.iso || '',
       relation: row.querySelector('.rel-in')?.value || '',
-      policyStatus: row.querySelector('.pstatus-in')?.value || 'pending',
-      verifiedBy: row.querySelector('.verifiedby-in')?.value || '',
+      policyStatus: row.querySelector('.pstatus-toggle')?.dataset.pstatus || 'verified',
       preExistingConditions: conds
     });
   });
@@ -2990,33 +3138,79 @@ function readSelectedPed() { return []; } // legacy stub — PEDs are read per-m
 // ═══════════════════════════════════════════════════════════════
 
 function applyVstatusStyle(val) {
-  const el = document.getElementById('vstatus');
-  if (!el) return;
-  el.className = 'fselect vs-' + (val || 'pending');
-  // Update header badge
+  const status = val || 'pending';
   const badge = document.getElementById('formPaneStatus');
-  if (badge) { badge.className = `sbadge sb-${val||'pending'}`; badge.textContent = val||'pending'; }
-  // Update queue card color (no re-render needed, handled on next queue render)
+  if (badge) {
+    badge.className = `sbadge sb-${status}`;
+    badge.textContent = STATUS_LABEL[status] || status;
+  }
 }
 
 function toggleRejectionPanel(show) {
   document.getElementById('rejectionPanel')?.classList.toggle('show', show);
 }
 
-function populateCodeSelect(bucket, selectedCode) {
-  const codeEl = document.getElementById('rejectionCode');
-  if (!codeEl) return;
-  const codes = REJECTION_CODES[bucket] || [];
-  codeEl.innerHTML = '<option value="">— Select Code —</option>' +
-    codes.map(c => `<option value="${esc(c.code)}"${c.code === selectedCode ? ' selected' : ''}>${esc(c.code)} · ${esc(c.label)}</option>`).join('');
+// Flat list of all rejection codes with their bucket label, ready for the typeahead.
+const REJECTION_FLAT = (() => {
+  const bucketName = {
+    A: 'Document & Submission', B: 'Identity & Eligibility', C: 'Policy Standing',
+    D: 'Product Scope', E: 'Coverage Adequacy', F: 'Waiting Periods',
+    G: 'Verification Blockers', H: 'Risk & Compliance'
+  };
+  const out = [];
+  Object.keys(REJECTION_CODES).forEach(bucket => {
+    REJECTION_CODES[bucket].forEach(c => {
+      out.push({ code: c.code, label: c.label, reason: c.reason, bucket, bucketName: bucketName[bucket] });
+    });
+  });
+  return out;
+})();
+
+function searchRejections(q) {
+  if (!q) return REJECTION_FLAT;
+  const lc = q.toLowerCase();
+  return REJECTION_FLAT.filter(c =>
+    c.code.toLowerCase().includes(lc) ||
+    c.label.toLowerCase().includes(lc) ||
+    c.bucketName.toLowerCase().includes(lc)
+  );
 }
 
-function updateReasonHint(code) {
+function renderRejectionResults(q) {
+  const results = document.getElementById('rejectionResults');
+  if (!results) return;
+  const list = searchRejections(q).slice(0, 12);
+  if (!list.length) {
+    results.innerHTML = '<div class="typeahead-item" style="color:var(--ink-3);cursor:default">No matches</div>';
+  } else {
+    results.innerHTML = list.map(c => `
+      <button class="typeahead-item" type="button" data-code="${esc(c.code)}" data-bucket="${esc(c.bucket)}">
+        <span class="ti-code">${esc(c.code)}</span>
+        <span class="ti-label">${esc(c.label)}</span>
+        <span class="ti-bucket">${esc(c.bucket)} · ${esc(c.bucketName)}</span>
+      </button>
+    `).join('');
+  }
+  results.classList.add('show');
+}
+
+function showRejectionCode(code) {
+  const meta = REJECTION_FLAT.find(c => c.code === code);
+  const input = document.getElementById('rejectionSearch');
+  const codeIn = document.getElementById('rejectionCode');
+  const bucketIn = document.getElementById('rejectionBucket');
   const hint = document.getElementById('reasonHint');
-  if (!hint) return;
-  const r = CODE_REASON[code] || '';
-  if (r) { hint.textContent = r; hint.classList.add('show'); }
-  else { hint.classList.remove('show'); }
+  if (meta) {
+    input.value = `${meta.code} · ${meta.label}`;
+    codeIn.value = meta.code;
+    bucketIn.value = meta.bucket;
+    if (hint) { hint.textContent = meta.reason; hint.classList.add('show'); }
+  } else {
+    input.value = '';
+    codeIn.value = '';
+    bucketIn.value = '';
+    if (hint) hint.classList.remove('show');
+  }
 }
 
 function updateReviewedMeta(ts) {
@@ -3035,8 +3229,12 @@ function getCurrentData() {
                    'rejectionCode'];
   const data = {};
   scalars.forEach(f => { const el = document.getElementById(f); data[f] = el ? el.value : ''; });
-  data.verificationStatus = document.getElementById('vstatus')?.value || 'pending';
+  // Verdict is set by setVerdictFromPills; preserve the stored value here
+  const existing = getVerif(selectedId);
+  data.verificationStatus = existing.verificationStatus || 'pending';
   data.rejectionReason = CODE_REASON[data.rejectionCode] || '';
+  // Hold reason from active pill
+  data.holdReason = document.querySelector('.hp-reason.active')?.dataset.hr || '';
   data.adultsOnPolicy = readMembersFromDOM('adult');
   data.childrenOnPolicy = readMembersFromDOM('child');
   // PEDs are per-member now; this field stays in the schema for backwards-compat
@@ -3080,104 +3278,100 @@ function aggregateMemberStats(v) {
   const stats = {
     total: all.length,
     declared: 0, discovered: 0,
-    verified: 0, pending: 0, notOnPolicy: 0,
-    consentNotRequested: 0, consentPending: 0,
-    consentAccepted: 0, consentDeclined: 0,
+    verified: 0, notOnPolicy: 0,
+    discoveredAwaiting: 0,
+    discoveredConfirmed: 0,
     discoveredNames: []
   };
   all.forEach(m => {
     if (m.source === 'discovered') {
       stats.discovered++;
       if (m.name) stats.discoveredNames.push(m.name);
+      if (m.consent && m.consent.confirmed) stats.discoveredConfirmed++;
+      else stats.discoveredAwaiting++;
     } else stats.declared++;
-    if (m.policyStatus === 'verified') stats.verified++;
-    else if (m.policyStatus === 'not-on-policy') stats.notOnPolicy++;
-    else stats.pending++;
-    if (m.source === 'discovered') {
-      const cs = (m.consent && m.consent.state) || 'not-requested';
-      if (cs === 'not-requested') stats.consentNotRequested++;
-      else if (cs === 'pending') stats.consentPending++;
-      else if (cs === 'accepted') stats.consentAccepted++;
-      else if (cs === 'declined') stats.consentDeclined++;
-    }
+    if (m.policyStatus === 'not-on-policy') stats.notOnPolicy++;
+    else stats.verified++;
   });
   return stats;
 }
 
-// Suggested verdict — pure function of member stats
+// Suggest one of the 3 verdicts (or null if no signal)
 function suggestVerdict(stats) {
   if (!stats.total) return null;
-
-  // Any discovered member awaiting user response → discovery_pending
-  if (stats.consentNotRequested + stats.consentPending > 0) return 'discovery_pending';
-
-  // Some declared members not on policy → waitlisted (partial)
-  if (stats.notOnPolicy > 0) return 'waitlisted';
-
-  // Any verified members beyond what was declared (accepted-via-discovery) → verified_expanded
-  if (stats.consentAccepted > 0 && stats.verified === stats.total - stats.consentDeclined) {
-    return 'verified_expanded';
-  }
-
-  // Every member verified (and no discoveries in flight) → verified
-  if (stats.verified > 0 && stats.verified === stats.total - stats.consentDeclined) {
-    return 'verified';
-  }
-
-  return 'pending';
+  if (stats.discoveredAwaiting > 0) return 'hold';   // need user confirmation
+  if (stats.notOnPolicy > 0) return 'hold';          // partial coverage
+  if (stats.verified === stats.total) return 'approved';
+  return null;
 }
 
-function renderCoverageSummary(v) {
-  const s = aggregateMemberStats(v);
-  const el = document.getElementById('coverageSummary');
-  if (!el) return;
-  if (!s.total) {
-    el.innerHTML = '<span style="color:var(--ink-3);font-style:italic">No members added yet</span>';
-    return;
-  }
-  el.innerHTML = `
-    <span><span class="cov-num">${s.total}</span> on policy</span>
-    <span class="cov-sep">·</span>
-    <span><span class="cov-num">${s.declared}</span> declared</span>
-    ${s.discovered ? `<span class="cov-sep">·</span><span class="cov-pill discovery">${s.discovered} discovered</span>` : ''}
-    ${s.verified ? `<span class="cov-sep">·</span><span class="cov-pill verified">${s.verified} verified</span>` : ''}
-    ${s.pending ? `<span class="cov-sep">·</span><span class="cov-pill pending">${s.pending} unchecked</span>` : ''}
-    ${s.notOnPolicy ? `<span class="cov-sep">·</span><span class="cov-pill notonpolicy">${s.notOnPolicy} not on policy</span>` : ''}
-    ${s.consentPending + s.consentNotRequested ? `<span class="cov-sep">·</span><span class="cov-pill discovery">${s.consentPending + s.consentNotRequested} awaiting consent</span>` : ''}
-  `;
+function suggestReason(stats) {
+  if (stats.discoveredAwaiting > 0) return stats.discoveredAwaiting + ' discovered member' + (stats.discoveredAwaiting === 1 ? '' : 's') + ' awaiting confirmation';
+  if (stats.notOnPolicy > 0) return stats.notOnPolicy + ' declared member' + (stats.notOnPolicy === 1 ? '' : 's') + ' not on policy';
+  if (stats.verified === stats.total) return 'all members verified';
+  return '';
 }
+
+// (renderCoverageSummary removed — its job is now done by updateSummaryCard below)
 
 const STATUS_LABEL = {
   pending: 'Pending',
-  verified: 'Verified',
-  verified_expanded: 'Verified + Expanded',
-  discovery_pending: 'Pending discovery confirmation',
-  rejected: 'Rejected',
-  waitlisted: 'Waitlisted',
-  escalated: 'Escalated'
+  approved: 'Approved',
+  hold: 'Hold',
+  rejected: 'Rejected'
+};
+const HOLD_REASON_LABEL = {
+  awaiting_user: 'Waiting on user',
+  awaiting_insurer: 'Waiting on insurer',
+  partial_coverage: 'Partial coverage',
+  city_not_live: 'City not live',
+  senior_review: 'Senior review needed',
+  other: 'Other'
 };
 
-function renderSuggestedVerdict(v) {
-  const el = document.getElementById('verdictSuggest');
+// Unified pinned card under the verdict bar — reconciliation dot + counts + suggested verdict.
+function updateSummaryCard() {
+  if (!selectedId) return;
+  const v = getVerif(selectedId);
+  const el = document.getElementById('summaryCard');
   if (!el) return;
-  const stats = aggregateMemberStats(v);
-  const suggested = suggestVerdict(stats);
-  const current = v.verificationStatus || 'pending';
-  if (!suggested || suggested === current) {
-    el.classList.add('empty');
-    el.innerHTML = '';
+  const apps = loadApps();
+  const app = apps.find(a => a.id === selectedId);
+  if (!app) { el.classList.add('empty'); el.innerHTML = ''; return; }
+
+  const s = aggregateMemberStats(v);
+  if (!s.total) {
+    el.classList.remove('empty');
+    el.innerHTML = `<span class="sc-dot"></span><span style="color:var(--ink-3)">No members on this record yet</span>`;
     return;
   }
+
+  // Reconciliation dot logic
+  let dotClass = 'match';
+  if (s.notOnPolicy > 0 || s.discoveredAwaiting > 0) dotClass = 'mismatch';
+  if (s.verified === s.total && s.discovered === 0 && s.notOnPolicy === 0) dotClass = 'match';
+
+  // Build the count line — only show non-zero buckets
+  const parts = [];
+  parts.push(`<span class="sc-num">${s.verified}</span>/<span class="sc-num">${s.total}</span> verified`);
+  if (s.discovered) parts.push(`<span class="sc-pill discovery">${s.discovered} discovered</span>`);
+  if (s.discoveredAwaiting) parts.push(`<span class="sc-pill discovery">${s.discoveredAwaiting} awaiting consent</span>`);
+  if (s.notOnPolicy) parts.push(`<span style="color:var(--st-rejected-ink)">${s.notOnPolicy} not on policy</span>`);
+
+  // Suggestion logic
+  const suggested = suggestVerdict(s);
+  const current = v.verificationStatus || 'pending';
+  const showSuggest = suggested && suggested !== current;
+  const suggestHtml = showSuggest
+    ? `<span class="sc-suggest"><span class="sc-sep">→</span> Suggest <strong>${STATUS_LABEL[suggested]}</strong> · ${suggestReason(s)} <button class="sc-apply" id="scApply">Apply</button></span>`
+    : '';
+
   el.classList.remove('empty');
-  let reason = '';
-  if (suggested === 'discovery_pending') reason = `${stats.consentNotRequested + stats.consentPending} discovered member${stats.consentNotRequested + stats.consentPending === 1 ? '' : 's'} awaiting consent`;
-  else if (suggested === 'verified_expanded') reason = `${stats.consentAccepted} member${stats.consentAccepted === 1 ? '' : 's'} added via discovery, all verified`;
-  else if (suggested === 'verified') reason = 'all members verified';
-  else if (suggested === 'waitlisted') reason = `${stats.notOnPolicy} declared member${stats.notOnPolicy === 1 ? '' : 's'} not on policy`;
-  el.innerHTML = `Suggested: <strong>${STATUS_LABEL[suggested]}</strong> — ${reason} <span class="vsg-link" id="vsgApply">Apply →</span>`;
-  document.getElementById('vsgApply').addEventListener('click', () => {
-    setVerdictFromPills(suggested);
-  });
+  el.innerHTML = `<span class="sc-dot ${dotClass}"></span>${parts.join('<span class="sc-sep">·</span>')}${suggestHtml}`;
+
+  if (showSuggest) {
+    document.getElementById('scApply').addEventListener('click', () => setVerdictFromPills(suggested));
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3185,13 +3379,22 @@ function renderSuggestedVerdict(v) {
 // ═══════════════════════════════════════════════════════════════
 
 function setVerdictFromPills(status) {
-  const sel = document.getElementById('vstatus');
-  if (!sel) return;
-  sel.value = status;
   applyVstatusStyle(status);
   toggleRejectionPanel(status === 'rejected');
+  toggleHoldPanel(status === 'hold');
   syncVerdictPills(status);
-  autoSave();
+  if (!selectedId) return;
+  // Persist directly — the verdict isn't backed by a form input anymore
+  const data = getCurrentData();
+  data.verificationStatus = status;
+  if (status === 'pending') data.reviewedAt = '';
+  else if (!data.reviewedAt) data.reviewedAt = new Date().toISOString();
+  persistVerif(selectedId, data);
+  updateSummaryCard();
+}
+
+function toggleHoldPanel(show) {
+  document.getElementById('holdPanel')?.classList.toggle('show', show);
 }
 
 function syncVerdictPills(status) {
@@ -3257,7 +3460,10 @@ function updateSumInsuredFormatted() {
   const el = document.getElementById('sumInsuredFormatted');
   const inp = document.getElementById('sumInsured');
   if (!el || !inp) return;
-  el.textContent = formatINR(inp.value);
+  // Strip non-digits in place so the stored value is always clean
+  const cleaned = inp.value.replace(/[^\d]/g, '');
+  if (cleaned !== inp.value) inp.value = cleaned;
+  el.textContent = formatINR(cleaned);
 }
 document.getElementById('sumInsured').addEventListener('input', updateSumInsuredFormatted);
 
@@ -3278,24 +3484,17 @@ function flashField(id) {
 // KEYBOARD NAVIGATION
 // ═══════════════════════════════════════════════════════════════
 
-const STATUS_HOTKEYS = { '1': 'pending', '2': 'verified', '3': 'rejected', '4': 'waitlisted', '5': 'escalated' };
+const STATUS_HOTKEYS = { '1': 'pending', '2': 'approved', '3': 'hold', '4': 'rejected' };
 
 document.addEventListener('keydown', e => {
-  // Skip if typing in an input/textarea/select (unless meta keys)
   const tag = (e.target.tagName || '').toLowerCase();
   const isTyping = tag === 'input' || tag === 'textarea' || tag === 'select';
 
-  // Cmd/Ctrl+R → Mark Reviewed (overrides browser refresh — but only when on this page and an app is selected)
-  if ((e.metaKey || e.ctrlKey) && e.key === 'r' && selectedId) {
-    e.preventDefault();
-    document.getElementById('markReviewedBtn')?.click();
-    return;
-  }
-
-  // Esc closes modals, popovers
+  // Esc closes modals, popovers, typeahead
   if (e.key === 'Escape') {
     document.getElementById('exportModal').classList.remove('show');
     document.getElementById('viewsPopover').classList.remove('show');
+    document.getElementById('rejectionResults')?.classList.remove('show');
     return;
   }
 
@@ -3367,9 +3566,14 @@ function toggleBulkMode() {
 function updateBulkUI() {
   const bar = document.getElementById('bulkBar');
   const count = document.getElementById('bulkCount');
+  const tbCount = document.getElementById('bulkTopbarCount');
   const show = bulkMode && bulkSelected.size > 0;
   bar.classList.toggle('show', show);
   count.textContent = bulkSelected.size + ' selected';
+  if (tbCount) {
+    if (bulkSelected.size > 0) { tbCount.textContent = '· ' + bulkSelected.size; tbCount.style.display = 'inline'; }
+    else { tbCount.style.display = 'none'; }
+  }
 }
 
 function applyBulkStatus() {
@@ -3511,34 +3715,38 @@ function wireFormEvents() {
     el.addEventListener('change', autoSave);
   });
 
-  // vstatus: style + rejection panel + pill sync
-  document.getElementById('vstatus').addEventListener('change', function() {
-    applyVstatusStyle(this.value);
-    toggleRejectionPanel(this.value === 'rejected');
-    syncVerdictPills(this.value);
+  // (vstatus dropdown removed — Quick Verdict bar is the only verdict input)
+  // (Rejection bucket+code cascading dropdowns removed — typeahead wires itself up below)
+  // (Mark Reviewed removed — setting a non-Pending verdict IS the review; reviewedAt
+  //  is stamped automatically inside setVerdictFromPills)
+
+  // Hold reason buttons
+  document.getElementById('holdReasons').addEventListener('click', e => {
+    const btn = e.target.closest('.hp-reason');
+    if (!btn) return;
+    document.querySelectorAll('.hp-reason').forEach(b => b.classList.toggle('active', b === btn));
     autoSave();
   });
 
-  // Rejection bucket -> code cascade
-  document.getElementById('rejectionBucket').addEventListener('change', function() {
-    populateCodeSelect(this.value, '');
-    updateReasonHint('');
+  // Rejection typeahead
+  const rejSearch = document.getElementById('rejectionSearch');
+  const rejResults = document.getElementById('rejectionResults');
+  rejSearch.addEventListener('focus', () => renderRejectionResults(''));
+  rejSearch.addEventListener('input', () => {
+    document.getElementById('rejectionCode').value = '';
+    document.getElementById('rejectionBucket').value = '';
+    renderRejectionResults(rejSearch.value);
     autoSave();
   });
-
-  // Rejection code -> hint
-  document.getElementById('rejectionCode').addEventListener('change', function() {
-    updateReasonHint(this.value);
-    autoSave();
+  rejSearch.addEventListener('blur', () => {
+    setTimeout(() => rejResults.classList.remove('show'), 120); // allow click on item
   });
-
-  // Mark reviewed
-  document.getElementById('markReviewedBtn').addEventListener('click', () => {
-    if (!selectedId) return;
-    const data = getCurrentData();
-    data.reviewedAt = new Date().toISOString();
-    persistVerif(selectedId, data);
-    updateReviewedMeta(data.reviewedAt);
+  rejResults.addEventListener('click', e => {
+    const item = e.target.closest('[data-code]');
+    if (!item) return;
+    showRejectionCode(item.dataset.code);
+    rejResults.classList.remove('show');
+    autoSave();
   });
 
   // Add member buttons
@@ -3550,7 +3758,6 @@ function wireFormEvents() {
   // Section toggles
   setupToggle('tog-submitted', 'body-submitted');
   setupToggle('tog-policy', 'body-policy');
-  setupToggle('tog-members', 'body-members');
   setupToggle('tog-decision', 'body-decision');
 
   // Viewer actions
@@ -3604,7 +3811,7 @@ function doExportCsv(scope) {
     'Verification Status','Rejection Bucket','Rejection Code','Rejection Reason',
     'Reviewed At','Last Edited At',
     'Members Declared','Members Discovered','Members Verified','Not On Policy',
-    'Awaiting Consent','Discovery Accepted','Discovery Declined','Discovered Names',
+    'Hold Reason','Members Awaiting Consent','Members Confirmed (Discovery)','Discovered Names',
     'Total PEDs Flagged'
   ];
 
@@ -3625,8 +3832,9 @@ function doExportCsv(scope) {
       if (n.dob) parts.push(n.dob);
       parts.push(n.source);
       parts.push(n.policyStatus);
-      if (n.verifiedBy) parts.push('via ' + n.verifiedBy);
-      if (n.source === 'discovered' && n.consent) parts.push('consent:' + (n.consent.state || 'not-requested'));
+      if (n.source === 'discovered' && n.consent) {
+        parts.push(n.consent.confirmed ? 'confirmed' : (n.consent.requestedAt ? 'requested' : 'not-requested'));
+      }
       const conds = safeArr(n.preExistingConditions);
       if (conds.length) parts.push('PED:' + conds.join('+'));
       return parts.join(' | ');
@@ -3646,8 +3854,9 @@ function doExportCsv(scope) {
       v.reviewedAt, v.lastEditedAt,
       memberStats.declared, memberStats.discovered, memberStats.verified,
       memberStats.notOnPolicy,
-      memberStats.consentNotRequested + memberStats.consentPending,
-      memberStats.consentAccepted, memberStats.consentDeclined,
+      v.holdReason || '',
+      memberStats.discoveredAwaiting,
+      memberStats.discoveredConfirmed,
       memberStats.discoveredNames.join('; '),
       [...safeArr(v.adultsOnPolicy), ...safeArr(v.childrenOnPolicy)]
         .reduce((acc, m) => acc + safeArr(normaliseMember(m).preExistingConditions).length, 0)
@@ -3682,6 +3891,11 @@ function doExportCsv(scope) {
   apps.forEach(app => {
     const v = vmap[app.id];
     if (!v) return;
+
+    // Step 0: migrate verdict taxonomy (7 → 3)
+    const beforeStatus = v.verificationStatus;
+    migrateVerdict(v);
+    if (v.verificationStatus !== beforeStatus) dirty = true;
 
     // Step 1: prefill members from declared family if not done yet
     if (!v.prefilledFromMembers) {
