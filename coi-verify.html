@@ -1828,7 +1828,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5 audit · 18 fixes</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5.1 · load demo inline</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -2201,6 +2201,65 @@ let bulkMode = false;
 let undoSnapshot = null; // { id, prevStatus, timeoutId }
 let queueSort = (() => { try { return localStorage.getItem('coiQueueSort') || 'newest'; } catch { return 'newest'; } })();
 
+// ─── DEMO DATA ─────────────────────────────────────────────────────
+// Embedded so the empty-queue button can seed without leaving the page.
+const DEMO_COI = 'assets/coi-samples/sample-coi.html';
+const DEMO_APPS = [
+  { id: 'app_seed_001', coiDocument: DEMO_COI, name: 'Meera Subramanian', mobile: '9884012374', city: 'Bengaluru', status: 'submitted',
+    insurers: ['Digit Insurance'], customInsurers: [], insuranceSource: ['individual'], hoursAgo: 2,
+    members: [
+      { name: 'Meera Subramanian', relation: 'self', primary: true },
+      { name: 'Arjun Subramanian', relation: 'spouse', primary: false },
+      { name: 'Kavya Subramanian', relation: 'child', primary: false }
+    ] },
+  { id: 'app_seed_002', coiDocument: DEMO_COI, name: 'Rahul Krishnaswamy', mobile: '7760934821', city: 'Bengaluru', status: 'submitted',
+    insurers: ['Aditya Birla Health Insurance'], customInsurers: [], insuranceSource: ['employer'], hoursAgo: 5,
+    members: [{ name: 'Rahul Krishnaswamy', relation: 'self', primary: true }] },
+  { id: 'app_seed_003', coiDocument: DEMO_COI, name: 'Divya Nair', mobile: '9845673210', city: 'Bengaluru', status: 'submitted',
+    insurers: ['Manipal Cigna Health Insurance'], customInsurers: [], insuranceSource: ['individual'], hoursAgo: 11,
+    members: [
+      { name: 'Divya Nair', relation: 'self', primary: true },
+      { name: 'Suresh Nair', relation: 'spouse', primary: false },
+      { name: 'Rohit Nair', relation: 'child', primary: false },
+      { name: 'Lakshmi Nair', relation: 'parent', primary: false }
+    ] },
+  { id: 'app_seed_004', coiDocument: DEMO_COI, name: 'Karthik Venkataraman', mobile: '8049127653', city: 'Bengaluru', status: 'submitted',
+    insurers: ['Digit Insurance'], customInsurers: [], insuranceSource: ['employer'], hoursAgo: 18,
+    members: [
+      { name: 'Karthik Venkataraman', relation: 'self', primary: true },
+      { name: 'Preethi Venkataraman', relation: 'spouse', primary: false }
+    ] },
+  { id: 'app_seed_005', coiDocument: DEMO_COI, name: 'Ananya Iyer', mobile: '9739084562', city: 'Bengaluru', status: 'submitted',
+    insurers: ['Aditya Birla Health Insurance'], customInsurers: [], insuranceSource: ['individual'], hoursAgo: 26,
+    members: [
+      { name: 'Ananya Iyer', relation: 'self', primary: true },
+      { name: 'Siddharth Iyer', relation: 'spouse', primary: false }
+    ] },
+  { id: 'app_seed_006', coiDocument: DEMO_COI, name: 'Vikram Hegde', mobile: '9916234780', city: 'Bengaluru', status: 'submitted',
+    insurers: ['Manipal Cigna Health Insurance'], customInsurers: [], insuranceSource: ['employer'], hoursAgo: 33,
+    members: [
+      { name: 'Vikram Hegde', relation: 'self', primary: true },
+      { name: 'Smitha Hegde', relation: 'spouse', primary: false },
+      { name: 'Aditya Hegde', relation: 'child', primary: false }
+    ] }
+];
+
+function loadDemoData() {
+  const now = Date.now();
+  const fresh = DEMO_APPS.map(a => ({
+    ...a,
+    timestamp: new Date(now - a.hoursAgo * 3600 * 1000).toISOString()
+  }));
+  let existing = [];
+  try { existing = JSON.parse(localStorage.getItem('evenApplications') || '[]'); } catch {}
+  const seedIds = new Set(fresh.map(a => a.id));
+  const nonSeed = existing.filter(a => !seedIds.has(a.id));
+  localStorage.setItem('evenApplications', JSON.stringify([...nonSeed, ...fresh]));
+  showToast('Demo data loaded · 6 applications');
+  updateStats();
+  renderQueue();
+}
+
 // ═══════════════════════════════════════════════════════════════
 // STORAGE
 // ═══════════════════════════════════════════════════════════════
@@ -2529,7 +2588,16 @@ function renderQueue() {
   });
 
   if (!filtered.length) {
-    list.innerHTML = `<div class="queue-empty"><strong>${apps.length ? 'No results' : 'No applications'}</strong>${apps.length ? 'Try different filters.' : 'Seed test data via /seed.html'}</div>`;
+    if (apps.length) {
+      list.innerHTML = `<div class="queue-empty"><strong>No results</strong>Try different filters or search terms.</div>`;
+    } else {
+      list.innerHTML = `<div class="queue-empty">
+        <strong>No applications yet</strong>
+        <p style="margin:0 0 14px;line-height:1.5">Load 6 sample applicants to walk through the verification flow.</p>
+        <button type="button" id="loadDemoBtn" style="font-size:12px;font-weight:500;padding:7px 18px;border-radius:999px;background:var(--ink);color:var(--surface);border:1px solid var(--ink);cursor:pointer;letter-spacing:-0.005em">Load demo data</button>
+      </div>`;
+      document.getElementById('loadDemoBtn').addEventListener('click', loadDemoData);
+    }
     return;
   }
 
