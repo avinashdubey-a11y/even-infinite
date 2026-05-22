@@ -1828,7 +1828,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5.2 · demo button in topbar</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5.3 · auto-seed on empty</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -4300,9 +4300,18 @@ const sortEl = document.getElementById('qSort');
 if (sortEl) sortEl.value = queueSort;
 // Wire the topbar demo button
 document.getElementById('loadDemoTopBtn').addEventListener('click', loadDemoData);
-updateDemoButtonVisibility();
-updateStats();
-renderQueue();
+
+// AUTO-SEED: if the queue is completely empty on load (no apps in localStorage),
+// load the 6 demo applicants automatically so the tool is usable immediately.
+// This is bulletproof — no button hunting. Users can clear and re-seed via the
+// topbar "Demo data" button (visible when empty) or manually clear localStorage.
+if (loadApps().length === 0) {
+  loadDemoData();
+} else {
+  updateDemoButtonVisibility();
+  updateStats();
+  renderQueue();
+}
 
 // Deep-link: ?id=<applicationId> auto-selects that application.
 // Used by admin.html when an ops agent clicks a row.
