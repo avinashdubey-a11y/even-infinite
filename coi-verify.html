@@ -1038,16 +1038,27 @@
       letter-spacing: 0.06em;
       color: var(--st-waitlisted-ink);
     }
-    .conditions-panel .cp-clear {
+    .conditions-panel .cp-actions {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .conditions-panel .cp-action {
       font-size: 10.5px;
       font-weight: 500;
-      color: var(--ink-3);
-      cursor: pointer;
+      padding: 3px 9px;
+      border-radius: 999px;
       background: transparent;
-      border: 0;
-      padding: 0;
+      border: 1px solid var(--hairline);
+      color: var(--ink-2);
+      cursor: pointer;
+      letter-spacing: -0.005em;
+      transition: all 0.14s cubic-bezier(0.32,0.72,0,1);
     }
-    .conditions-panel .cp-clear:hover { color: var(--ink); text-decoration: underline; }
+    .conditions-panel .cp-action:hover { background: var(--surface); border-color: var(--hairline-strong); color: var(--ink); }
+    .conditions-panel .cp-action:active { transform: scale(0.96); }
+    .conditions-panel .cp-all { color: var(--st-waitlisted-ink); border-color: var(--st-waitlisted-edge); }
+    .conditions-panel .cp-all:hover { background: var(--st-waitlisted-bg); }
     .conditions-panel .ped-tags { gap: 5px; }
     .conditions-panel .ped-tag { font-size: 11.5px; padding: 4px 10px 4px 9px; }
     .conditions-panel .ped-tag::before { width: 10px; height: 10px; border-width: 1.2px; }
@@ -1517,7 +1528,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">discovery + per-member PED · v3</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">per-member PED + select all · v3.1</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -2748,7 +2759,10 @@ function buildMemberRow(type, idx, member) {
   condPanel.innerHTML = `
     <div class="cp-header">
       <span class="cp-label">Pre-existing conditions</span>
-      <button class="cp-clear" type="button">Clear</button>
+      <div class="cp-actions">
+        <button class="cp-action cp-all" type="button">Select all</button>
+        <button class="cp-action cp-clear" type="button">Clear</button>
+      </div>
     </div>
     <div class="ped-tags">
       ${PED_OPTIONS.map(label => {
@@ -2758,24 +2772,33 @@ function buildMemberRow(type, idx, member) {
     </div>
   `;
 
+  function refreshCount() {
+    const n = condPanel.querySelectorAll('.ped-tag.selected').length;
+    condToggle.querySelector('.cond-count').textContent = n;
+    condToggle.classList.toggle('has-conditions', n > 0);
+  }
+
   condToggle.addEventListener('click', () => {
     condPanel.classList.toggle('open');
     condToggle.classList.toggle('open');
   });
+  condPanel.querySelector('.cp-all').addEventListener('click', e => {
+    e.stopPropagation();
+    condPanel.querySelectorAll('.ped-tag').forEach(t => t.classList.add('selected'));
+    refreshCount();
+    autoSave();
+  });
   condPanel.querySelector('.cp-clear').addEventListener('click', e => {
     e.stopPropagation();
     condPanel.querySelectorAll('.ped-tag.selected').forEach(t => t.classList.remove('selected'));
-    condToggle.querySelector('.cond-count').textContent = '0';
-    condToggle.classList.remove('has-conditions');
+    refreshCount();
     autoSave();
   });
   condPanel.querySelector('.ped-tags').addEventListener('click', e => {
     const tag = e.target.closest('.ped-tag');
     if (!tag) return;
     tag.classList.toggle('selected');
-    const n = condPanel.querySelectorAll('.ped-tag.selected').length;
-    condToggle.querySelector('.cond-count').textContent = n;
-    condToggle.classList.toggle('has-conditions', n > 0);
+    refreshCount();
     autoSave();
   });
 
