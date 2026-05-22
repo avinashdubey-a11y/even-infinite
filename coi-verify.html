@@ -1828,7 +1828,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5.3 · auto-seed on empty</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">v5.4 · FIX duplicate const</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -3559,9 +3559,7 @@ function getCurrentData() {
   data.childrenOnPolicy = readMembersFromDOM('child');
   // PEDs are per-member now; this field stays in the schema for backwards-compat
   // but is no longer written from the app-level UI.
-  const existingV = getVerif(selectedId);
-  data.preExistingConditions = safeArr(existingV.preExistingConditions);
-  const existing = getVerif(selectedId);
+  data.preExistingConditions = safeArr(existing.preExistingConditions);
   data.reviewedAt = existing.reviewedAt || '';
   return data;
 }
