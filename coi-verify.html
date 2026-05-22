@@ -970,6 +970,88 @@
       color: var(--ink-2);
     }
 
+    /* ═══ PER-MEMBER CONDITIONS TOGGLE + PANEL ═══════════════ */
+    .conditions-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: transparent;
+      border: 1px solid var(--hairline);
+      color: var(--ink-2);
+      cursor: pointer;
+      letter-spacing: -0.005em;
+      transition: all 0.14s cubic-bezier(0.32,0.72,0,1);
+      margin-left: auto;
+    }
+    .conditions-toggle:hover { background: var(--surface-tint); color: var(--ink); border-color: var(--hairline-strong); }
+    .conditions-toggle .cond-count {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--surface-tint);
+      color: var(--ink-2);
+      letter-spacing: 0;
+      min-width: 16px;
+      text-align: center;
+    }
+    .conditions-toggle.has-conditions {
+      background: var(--st-waitlisted-bg);
+      border-color: var(--st-waitlisted-edge);
+      color: var(--st-waitlisted-ink);
+    }
+    .conditions-toggle.has-conditions .cond-count {
+      background: var(--st-waitlisted-ink);
+      color: var(--st-waitlisted-bg);
+    }
+    .conditions-toggle .chev-mini {
+      font-size: 9px;
+      opacity: 0.5;
+      transition: transform 0.18s;
+    }
+    .conditions-toggle.open .chev-mini { transform: rotate(180deg); }
+
+    .conditions-panel {
+      display: none;
+      margin-top: 6px;
+      padding: 8px 10px;
+      background: rgba(138,106,42,0.05);
+      border: 1px solid rgba(138,106,42,0.14);
+      border-radius: var(--radius-sm);
+    }
+    .conditions-panel.open { display: block; }
+    .conditions-panel .cp-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .conditions-panel .cp-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--st-waitlisted-ink);
+    }
+    .conditions-panel .cp-clear {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--ink-3);
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      padding: 0;
+    }
+    .conditions-panel .cp-clear:hover { color: var(--ink); text-decoration: underline; }
+    .conditions-panel .ped-tags { gap: 5px; }
+    .conditions-panel .ped-tag { font-size: 11.5px; padding: 4px 10px 4px 9px; }
+    .conditions-panel .ped-tag::before { width: 10px; height: 10px; border-width: 1.2px; }
+
     /* ═══ CONSENT ROW ═════════════════════════════════════════ */
     .consent-row {
       display: flex;
@@ -1435,7 +1517,7 @@
 <!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <span class="topbar-brand">COI Verification</span>
-  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">discovery flow · v2</span>
+  <span class="mono" style="font-size:10px;color:var(--ink-3);letter-spacing:0.04em" title="Tally-inspired preview">discovery + per-member PED · v3</span>
   <div class="topbar-divider"></div>
   <div class="topbar-stats">
     <span class="stat-chip"><span class="pulse-dot"></span>Pending <span class="sv" id="cnt-pending">0</span></span>
@@ -1660,23 +1742,8 @@
         </div>
       </div>
 
-      <!-- 4. Pre-existing Conditions -->
-      <div class="fsec">
-        <button type="button" class="fsec-toggle" id="tog-ped">
-          Pre-existing Conditions <span class="chev">▼</span>
-        </button>
-        <div class="fsec-body" id="body-ped">
-          <div class="ped-toolbar">
-            <span class="ped-toolbar-label">Tap any that apply — multiple allowed</span>
-            <div class="ped-toolbar-actions">
-              <button type="button" class="ped-action" id="pedSelectAll">Select all</button>
-              <button type="button" class="ped-action" id="pedClearAll">Clear</button>
-            </div>
-          </div>
-          <div class="ped-tags" id="pedTags"></div>
-          <p class="ped-note">Flag conditions declared by the applicant or visible in the COI exclusions / waiting-period section.</p>
-        </div>
-      </div>
+      <!-- Pre-existing Conditions now live per-member inside the Members section. -->
+
 
       <!-- 5. Decision -->
       <div class="fsec">
@@ -1874,22 +1941,19 @@ function newMember(overrides) {
     name: '',
     relation: '',
     dob: '',
-    source: 'declared',             // 'declared' (from user form) or 'discovered' (added by agent)
-    policyStatus: 'pending',        // 'pending' | 'verified' | 'not-on-policy'
-    verifiedBy: '',                 // free-text or 'Employer COI' / 'Personal COI' / 'Other'
-    consent: {
-      state: 'not-required',        // 'not-required' | 'not-requested' | 'pending' | 'accepted' | 'declined'
-      requestedAt: '',
-      respondedAt: ''
-    }
+    source: 'declared',
+    policyStatus: 'pending',
+    verifiedBy: '',
+    preExistingConditions: [],     // per-member PED list
+    consent: { state: 'not-required', requestedAt: '', respondedAt: '' }
   }, overrides || {});
 }
 
-// Backfill member entry with new fields when reading legacy records
 function normaliseMember(m) {
   if (!m) return newMember();
   const filled = newMember(m);
   filled.consent = Object.assign({ state: filled.source === 'discovered' ? 'not-requested' : 'not-required', requestedAt: '', respondedAt: '' }, m.consent || {});
+  filled.preExistingConditions = safeArr(m.preExistingConditions);
   return filled;
 }
 
@@ -2540,8 +2604,7 @@ function renderForm() {
   renderMembersSection('adult', safeArr(v.adultsOnPolicy));
   renderMembersSection('child', safeArr(v.childrenOnPolicy));
 
-  // — PED
-  renderPedTags(safeArr(v.preExistingConditions));
+  // (PEDs are rendered inside each member row by renderMembersSection above.)
 
   // — Coverage summary + suggested verdict
   renderCoverageSummary(v);
@@ -2668,11 +2731,57 @@ function buildMemberRow(type, idx, member) {
   verifiedByIn.innerHTML = VERIFIED_BY_OPTIONS.map(o => `<option value="${esc(o.v)}"${o.v === (m.verifiedBy || '') ? ' selected' : ''}>${esc(o.l)}</option>`).join('');
   verifiedByIn.addEventListener('change', autoSave);
 
-  line2.append(pstatusIn, verifiedByIn);
+  // Conditions toggle (count badge + expand)
+  const condToggle = document.createElement('button');
+  condToggle.type = 'button';
+  condToggle.className = 'conditions-toggle';
+  const condCount = safeArr(m.preExistingConditions).length;
+  if (condCount > 0) condToggle.classList.add('has-conditions');
+  condToggle.innerHTML = `Conditions <span class="cond-count">${condCount}</span> <span class="chev-mini">▾</span>`;
+  condToggle.title = condCount > 0 ? condCount + ' condition' + (condCount === 1 ? '' : 's') + ' selected' : 'No pre-existing conditions';
 
-  row.append(line1, line2);
+  line2.append(pstatusIn, verifiedByIn, condToggle);
 
-  // ── Line 3: consent UI (only for discovered) ──
+  // Conditions panel (expandable)
+  const condPanel = document.createElement('div');
+  condPanel.className = 'conditions-panel';
+  condPanel.innerHTML = `
+    <div class="cp-header">
+      <span class="cp-label">Pre-existing conditions</span>
+      <button class="cp-clear" type="button">Clear</button>
+    </div>
+    <div class="ped-tags">
+      ${PED_OPTIONS.map(label => {
+        const active = safeArr(m.preExistingConditions).includes(label) ? 'selected' : '';
+        return `<span class="ped-tag ${active}" data-ped="${esc(label)}">${esc(label)}</span>`;
+      }).join('')}
+    </div>
+  `;
+
+  condToggle.addEventListener('click', () => {
+    condPanel.classList.toggle('open');
+    condToggle.classList.toggle('open');
+  });
+  condPanel.querySelector('.cp-clear').addEventListener('click', e => {
+    e.stopPropagation();
+    condPanel.querySelectorAll('.ped-tag.selected').forEach(t => t.classList.remove('selected'));
+    condToggle.querySelector('.cond-count').textContent = '0';
+    condToggle.classList.remove('has-conditions');
+    autoSave();
+  });
+  condPanel.querySelector('.ped-tags').addEventListener('click', e => {
+    const tag = e.target.closest('.ped-tag');
+    if (!tag) return;
+    tag.classList.toggle('selected');
+    const n = condPanel.querySelectorAll('.ped-tag.selected').length;
+    condToggle.querySelector('.cond-count').textContent = n;
+    condToggle.classList.toggle('has-conditions', n > 0);
+    autoSave();
+  });
+
+  row.append(line1, line2, condPanel);
+
+  // ── Consent UI for discovered members ──
   if (m.source === 'discovered') {
     const consent = m.consent || { state: 'not-requested', requestedAt: '', respondedAt: '' };
     const consentRow = buildConsentRow(type, idx, consent);
@@ -2831,12 +2940,14 @@ function readMembersFromDOM(type) {
   const stored = safeArr(getVerif(selectedId)[type === 'adult' ? 'adultsOnPolicy' : 'childrenOnPolicy']);
   return Array.from(containerRows).map((row, i) => {
     const prev = normaliseMember(stored[i]);
+    const conds = Array.from(row.querySelectorAll('.conditions-panel .ped-tag.selected')).map(t => t.dataset.ped);
     return Object.assign(prev, {
       name: row.querySelector('.name-in')?.value || '',
       dob: row.querySelector('.dob-in')?.dataset.iso || '',
       relation: row.querySelector('.rel-in')?.value || '',
       policyStatus: row.querySelector('.pstatus-in')?.value || 'pending',
-      verifiedBy: row.querySelector('.verifiedby-in')?.value || ''
+      verifiedBy: row.querySelector('.verifiedby-in')?.value || '',
+      preExistingConditions: conds
     });
   });
 }
@@ -2845,21 +2956,11 @@ function readMembersFromDOM(type) {
 // PED TAGS
 // ═══════════════════════════════════════════════════════════════
 
-// JS-managed PED selection — single source of truth.
-let pedSet = new Set();
+// Per-member PED state lives on each member entry now.
+// Stub kept for backwards compat — does nothing (the app-level section was removed).
+function renderPedTags(_selected) { /* no-op: per-member now */ }
 
-function renderPedTags(selected) {
-  pedSet = new Set(safeArr(selected));
-  const container = document.getElementById('pedTags');
-  container.innerHTML = PED_OPTIONS.map(label => {
-    const active = pedSet.has(label) ? 'selected' : '';
-    return `<span class="ped-tag ${active}" data-ped="${esc(label)}">${esc(label)}</span>`;
-  }).join('');
-}
-
-function readSelectedPed() {
-  return Array.from(pedSet);
-}
+function readSelectedPed() { return []; } // legacy stub — PEDs are read per-member now
 
 // ═══════════════════════════════════════════════════════════════
 // DECISION HELPERS
@@ -2915,7 +3016,10 @@ function getCurrentData() {
   data.rejectionReason = CODE_REASON[data.rejectionCode] || '';
   data.adultsOnPolicy = readMembersFromDOM('adult');
   data.childrenOnPolicy = readMembersFromDOM('child');
-  data.preExistingConditions = readSelectedPed();
+  // PEDs are per-member now; this field stays in the schema for backwards-compat
+  // but is no longer written from the app-level UI.
+  const existingV = getVerif(selectedId);
+  data.preExistingConditions = safeArr(existingV.preExistingConditions);
   const existing = getVerif(selectedId);
   data.reviewedAt = existing.reviewedAt || '';
   return data;
@@ -3418,23 +3522,12 @@ function wireFormEvents() {
   document.getElementById('addAdultBtn').addEventListener('click', () => addMember('adult'));
   document.getElementById('addChildBtn').addEventListener('click', () => addMember('child'));
 
-  // PED bulk actions
-  document.getElementById('pedSelectAll').addEventListener('click', () => {
-    pedSet = new Set(PED_OPTIONS);
-    document.querySelectorAll('#pedTags .ped-tag').forEach(t => t.classList.add('selected'));
-    if (selectedId) autoSave();
-  });
-  document.getElementById('pedClearAll').addEventListener('click', () => {
-    pedSet = new Set();
-    document.querySelectorAll('#pedTags .ped-tag').forEach(t => t.classList.remove('selected'));
-    if (selectedId) autoSave();
-  });
+  // (PED bulk actions removed — per-member panels now have their own Clear button)
 
   // Section toggles
   setupToggle('tog-submitted', 'body-submitted');
   setupToggle('tog-policy', 'body-policy');
   setupToggle('tog-members', 'body-members');
-  setupToggle('tog-ped', 'body-ped');
   setupToggle('tog-decision', 'body-decision');
 
   // Viewer actions
@@ -3488,7 +3581,8 @@ function doExportCsv(scope) {
     'Verification Status','Rejection Bucket','Rejection Code','Rejection Reason',
     'Reviewed At','Last Edited At',
     'Members Declared','Members Discovered','Members Verified','Not On Policy',
-    'Awaiting Consent','Discovery Accepted','Discovery Declined','Discovered Names'
+    'Awaiting Consent','Discovery Accepted','Discovery Declined','Discovered Names',
+    'Total PEDs Flagged'
   ];
 
   function cell(v) {
@@ -3510,6 +3604,8 @@ function doExportCsv(scope) {
       parts.push(n.policyStatus);
       if (n.verifiedBy) parts.push('via ' + n.verifiedBy);
       if (n.source === 'discovered' && n.consent) parts.push('consent:' + (n.consent.state || 'not-requested'));
+      const conds = safeArr(n.preExistingConditions);
+      if (conds.length) parts.push('PED:' + conds.join('+'));
       return parts.join(' | ');
     };
     const adults = safeArr(v.adultsOnPolicy).map((m,i) => serialiseMember(m, i, 'Adult')).join('; ');
@@ -3529,7 +3625,9 @@ function doExportCsv(scope) {
       memberStats.notOnPolicy,
       memberStats.consentNotRequested + memberStats.consentPending,
       memberStats.consentAccepted, memberStats.consentDeclined,
-      memberStats.discoveredNames.join('; ')
+      memberStats.discoveredNames.join('; '),
+      [...safeArr(v.adultsOnPolicy), ...safeArr(v.childrenOnPolicy)]
+        .reduce((acc, m) => acc + safeArr(normaliseMember(m).preExistingConditions).length, 0)
     ].map(cell).join(',');
   });
 
@@ -3547,30 +3645,8 @@ function doExportCsv(scope) {
 // PED INITIAL RENDER + DOCUMENT-LEVEL DELEGATION
 // ═══════════════════════════════════════════════════════════════
 
-(function initPed() {
-  const container = document.getElementById('pedTags');
-  container.innerHTML = PED_OPTIONS.map(label =>
-    `<span class="ped-tag" data-ped="${esc(label)}">${esc(label)}</span>`
-  ).join('');
-})();
-
-// Document-level delegation. Source of truth = pedSet, NOT the DOM class.
-// Click flips the Set membership and reflects it on the tag. Multi-select
-// is guaranteed because each click only mutates one entry in the Set.
-document.addEventListener('click', e => {
-  const tag = e.target.closest('#pedTags .ped-tag');
-  if (!tag) return;
-  const label = tag.dataset.ped;
-  if (!label) return;
-  if (pedSet.has(label)) {
-    pedSet.delete(label);
-    tag.classList.remove('selected');
-  } else {
-    pedSet.add(label);
-    tag.classList.add('selected');
-  }
-  if (selectedId) autoSave();
-});
+// (PED tags are now rendered inside each member row; handlers are
+// attached per-row in buildMemberRow.)
 
 // ═══════════════════════════════════════════════════════════════
 // ONE-TIME MIGRATION: fix all stale verifications on page load
@@ -3583,19 +3659,39 @@ document.addEventListener('click', e => {
   apps.forEach(app => {
     const v = vmap[app.id];
     if (!v) return;
-    if (v.prefilledFromMembers) return;
-    // Real entries = at least one row with a name OR dob filled in
-    const hasReal =
-      safeArr(v.adultsOnPolicy).some(m => m && (m.name || m.dob)) ||
-      safeArr(v.childrenOnPolicy).some(m => m && (m.name || m.dob));
-    if (!hasReal && safeArr(app.members).length) {
-      const pf = buildPrefilledVerif(app);
-      v.adultsOnPolicy = pf.adultsOnPolicy;
-      v.childrenOnPolicy = pf.childrenOnPolicy;
-      v.prefilledFromMembers = true;
-      vmap[app.id] = v;
+
+    // Step 1: prefill members from declared family if not done yet
+    if (!v.prefilledFromMembers) {
+      const hasReal =
+        safeArr(v.adultsOnPolicy).some(m => m && (m.name || m.dob)) ||
+        safeArr(v.childrenOnPolicy).some(m => m && (m.name || m.dob));
+      if (!hasReal && safeArr(app.members).length) {
+        const pf = buildPrefilledVerif(app);
+        v.adultsOnPolicy = pf.adultsOnPolicy;
+        v.childrenOnPolicy = pf.childrenOnPolicy;
+        v.prefilledFromMembers = true;
+        dirty = true;
+      }
+    }
+
+    // Step 2: migrate app-level PEDs onto primary adult (Self), then clear
+    if (safeArr(v.preExistingConditions).length && !v.pedsMigratedToMembers) {
+      const legacy = safeArr(v.preExistingConditions);
+      const adults = safeArr(v.adultsOnPolicy).map(normaliseMember);
+      // Prefer the Self adult; otherwise the first adult
+      let targetIdx = adults.findIndex(m => (m.relation || '').toLowerCase() === 'self');
+      if (targetIdx === -1 && adults.length) targetIdx = 0;
+      if (targetIdx !== -1) {
+        const merged = new Set([...safeArr(adults[targetIdx].preExistingConditions), ...legacy]);
+        adults[targetIdx].preExistingConditions = Array.from(merged);
+        v.adultsOnPolicy = adults;
+      }
+      v.pedsMigratedToMembers = true;
+      v.preExistingConditions = []; // keep field, but empty out
       dirty = true;
     }
+
+    if (dirty) vmap[app.id] = v;
   });
   if (dirty) saveVerifs(vmap);
 })();
